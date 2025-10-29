@@ -209,7 +209,7 @@ public:
 
         if (!file.is_open()) return transactions;
 
-        if (std::getline(file, line)) { // Skip header
+        if (std::getline(file, line)) { 
             while (std::getline(file, line)) {
                 std::stringstream ss(line);
                 std::string idStr, amountStr, category, description, date, typeStr;
