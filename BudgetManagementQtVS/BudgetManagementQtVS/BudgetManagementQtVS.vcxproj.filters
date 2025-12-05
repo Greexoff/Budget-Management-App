@@ -17,6 +17,9 @@
       <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
       <Extensions>ts</Extensions>
     </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{325d85d1-41af-4980-8c89-0d2af84e54c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="BudgetManagementQtVS.qrc">
@@ -39,7 +42,7 @@
     <ClCompile Include="Model\DatabaseManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model\Model.cpp">
+    <ClCompile Include="Model\Transaction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="View\View.cpp">
@@ -53,14 +56,16 @@
     <ClInclude Include="Model\DatabaseManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Model\Model.h">
+    <ClInclude Include="View\View.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="View\View.h">
+    <ClInclude Include="Model\Transaction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="BudgetManagementQtVS.ui" />
+    <QtUic Include="BudgetManagementQtVS.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
 </Project>
