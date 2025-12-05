@@ -1,4 +1,4 @@
-#include "BudgetManagementQtVS.h"
+﻿#include "BudgetManagementQtVS.h"
 #include "Model/DatabaseManager.h"
 #include "View/View.h"
 #include <QtWidgets/QApplication>
@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     DatabaseManager::instance();
-    BudgetManagementQtVS window;
+    MainWindow window;
     window.show();
     return app.exec();
 }

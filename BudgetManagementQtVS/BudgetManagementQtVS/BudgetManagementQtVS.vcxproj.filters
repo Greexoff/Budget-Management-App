@@ -17,6 +17,9 @@
       <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
       <Extensions>ts</Extensions>
     </Filter>
+    <Filter Include="Ui Files">
+      <UniqueIdentifier>{4a417a02-92a8-443b-9444-bd017484f679}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="BudgetManagementQtVS.qrc">
@@ -61,6 +64,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="BudgetManagementQtVS.ui" />
+    <QtUic Include="BudgetManagementQtVS.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
   </ItemGroup>
 </Project>

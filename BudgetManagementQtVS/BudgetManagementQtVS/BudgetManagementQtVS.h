@@ -1,17 +1,36 @@
-#pragma once
+﻿#pragma once
 
-#include <QtWidgets/QMainWindow>
-#include "ui_BudgetManagementQtVS.h"
+#include <QMainWindow>
 
-class BudgetManagementQtVS : public QMainWindow
+QT_BEGIN_NAMESPACE
+namespace Ui { class MainWindow; }
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    BudgetManagementQtVS(QWidget *parent = nullptr);
-    ~BudgetManagementQtVS();
+    explicit MainWindow(QWidget* parent = nullptr);
+    ~MainWindow();
+
+signals:
+    //sygnaly do oblsugi kontrolera
+    void addTransactionRequested();
+    void deleteTransactionRequested();
+
+private slots:
+
+    void onButtonAddTransactionClicked();
+    void onButtonDeleteTransactionClicked();
 
 private:
-    Ui::BudgetManagementQtVSClass ui;
+    Ui::MainWindow* ui;
+
+    void setupConnections();
 };
+
+
+
+    
 

@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<UI version="4.0" >
- <class>BudgetManagementQtVSClass</class>
- <widget class="QMainWindow" name="BudgetManagementQtVSClass" >
-  <property name="objectName" >
-   <string notr="true">BudgetManagementQtVSClass</string>
-  </property>
-  <property name="geometry" >
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -13,17 +10,70 @@
     <height>400</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>BudgetManagementQtVS</string>
-  </property>  <widget class="QMenuBar" name="menuBar" />
-  <widget class="QToolBar" name="mainToolBar" />
-  <widget class="QWidget" name="centralWidget" />
-  <widget class="QStatusBar" name="statusBar" />
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QTableView" name="TransactionView">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>20</y>
+      <width>601</width>
+      <height>191</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonAddTransaction">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>260</y>
+      <width>111</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Dodaj transakcję</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonDeleteTransaction">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>260</y>
+      <width>101</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Usuń Transakcję</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>600</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
+ <layoutdefault spacing="6" margin="11"/>
  <resources>
-   <include location="BudgetManagementQtVS.qrc"/>
+  <include location="BudgetManagementQtVS.qrc"/>
  </resources>
  <connections/>
-</UI>
+</ui>
