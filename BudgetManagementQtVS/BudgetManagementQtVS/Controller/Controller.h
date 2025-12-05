@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Model/Transaction.h"
-#include "Model/TransactionRepository.h"
+#include "Model/Repositories.h"
 #include <QObject>
 #include <QVector>
 #include <QStringList>

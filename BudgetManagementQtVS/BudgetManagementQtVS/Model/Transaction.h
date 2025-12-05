@@ -19,14 +19,11 @@ private:
 	double transactionAmount;
 	TransactionType transactionType;
 	int categoryId;
+	int associatedProfileId;
 public:
-	//add,rem,edit
-	//Transaction();
-	//~Transaction();
-
 
 	// constructor
-	Transaction(int TransactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId);
+	Transaction(int TransactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId, int associadedProfileId);
 
 	// destructor
 	~Transaction();
@@ -39,6 +36,7 @@ public:
 	QString getTransactionDescription() const;
 	double getTransactionAmount() const;
 	int getCategoryId() const;
+	int getAssociatedProfileId() const;
 
 	// setters	
 	void setTransactionId(int id);
@@ -48,7 +46,8 @@ public:
 	void setTransactionAmount(double amount);
 	void setTransactionType(TransactionType type);
 	void setCategoryId(int id);
+	void setAssociatedProfileId(int associadedProfileId);
 
-	void editTransaction(const QString& name, const QDate& date, const QString& description, double amount, TransactionType type, int categoryId);
+	void editTransaction(const QString& name, const QDate& date, const QString& description, double amount, TransactionType type, int categoryId, int associatedProfileId);
 
 };

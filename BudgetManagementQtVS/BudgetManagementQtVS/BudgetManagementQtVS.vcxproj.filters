@@ -25,12 +25,6 @@
     <QtRcc Include="BudgetManagementQtVS.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtMoc Include="BudgetManagementQtVS.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <ClCompile Include="BudgetManagementQtVS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -51,11 +45,17 @@
     <ClCompile Include="Model\Category.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Model\Repositories.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindowView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\User&amp;Profiles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Controller\Controller.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Model\DatabaseManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -68,10 +68,22 @@
     <ClInclude Include="Model\Category.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Repositories.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\User&amp;Profiles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="BudgetManagementQtVS.ui">
-      <Filter>Ui Files</Filter>
-    </QtUic>
+    <QtUic Include="MainWindowView.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Controller\Controller.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="View\MainWindowView.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

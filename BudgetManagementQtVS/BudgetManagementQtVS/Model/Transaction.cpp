@@ -1,6 +1,6 @@
 ﻿#include "Model/Transaction.h"
 
-Transaction::Transaction(int transactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId)
+Transaction::Transaction(int transactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId, int associadedProfileId)
 {
 	this->transactionId = transactionId;
 	this->transactionName = transactionName;
@@ -45,6 +45,10 @@ int Transaction::getCategoryId() const
 {
 	return categoryId;
 }
+int Transaction::getAssociatedProfileId() const
+{
+	return associatedProfileId;
+}
 
 //setters
 
@@ -82,8 +86,11 @@ void Transaction::setCategoryId(int id)
 {
 	categoryId = id;
 }
-
-void Transaction::editTransaction(const QString& name, const QDate& date, const QString& description, double amount, TransactionType type, int categoryId)
+void Transaction::setAssociatedProfileId(int associadedProfileId) 
+{
+	this->associatedProfileId = associadedProfileId;
+}
+void Transaction::editTransaction(const QString& name, const QDate& date, const QString& description, double amount, TransactionType type, int categoryId, int associatedProfileId)
 {
 	setTransactionName(name);
 	setTransactionDate(date);
@@ -91,6 +98,7 @@ void Transaction::editTransaction(const QString& name, const QDate& date, const 
 	setTransactionAmount(amount);
 	setTransactionType(type);
 	setCategoryId(categoryId);
+	setAssociatedProfileId(associatedProfileId);
 }
 
 

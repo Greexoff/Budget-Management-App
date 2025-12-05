@@ -84,6 +84,7 @@ void TransactionController::handleAddTransactionRequested()
 
     TransactionType type = (amount >= 0.0) ? INCOME : EXPENSE;
     int categoryId = 0; // TODO: jak dodamy kategorie
+    int associatedProfileId = 1; //TODO same case
 
 
     Transaction transaction(
@@ -93,7 +94,8 @@ void TransactionController::handleAddTransactionRequested()
         description,
         amount,
         type,
-        categoryId
+        categoryId,
+        associatedProfileId
     );
 
     if (!transcationRepository.add(transaction))

@@ -19,24 +19,26 @@ DatabaseManager::DatabaseManager() {
     //Creating table for users
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS users"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "Username TEXT UNIQUE NOT NULL,"
-        "Password TEXT NOT NULL)");
+        "username TEXT UNIQUE NOT NULL,"
+        "password TEXT NOT NULL)");
     //Creating table for profiles
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS profiles"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "Profile_name TEXT UNIQUE NOT NULL, "
-        "User_id INTEGER, "
-        "FOREIGN KEY(User_id) REFERENCES users(id))");
+        "profile_name TEXT UNIQUE NOT NULL, "
+        "user_id INTEGER, "
+        "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)");
     //Creating table for transactions
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS transactions"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "name TEXT NOT NULL, "
         "type TEXT NOT NULL, "
         "date TEXT NOT NULL, "
-        //"add category attribute that is connected to category table"
         "description TEXT, "
         "amount REAL NOT NULL, "
-        "category_id INTEGER DEFAULT 0)");
+        "category_id INTEGER DEFAULT 0, "//tutaj trzeba bedzie pewnie dorobic kolejny foreign key w ktoras strone   
+        "profile_id INTEGER, "
+        "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
+        ")");
     //IN PROGRESS Creating table for category
     //IN PROGRESS Here make sql query for creating table for category with id, name, 
 }
