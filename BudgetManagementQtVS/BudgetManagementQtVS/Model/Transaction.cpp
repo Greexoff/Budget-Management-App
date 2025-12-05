@@ -1,13 +1,14 @@
-#include "Model/Transaction.h"
+﻿#include "Model/Transaction.h"
 
-Transaction::Transaction(int TransactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId)
+Transaction::Transaction(int transactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId)
 {
-	this->transactionId = TransactionId;
+	this->transactionId = transactionId;
 	this->transactionName = transactionName;
 	this->transactionDate = transactionDate;
 	this->transactionDescription = transactionDescription;
 	this->transactionAmount = transactionAmount;
 	this->transactionType = transactionType;
+	this->categoryId = categoryId;
 }
 
 Transaction::~Transaction() {}
