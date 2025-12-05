@@ -1,6 +1,6 @@
 #include "BudgetManagementQtVS.h"
-#include "DatabaseManager.h"
-#include "View.h"
+#include "Model/DatabaseManager.h"
+#include "View/View.h"
 #include <QtWidgets/QApplication>
 #include <QSqlDatabase>
 #include <QSqlQuery>

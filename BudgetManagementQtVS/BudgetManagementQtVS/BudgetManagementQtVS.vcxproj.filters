@@ -40,30 +40,30 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DatabaseManager.cpp">
+    <ClCompile Include="Controller\Controller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="View.cpp">
+    <ClCompile Include="Model\DatabaseManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
+    <ClCompile Include="Model\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Controller.cpp">
+    <ClCompile Include="View\View.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DatabaseManager.h">
+    <ClInclude Include="Controller\Controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="View.h">
+    <ClInclude Include="Model\DatabaseManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
+    <ClInclude Include="Model\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Controller.h">
+    <ClInclude Include="View\View.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
