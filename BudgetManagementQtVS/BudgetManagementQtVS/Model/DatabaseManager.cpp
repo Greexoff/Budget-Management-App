@@ -8,14 +8,14 @@ DatabaseManager::DatabaseManager() {
     datebaseInstance.setDatabaseName("BudgetDatabase.db");
 
     if (!datebaseInstance.open()) {
-        qDebug() << "DB Error:" << datebaseInstance.lastError().text();
+        qDebug() << "Database Error:" << datebaseInstance.lastError().text();
     }
     else {
-        qDebug() << "Database opened correctly!";
+        qDebug() << "Database opened correctly";
     }
 
     QSqlQuery tableCreationQuery;
-    tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS BudgetDatabase "
+    tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS BudgetDatabase"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "name TEXT)");
 }

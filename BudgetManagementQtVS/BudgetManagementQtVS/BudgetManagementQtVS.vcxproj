@@ -104,7 +104,7 @@
   <ItemGroup>
     <ClInclude Include="Controller\Controller.h" />
     <ClInclude Include="Model\DatabaseManager.h" />
-    <ClInclude Include="Model\Model.h" />
+    <ClInclude Include="Model\Transaction.h" />
     <ClInclude Include="View\View.h" />
   </ItemGroup>
   <ItemGroup>
