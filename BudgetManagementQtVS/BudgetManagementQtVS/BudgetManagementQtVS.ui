@@ -14,7 +14,7 @@
    <string>BudgetManagementQtVS</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTableView" name="TransactionView">
+   <widget class="QTableView" name="TransactionTabelView">
     <property name="geometry">
      <rect>
       <x>0</x>

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <QMainWindow>
+#include <qstandarditemmodel.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -14,6 +15,10 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
+    void setTransactionRows(const QVector<QStringList>& rows);    
+
+    int selectedTranstacionId() const; //jak sie kliknie na transakcje w tabli to zwraca jej id
+
 signals:
     //sygnaly do oblsugi kontrolera
     void addTransactionRequested();
@@ -26,8 +31,10 @@ private slots:
 
 private:
     Ui::MainWindow* ui;
+    QStandardItemModel* TableModel = nullptr;
 
     void setupConnections();
+    void setupTableModel();         //Setupwoanie kolumn w naszej tabeli
 };
 
 
