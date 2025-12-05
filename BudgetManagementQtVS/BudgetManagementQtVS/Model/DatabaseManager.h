@@ -4,9 +4,9 @@
 class DatabaseManager {
 public:
     static DatabaseManager& instance();
-    QSqlDatabase& db();
+    QSqlDatabase& database();
 
 private:
     DatabaseManager();
-    QSqlDatabase m_db;
+    QSqlDatabase datebaseInstance;
 };

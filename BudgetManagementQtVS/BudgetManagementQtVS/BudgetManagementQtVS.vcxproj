@@ -96,7 +96,6 @@
     <ClCompile Include="Model\Model.cpp" />
     <ClCompile Include="View\View.cpp" />
     <QtRcc Include="BudgetManagementQtVS.qrc" />
-    <QtUic Include="BudgetManagementQtVS.ui" />
     <QtMoc Include="BudgetManagementQtVS.h" />
     <ClCompile Include="BudgetManagementQtVS.cpp" />
     <ClCompile Include="Controller\Controller.cpp" />
@@ -107,6 +106,9 @@
     <ClInclude Include="Model\DatabaseManager.h" />
     <ClInclude Include="Model\Model.h" />
     <ClInclude Include="View\View.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="BudgetManagementQtVS.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

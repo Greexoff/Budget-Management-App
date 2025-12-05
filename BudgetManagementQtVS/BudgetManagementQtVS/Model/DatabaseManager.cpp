@@ -4,19 +4,18 @@
 #include <QDebug>
 
 DatabaseManager::DatabaseManager() {
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
-    m_db.setDatabaseName("budget.db");
+    datebaseInstance = QSqlDatabase::addDatabase("QSQLITE");
+    datebaseInstance.setDatabaseName("BudgetDatabase.db");
 
-    if (!m_db.open()) {
-        qDebug() << "DB Error:" << m_db.lastError().text();
+    if (!datebaseInstance.open()) {
+        qDebug() << "DB Error:" << datebaseInstance.lastError().text();
     }
     else {
         qDebug() << "Database opened correctly!";
     }
 
-    // Utworzymy przyk³adow¹ tabelê (do testów)
-    QSqlQuery q;
-    q.exec("CREATE TABLE IF NOT EXISTS test "
+    QSqlQuery tableCreationQuery;
+    tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS BudgetDatabase "
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "name TEXT)");
 }
@@ -26,6 +25,6 @@ DatabaseManager& DatabaseManager::instance() {
     return instance;
 }
 
-QSqlDatabase& DatabaseManager::db() {
-    return m_db;
+QSqlDatabase& DatabaseManager::database() {
+    return datebaseInstance;
 }

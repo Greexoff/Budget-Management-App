@@ -10,8 +10,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    DatabaseManager::instance();    //otwieranie bazy
-
+    DatabaseManager::instance();
     BudgetManagementQtVS window;
     window.show();
     return app.exec();
