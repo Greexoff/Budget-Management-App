@@ -9,4 +9,5 @@ public:
 private:
     DatabaseManager();
     QSqlDatabase datebaseInstance;
+
 };
