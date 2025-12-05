@@ -42,10 +42,13 @@
     <ClCompile Include="Model\DatabaseManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model\Model.cpp">
+    <ClCompile Include="View\View.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="View\View.cpp">
+    <ClCompile Include="Model\Transaction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Category.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,10 +59,13 @@
     <ClInclude Include="Model\DatabaseManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Model\Model.h">
+    <ClInclude Include="View\View.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="View\View.h">
+    <ClInclude Include="Model\Transaction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Category.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
