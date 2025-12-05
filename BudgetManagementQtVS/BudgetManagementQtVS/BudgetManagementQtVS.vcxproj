@@ -94,6 +94,7 @@
   <ItemGroup>
     <ClCompile Include="Model\DatabaseManager.cpp" />
     <ClCompile Include="Model\Model.cpp" />
+    <ClCompile Include="Model\Transaction.cpp" />
     <ClCompile Include="View\View.cpp" />
     <QtRcc Include="BudgetManagementQtVS.qrc" />
     <QtMoc Include="BudgetManagementQtVS.h" />
