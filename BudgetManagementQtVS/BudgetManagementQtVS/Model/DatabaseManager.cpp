@@ -1,4 +1,4 @@
-#include "DatabaseManager.h"
+﻿#include "DatabaseManager.h"
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QDebug>
@@ -34,7 +34,9 @@ DatabaseManager::DatabaseManager() {
         "type TEXT NOT NULL, "
         "date TEXT NOT NULL, "
         //"add category attribute that is connected to category table"
-        "description TEXT)");
+        "description TEXT, "
+        "amount REAL NOT NULL, "
+        "category_id INTEGER DEFAULT 0)");
     //IN PROGRESS Creating table for category
     //IN PROGRESS Here make sql query for creating table for category with id, name, 
 }

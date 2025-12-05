@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>BudgetManagementQtVS</string>
+   <string>MainWindowView</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QTableView" name="TransactionTabelView">

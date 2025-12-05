@@ -1,4 +1,4 @@
-﻿#include "BudgetManagementQtVS.h"
+﻿#include "MainWindowView.h"
 #include "ui_BudgetManagementQtVS.h"
 #include <QInputDialog>
 #include <QMessageBox>
@@ -28,7 +28,7 @@ void MainWindow::setupTableModel()
     TableModel->setHeaderData(2, Qt::Horizontal, tr("Data"));
     TableModel->setHeaderData(3, Qt::Horizontal, tr("Opis"));
     TableModel->setHeaderData(4, Qt::Horizontal, tr("Kwota"));
-    TableModel->setHeaderData(5, Qt::Horizontal, tr("Typ"));
+    TableModel->setHeaderData(5, Qt::Horizontal, tr("Kategoria"));
 
     ui->TransactionTabelView->setModel(TableModel);
     ui->TransactionTabelView->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -41,6 +41,7 @@ void MainWindow::setupConnections()
 	connect(ui->buttonAddTransaction, &QPushButton::clicked, this, &MainWindow::onButtonAddTransactionClicked);
 
 	connect(ui->buttonDeleteTransaction, &QPushButton::clicked, this, &MainWindow::onButtonDeleteTransactionClicked);
+    
 
 }
 

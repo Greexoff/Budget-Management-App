@@ -95,22 +95,24 @@
     <ClCompile Include="Model\Category.cpp" />
     <ClCompile Include="Model\DatabaseManager.cpp" />
     <ClCompile Include="Model\Transaction.cpp" />
+    <ClCompile Include="Model\TransactionRepository.cpp" />
     <ClCompile Include="View\View.cpp" />
     <QtRcc Include="BudgetManagementQtVS.qrc" />
-    <QtMoc Include="BudgetManagementQtVS.h" />
-    <ClCompile Include="BudgetManagementQtVS.cpp" />
+    <ClCompile Include="MainWindowView.cpp" />
     <ClCompile Include="Controller\Controller.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Controller\Controller.h" />
+    <QtMoc Include="Controller\Controller.h" />
     <ClInclude Include="Model\Category.h" />
     <ClInclude Include="Model\DatabaseManager.h" />
     <ClInclude Include="Model\Transaction.h" />
+    <QtMoc Include="View\MainWindowView.h" />
+    <ClInclude Include="Model\TransactionRepository.h" />
     <ClInclude Include="View\View.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="BudgetManagementQtVS.ui" />
+    <QtUic Include="MainWindowView.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

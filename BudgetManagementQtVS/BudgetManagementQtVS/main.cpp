@@ -1,6 +1,5 @@
-﻿#include "BudgetManagementQtVS.h"
-#include "Model/DatabaseManager.h"
-#include "View/View.h"
+﻿#include "Controller/Controller.h"
+#include "View/MainWindowView.h"
 #include <QtWidgets/QApplication>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -12,6 +11,7 @@ int main(int argc, char *argv[])
 
     DatabaseManager::instance();
     MainWindow window;
+    TransactionController controller(&window);
     window.show();
     return app.exec();
 }
