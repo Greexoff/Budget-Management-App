@@ -43,6 +43,7 @@ private slots:
     void handleCategorySelected(int categoryId);
     void handleAddCategoryRequested(const QString& categoryName);
     void handleDeleteCategoryRequested(int categoryId);
+    void showCategorySelectionDialog();
 private:
     LoginDialog loginDialog;
     ProfileDialog profileDialog;
@@ -61,7 +62,9 @@ private:
 
     void showProfilesForCurrentUser();
     void refreshTransactionsView();
-    void showCategorySelectionDialog();
+
+    void openCategoryDialog(bool withSelectButton);
+    int askUserForCategoryId();
 
 };
 

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Wybierz profil</string>
+   <string>Select Profile</string>
   </property>
   <widget class="QListWidget" name="listProfiles">
    <property name="geometry">

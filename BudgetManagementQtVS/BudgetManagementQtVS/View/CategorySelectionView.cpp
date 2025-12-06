@@ -1,4 +1,4 @@
-#include "CategorySelectionView.h"
+﻿#include "CategorySelectionView.h"
 
 CategorySelectionView::CategorySelectionView(QWidget *parent)
 	: QDialog(parent), ui(new Ui::CategorySelectionView)
@@ -6,7 +6,10 @@ CategorySelectionView::CategorySelectionView(QWidget *parent)
 	ui->setupUi(this);
 	connectMethodToButton();
 }
-CategorySelectionView::~CategorySelectionView() {}
+CategorySelectionView::~CategorySelectionView() 
+{
+    delete ui;
+}
 
 void CategorySelectionView::connectMethodToButton()
 {
@@ -35,7 +38,9 @@ void CategorySelectionView::selectCategoryButtonClicked()
         return;
     }
 
+    selectedCategoryId = categoryId[row].getCategoryId();
     emit selectRequestedCategory(categoryId[row].getCategoryId());
+    accept();
 }
 
 void CategorySelectionView::addCategoryButtonClicked()

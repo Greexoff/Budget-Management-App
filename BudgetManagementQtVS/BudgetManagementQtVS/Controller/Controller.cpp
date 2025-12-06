@@ -177,13 +177,11 @@ void TransactionController::handleAddTransactionRequested()
         return;
 
     TransactionType type = (amount >= 0.0) ? INCOME : EXPENSE;
-    selectedCategoryIdForTransaction = -1;
-    showCategorySelectionDialog();
-
-    if (selectedCategoryIdForTransaction < 0) {
-        selectedCategoryIdForTransaction = 1;
+    
+    int categoryId = askUserForCategoryId();
+    if (categoryId < 0) {
+        categoryId = 1; // default category
     }
-    int categoryId = selectedCategoryIdForTransaction;
 
     Transaction t(
         0,                      
@@ -234,14 +232,30 @@ void TransactionController::handleDeleteTransactionRequested()
 
 void TransactionController::showCategorySelectionDialog()
 {
+
+    openCategoryDialog(false);
+    /*QVector<Category> categories = categoryRepository.getAllCategories();
+    categoryDialog.setCategories(categories);
+    categoryDialog.exec();*/
+}
+void TransactionController::openCategoryDialog(bool withSelectButton)
+{
     QVector<Category> categories = categoryRepository.getAllCategories();
     categoryDialog.setCategories(categories);
+    categoryDialog.setSelectCategoryButtonVisible(withSelectButton);
     categoryDialog.exec();
 }
 void TransactionController::handleCategorySelected(int categoryId)
 {
     selectedCategoryIdForTransaction = categoryId;
     categoryDialog.accept();
+}
+int TransactionController::askUserForCategoryId()
+{
+    selectedCategoryIdForTransaction = -1;
+    openCategoryDialog(true);   
+
+    return selectedCategoryIdForTransaction;   
 }
 void TransactionController::handleAddCategoryRequested(const QString& categoryName)
 {

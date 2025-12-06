@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <QDialog>
 #include <QInputDialog>
@@ -16,6 +16,8 @@ public:
     void setCategories(const QVector<Category>& categories);
 
     void setSelectCategoryButtonVisible(bool visible);
+
+    int getSelectedCategoryId() const { return selectedCategoryId; }
 signals:
     void selectRequestedCategory(int categoryId);
     void addRequestedCategory(const QString& categoryName);
@@ -32,6 +34,7 @@ private slots:
 private:
 	Ui::CategorySelectionView* ui;
     QVector<Category> categoryId;
+    int selectedCategoryId = -1;
     void connectMethodToButton();
 };
 
