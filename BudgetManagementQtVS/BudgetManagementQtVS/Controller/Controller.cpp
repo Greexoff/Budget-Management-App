@@ -1,138 +1,215 @@
 ﻿#include "Controller.h"
-#include "View/MainWindowView.h"  
 #include <QInputDialog>
 #include <QMessageBox>
 
-TransactionController::TransactionController(MainWindow* view, QObject* parent)
-    : QObject(parent),
-    mainWindowView(view),
-    transcationRepository()
+TransactionController::TransactionController(QObject* parent): QObject(parent)
 {
 
-    connect(mainWindowView, &MainWindow::addTransactionRequested, this, &TransactionController::handleAddTransactionRequested);
+    connect(&loginDialog, &LoginDialog::loginRequested,this, &TransactionController::handleLoginRequested);
 
-    connect(mainWindowView, &MainWindow::deleteTransactionRequested,this, &TransactionController::handleDeleteTransactionRequested);
+    connect(&loginDialog, &LoginDialog::registerRequested,this, &TransactionController::handleRegisterRequested);
 
-    refreshView();
+    connect(&profileDialog, &ProfileDialog::profileSelected,this, &TransactionController::handleProfileSelected);
+
+    connect(&profileDialog, &ProfileDialog::addProfileRequested,this, &TransactionController::handleAddProfileRequested);
+
+    connect(&profileDialog, &ProfileDialog::removeProfileRequested,this, &TransactionController::handleRemoveProfileRequested);
+   
 }
 
-void TransactionController::refreshView()
+void TransactionController::run()
 {
-    QVector<Transaction> all = transcationRepository.getAll();
+    loginDialog.show();
+}
+
+void TransactionController::handleLoginRequested(const QString& username, const QString& password)
+{
+    int userId = userRepository.authenticateUser(username, password);
+    if (userId < 0) {
+        QMessageBox::warning(&loginDialog, tr("Logowanie"), tr("Zły login lub hasło"));
+        return;
+    }
+
+    currentUserId = userId;
+    loginDialog.hide();
+    showProfilesForCurrentUser();
+}
+
+void TransactionController::handleRegisterRequested(const QString& username, const QString& password)
+{
+    if (!userRepository.addUser(username, password)) {
+        QMessageBox::warning(&loginDialog, tr("Rejestracja"), tr("Nie udało się utworzyć użytkownika"));
+        return;
+    }
+
+    QMessageBox::information(&loginDialog, tr("Rejestracja"),
+        tr("Użytkownik utworzony. Możesz się zalogować."));
+}
+
+void TransactionController::showProfilesForCurrentUser()
+{
+    QVector<Profile> profiles = profilesRepository.getProfilesByUserId(currentUserId);
+    profileDialog.setProfiles(profiles);
+    profileDialog.exec();
+}
+
+void TransactionController::handleProfileSelected(int profileId)
+{
+    currentProfileId = profileId;
+    profileDialog.hide();
+
+    if (!mainWindowInitialized) {
+        connect(&mainWindowView, &MainWindow::addTransactionRequested,this, &TransactionController::handleAddTransactionRequested);
+
+        connect(&mainWindowView, &MainWindow::deleteTransactionRequested,this, &TransactionController::handleDeleteTransactionRequested);
+
+        mainWindowInitialized = true;
+    }
+
+    refreshTransactionsView();
+    mainWindowView.show();
+}
+
+void TransactionController::handleAddProfileRequested(const QString& name)
+{
+    if (!profilesRepository.addProfile(currentUserId, name)) {
+        QMessageBox::warning(&profileDialog, tr("Profil"),
+            tr("Nie udało się dodać profilu"));
+        return;
+    }
+
+    showProfilesForCurrentUser();
+}
+
+void TransactionController::handleRemoveProfileRequested(int profileId)
+{
+    if (!profilesRepository.removeProfileById(profileId)) {
+        QMessageBox::warning(&profileDialog, tr("Profil"),
+            tr("Nie udało się usunąć profilu"));
+        return;
+    }
+
+    showProfilesForCurrentUser();
+}
+
+void TransactionController::refreshTransactionsView()
+{
+    if (currentProfileId < 0)
+        return;
+
+    QVector<Transaction> all = transactionRepository.getAllForProfile(currentProfileId);
     QVector<QStringList> rows;
 
-    for (const auto& transaction : all)
-    {
+    for (const auto& t : all) {
         QStringList row;
-        row << QString::number(transaction.getTransactionId())
-            << transaction.getTransactionName()
-            << transaction.getTransactionDate().toString("yyyy-MM-dd")
-            << transaction.getTransactionDescription()
-            << QString::number(transaction.getTransactionAmount(), 'f', 2);
+        row << QString::number(t.getTransactionId())
+            << t.getTransactionName()
+            << t.getTransactionDate().toString("yyyy-MM-dd")
+            << t.getTransactionDescription()
+            << QString::number(t.getTransactionAmount(), 'f', 2);
 
-        QString typeStr = (transaction.getTransactionAmount() > 0.0) ? "Wydatek" : "Przychód";
+        QString typeStr = (t.getTransactionAmount() >= 0.0) ? "Przychód" : "Wydatek";
         row << typeStr;
-
-        QString categoryText = QString("Brak");
-        row << categoryText;
 
         rows.append(row);
     }
 
-    mainWindowView->setTransactionRows(rows);
+    mainWindowView.setTransactionRows(rows);
 }
+
+
 
 void TransactionController::handleAddTransactionRequested()
 {
-    bool correctDataType = false;
+    if (currentProfileId < 0) {
+        QMessageBox::warning(&mainWindowView, tr("Błąd"),
+            tr("Najpierw wybierz profil."));
+        return;
+    }
+
+    bool ok = false;
 
     QString name = QInputDialog::getText(
-        mainWindowView,
-        QObject::tr("Nowa transakcja"),
-        QObject::tr("Nazwa:"),
+        &mainWindowView,
+        tr("Nowa transakcja"),
+        tr("Nazwa:"),
         QLineEdit::Normal,
         "",
-        &correctDataType
+        &ok
     );
-    if (!correctDataType || name.trimmed().isEmpty())
+    if (!ok || name.trimmed().isEmpty())
         return;
 
     double amount = QInputDialog::getDouble(
-        mainWindowView,
-        QObject::tr("Nowa transakcja"),
-        QObject::tr("Kwota:"),
+        &mainWindowView,
+        tr("Nowa transakcja"),
+        tr("Kwota:"),
         0.0,
         -1e9,
         1e9,
         2,
-        &correctDataType
+        &ok
     );
-    if (!correctDataType)
+    if (!ok)
         return;
 
     QString description = QInputDialog::getText(
-        mainWindowView,
-        QObject::tr("Nowa transakcja"),
-        QObject::tr("Opis:"),
+        &mainWindowView,
+        tr("Nowa transakcja"),
+        tr("Opis:"),
         QLineEdit::Normal,
         "",
-        &correctDataType
+        &ok
     );
-    if (!correctDataType)
+    if (!ok)
         return;
 
-
     TransactionType type = (amount >= 0.0) ? INCOME : EXPENSE;
-    int categoryId = 0; // TODO: jak dodamy kategorie
-    int associatedProfileId = 1; //TODO same case
+    int categoryId = 0;   // TODO: jak będzie logika kategorii
 
-
-    Transaction transaction(
-        0,                     
+    Transaction t(
+        0,                      // id (baza nada AUTOINCREMENT)
         name,
         QDate::currentDate(),
         description,
         amount,
         type,
         categoryId,
-        associatedProfileId
+        currentProfileId        // powiązanie z profilem
     );
 
-    if (!transcationRepository.add(transaction))
-    {
+    if (!transactionRepository.add(t)) {
         QMessageBox::warning(
-            mainWindowView,
-            QObject::tr("Błąd"),
-            QObject::tr("Nie udało się dodać transakcji do bazy.")
+            &mainWindowView,
+            tr("Błąd"),
+            tr("Nie udało się dodać transakcji do bazy.")
         );
         return;
     }
 
-    refreshView();
+    refreshTransactionsView();
 }
 
 void TransactionController::handleDeleteTransactionRequested()
 {
-    int id = mainWindowView->selectedTranstacionId();
-    if (id < 0)
-    {
+    int id = mainWindowView.selectedTranstacionId();
+    if (id < 0) {
         QMessageBox::information(
-            mainWindowView,
-            QObject::tr("Usuń transakcję"),
-            QObject::tr("Nie wybrano żadnej transakcji.")
+            &mainWindowView,
+            tr("Usuń transakcję"),
+            tr("Nie wybrano żadnej transakcji.")
         );
         return;
     }
 
-    if (!transcationRepository.removeById(id))
-    {
+    if (!transactionRepository.removeById(id)) {
         QMessageBox::warning(
-            mainWindowView,
-            QObject::tr("Błąd"),
-            QObject::tr("Nie udało się usunąć transakcji z bazy.")
+            &mainWindowView,
+            tr("Błąd"),
+            tr("Nie udało się usunąć transakcji z bazy.")
         );
         return;
     }
 
-    refreshView();
+    refreshTransactionsView();
 }

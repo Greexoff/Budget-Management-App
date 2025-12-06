@@ -10,8 +10,9 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     DatabaseManager::instance();
-    MainWindow window;
-    TransactionController controller(&window);
-    window.show();
+
+    TransactionController controller;
+    controller.run();
+
     return app.exec();
 }

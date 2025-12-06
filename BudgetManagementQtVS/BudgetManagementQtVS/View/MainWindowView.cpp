@@ -1,8 +1,9 @@
-﻿#include "MainWindowView.h"
-#include "ui_BudgetManagementQtVS.h"
+﻿#include "View/MainWindowView.h"
+#include "ui_MainWindowView.h"
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QAbstractItemView>
+#include <QHeaderView>  
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow), TableModel(new QStandardItemModel(this))
 {
@@ -22,18 +23,23 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupTableModel()
 {
-    TableModel->setColumnCount(6);
+    TableModel->setColumnCount(7);
     TableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
     TableModel->setHeaderData(1, Qt::Horizontal, tr("Nazwa"));
     TableModel->setHeaderData(2, Qt::Horizontal, tr("Data"));
     TableModel->setHeaderData(3, Qt::Horizontal, tr("Opis"));
     TableModel->setHeaderData(4, Qt::Horizontal, tr("Kwota"));
-    TableModel->setHeaderData(5, Qt::Horizontal, tr("Kategoria"));
+    TableModel->setHeaderData(5, Qt::Horizontal, tr("Typ"));
+    TableModel->setHeaderData(6, Qt::Horizontal, tr("Kategoria"));
 
     ui->TransactionTabelView->setModel(TableModel);
     ui->TransactionTabelView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->TransactionTabelView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->TransactionTabelView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    ui->TransactionTabelView->setColumnHidden(0, true);
+
+    ui->TransactionTabelView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 void MainWindow::setupConnections() 

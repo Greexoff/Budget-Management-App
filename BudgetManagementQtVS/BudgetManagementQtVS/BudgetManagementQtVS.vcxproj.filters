@@ -48,10 +48,16 @@
     <ClCompile Include="Model\Repositories.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MainWindowView.cpp">
+    <ClCompile Include="Model\User&amp;Profiles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model\User&amp;Profiles.cpp">
+    <ClCompile Include="View\MainWindowView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="View\LoginDialogView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="View\ProfileDialogView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -76,13 +82,27 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="MainWindowView.ui" />
+    <QtUic Include="ProfileDialogView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
+    <QtUic Include="LoginDialogView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
+    <QtUic Include="MainWindowView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Controller\Controller.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="View\MainWindowView.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="View\ProfileDialogView.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="View\LoginDialogView.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

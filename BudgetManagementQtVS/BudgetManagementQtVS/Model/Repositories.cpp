@@ -11,7 +11,8 @@ int UserRepository::authenticateUser(QString username, QString password) const
 {
     QSqlQuery query(database);
     query.prepare("SELECT id, password FROM users WHERE username = :username");
-    query.bindValue(":username", username);//nwm czy tego nie zamienic i dodac do tego id zeby po tym szukac 
+    query.bindValue(":username", username);//nwm czy tego nie zamienic i dodac do tego id zeby po tym szukac//lepeij bedzie chyba po ID bo wiesz moze byc czysto teorteycznie dwa username takie smao albo mozemy zrobic ze nie mozna tworzyc 2 takich samow userow tez
+
 
     if(!query.exec())
     {
@@ -20,7 +21,7 @@ int UserRepository::authenticateUser(QString username, QString password) const
     }
     if (query.next())
     {
-        QString storedPassword = query.value(2).toString();//sprawdzic czy jest git
+        QString storedPassword = query.value(1).toString();//sprawdzic czy jest git //1 zamiast 2 powino byc
         if (storedPassword == password)//tu by sie w sumie hash przydal ale narazie wywalone
         {
             return query.value(0).toInt();
@@ -60,7 +61,7 @@ QVector<Profile> ProfilesRepository::getProfilesByUserId(int userId) const
     QVector<Profile> foundProfiles;
 
     QSqlQuery query(database);
-    query.prepare("SELECT id, profile_name FROM profiles WHERE userId=:userId");
+    query.prepare("SELECT id, profile_name, user_id FROM profiles WHERE user_id=:userId");
     query.bindValue(":userId", userId);
 
     if (!query.exec())
@@ -73,6 +74,7 @@ QVector<Profile> ProfilesRepository::getProfilesByUserId(int userId) const
         int profileId = query.value(0).toInt();
         QString profileName = query.value(1).toString();
         int userId = query.value(2).toInt();
+
         Profile profile(profileId, userId, profileName);
         foundProfiles.append(profile);
     }
@@ -105,6 +107,38 @@ bool ProfilesRepository::removeProfileById(int profileId)
     }
     return true;
 }
+
+QVector<Transaction> TransactionRepository::getAllForProfile(int profileId) const
+{
+    QVector<Transaction> result;
+    QSqlQuery query(database);
+    query.prepare("SELECT id, name, date, description, amount, type, profile_id "
+        "FROM transactions WHERE profile_id = :profileId");
+    query.bindValue(":profileId", profileId);
+
+    if (!query.exec())
+        return result;
+
+    while (query.next()) {
+        int id = query.value(0).toInt();
+        QString name = query.value(1).toString();
+        QString dateStr = query.value(2).toString();
+        QString description = query.value(3).toString();
+        double amount = query.value(4).toDouble();
+        QString typeStr = query.value(5).toString();
+        int profId = query.value(6).toInt();
+
+        QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
+        TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
+
+        int categoryId = 0; 
+        Transaction t(id, name, date, description, amount, type, categoryId, profId);
+        result.append(t);
+    }
+
+    return result;
+}
+
 
 QVector<Transaction> TransactionRepository::getAll() const
 {

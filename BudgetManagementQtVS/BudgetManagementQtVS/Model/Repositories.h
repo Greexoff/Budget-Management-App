@@ -1,7 +1,8 @@
 ﻿#pragma once
 
-#include <qvector.h>
+#include <QVector.h>
 #include <QString.h>
+
 #include <qsqldatabase.h>
 #include <Model/Transaction.h>
 #include <Model/DatabaseManager.h>
@@ -41,5 +42,6 @@ public:
 	QVector<Transaction> getAll() const;
 	bool add(const Transaction& transaction);
 	bool removeById(int id);
+	QVector<Transaction> getAllForProfile(int profileId) const;
 };
 

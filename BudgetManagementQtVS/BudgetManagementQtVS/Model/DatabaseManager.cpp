@@ -36,7 +36,7 @@ DatabaseManager::DatabaseManager() {
         "description TEXT, "
         "amount REAL NOT NULL, "
         "category_id INTEGER DEFAULT 0, "//tutaj trzeba bedzie pewnie dorobic kolejny foreign key w ktoras strone   
-        "profile_id INTEGER, "
+        "profile_id INTEGER NOT NULL, "
         "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
         ")");
     //IN PROGRESS Creating table for category
