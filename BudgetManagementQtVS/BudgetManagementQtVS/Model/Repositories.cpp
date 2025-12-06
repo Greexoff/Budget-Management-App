@@ -12,7 +12,7 @@ int UserRepository::authenticateUser(QString username, QString password) const
     QSqlQuery query(database);
     query.prepare("SELECT id, password FROM users WHERE username = :username");
     query.bindValue(":username", username);//nwm czy tego nie zamienic i dodac do tego id zeby po tym szukac//lepeij bedzie chyba po ID bo wiesz moze byc czysto teorteycznie dwa username takie smao albo mozemy zrobic ze nie mozna tworzyc 2 takich samow userow tez
-
+    //^jest w sumie unique w username w sql wiec jak username jest unikalny
 
     if(!query.exec())
     {
@@ -21,7 +21,7 @@ int UserRepository::authenticateUser(QString username, QString password) const
     }
     if (query.next())
     {
-        QString storedPassword = query.value(1).toString();//sprawdzic czy jest git //1 zamiast 2 powino byc
+        QString storedPassword = query.value(1).toString();
         if (storedPassword == password)//tu by sie w sumie hash przydal ale narazie wywalone
         {
             return query.value(0).toInt();
@@ -112,7 +112,7 @@ QVector<Transaction> TransactionRepository::getAllForProfile(int profileId) cons
 {
     QVector<Transaction> result;
     QSqlQuery query(database);
-    query.prepare("SELECT id, name, date, description, amount, type, profile_id "
+    query.prepare("SELECT id, name, date, description, amount, type, category_id, profile_id "
         "FROM transactions WHERE profile_id = :profileId");
     query.bindValue(":profileId", profileId);
 
@@ -126,12 +126,12 @@ QVector<Transaction> TransactionRepository::getAllForProfile(int profileId) cons
         QString description = query.value(3).toString();
         double amount = query.value(4).toDouble();
         QString typeStr = query.value(5).toString();
-        int profId = query.value(6).toInt();
+        int categoryId = query.value(6).toInt();
+        int profId = query.value(7).toInt();
 
         QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
         TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
 
-        int categoryId = 0; 
         Transaction t(id, name, date, description, amount, type, categoryId, profId);
         result.append(t);
     }
@@ -147,7 +147,7 @@ QVector<Transaction> TransactionRepository::getAll() const
     QSqlQuery query(database);
 
 
-    if (!query.exec("SELECT id, name, date, description, amount, type, profile_id FROM transactions"))
+    if (!query.exec("SELECT id, name, date, description, amount, type, profile_id, category_id FROM transactions"))
     {
         qDebug() << "TransactionRepository::getAll error:" << query.lastError().text();
         return result;
@@ -162,14 +162,12 @@ QVector<Transaction> TransactionRepository::getAll() const
         double amount = query.value(4).toDouble();
         QString typeStr = query.value(5).toString();
         int associatedProfile_id = query.value(6).toInt();
-
+        int categoryId = query.value(7).toInt();
         QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
 
 
         TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
  
-        int categoryId = 0;     
-
         Transaction transaction(id, name, date, description, amount, type, categoryId, associatedProfile_id);
         result.append(transaction);
     }
@@ -182,8 +180,8 @@ bool TransactionRepository::add(const Transaction& transaction)
     QSqlQuery query(database);
 
     query.prepare(
-        "INSERT INTO transactions (name, type, date, description, amount, profile_id) "
-        "VALUES (:name, :type, :date, :description, :amount, :profile_id)");
+        "INSERT INTO transactions (name, type, date, description, amount, category_id, profile_id) "
+        "VALUES (:name, :type, :date, :description, :amount, :category_id, :profile_id)");
 
     query.bindValue(":name", transaction.getTransactionName());
 
@@ -195,6 +193,7 @@ bool TransactionRepository::add(const Transaction& transaction)
     query.bindValue(":description", transaction.getTransactionDescription());
     query.bindValue(":amount", transaction.getTransactionAmount());
     query.bindValue(":profile_id", transaction.getAssociatedProfileId());
+    query.bindValue(":category_id", transaction.getCategoryId());
 
     if (!query.exec())
     {
@@ -218,4 +217,75 @@ bool TransactionRepository::removeById(int id)
     }
 
     return true;
+}
+
+QVector<Category> CategoryRepository::getAllCategories() const
+{
+    QVector<Category> allCategories;
+
+    QSqlQuery query(database);
+
+    if (!query.exec("SELECT id, category_name FROM category"))
+    {
+        qDebug() << "CategoryRepository::error: Couldn't get categories" << query.lastError().text();
+        return allCategories;
+    }
+
+    while (query.next())
+    {
+        int id = query.value(0).toInt();
+        QString category_name = query.value(1).toString();
+
+        Category category(id, category_name);
+        allCategories.append(category);
+    }
+
+    return allCategories;
+}
+
+bool CategoryRepository::addCategory(const QString& categoryName)
+{
+    QSqlQuery query(database);
+
+    query.prepare("INSERT INTO category (category_name) VALUES (:name)");
+    query.bindValue(":name", categoryName);
+
+    if (!query.exec())
+    {
+        qDebug() << "CategoryRepository:: error: Couldn't add category to database" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool CategoryRepository::removeCategoryUsingId(int categoryId)
+{
+    QSqlQuery query(database);
+    query.prepare("DELETE FROM category WHERE id = :id");
+    query.bindValue(":id", categoryId);
+
+    if (!query.exec())
+    {
+        qDebug() << "CategoryRepository:: error: Couldn't remove category from database" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+QString CategoryRepository::getNameOfCategoryBasedOnId(int categoryId)
+{
+    QSqlQuery query(database);
+    QString categoryName = "";
+    query.prepare("SELECT category_name FROM category WHERE id = :id");
+    query.bindValue(":id", categoryId);
+    if (!query.exec())
+    {
+        qDebug() << "CategoryRepository:: error: Couldn't find category in database" << query.lastError().text();
+        return categoryName;
+    }
+    if (query.next())
+    {
+        categoryName = query.value(0).toString();
+    }
+    return categoryName;
 }

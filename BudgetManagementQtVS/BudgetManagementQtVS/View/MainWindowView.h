@@ -23,11 +23,13 @@ signals:
     //sygnaly do oblsugi kontrolera
     void addTransactionRequested();
     void deleteTransactionRequested();
+    void manageCategoriesRequested();
 
 private slots:
 
     void onButtonAddTransactionClicked();
     void onButtonDeleteTransactionClicked();
+    void onButtonManageCategoriesClicked();
 
 private:
     Ui::MainWindow* ui;
@@ -35,6 +37,7 @@ private:
 
     void setupConnections();
     void setupTableModel();         //Setupwoanie kolumn w naszej tabeli
+
 };
 
 

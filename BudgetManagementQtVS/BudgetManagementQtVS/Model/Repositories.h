@@ -7,6 +7,7 @@
 #include <Model/Transaction.h>
 #include <Model/DatabaseManager.h>
 #include <Model/User&Profiles.h>
+#include <Model/Category.h>
 
 class BaseRepository {
 public: 
@@ -43,5 +44,15 @@ public:
 	bool add(const Transaction& transaction);
 	bool removeById(int id);
 	QVector<Transaction> getAllForProfile(int profileId) const;
+};
+
+class CategoryRepository : public BaseRepository
+{
+public:
+	CategoryRepository() = default;
+	QVector<Category> getAllCategories() const;
+	bool addCategory(const QString& category);
+	bool removeCategoryUsingId(int categoryId);
+	QString getNameOfCategoryBasedOnId(int categoryId);
 };
 
