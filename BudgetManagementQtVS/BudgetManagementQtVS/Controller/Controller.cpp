@@ -14,7 +14,10 @@ TransactionController::TransactionController(QObject* parent): QObject(parent)
     connect(&profileDialog, &ProfileDialog::addProfileRequested,this, &TransactionController::handleAddProfileRequested);
 
     connect(&profileDialog, &ProfileDialog::removeProfileRequested,this, &TransactionController::handleRemoveProfileRequested);
-   
+    
+    connect(&categoryDialog, &CategorySelectionView::selectRequestedCategory, this, &TransactionController::handleCategorySelected);
+    connect(&categoryDialog, &CategorySelectionView::addRequestedCategory, this, &TransactionController::handleAddCategoryRequested);
+    connect(&categoryDialog, &CategorySelectionView::deleteRequestedCategory, this, &TransactionController::handleDeleteCategoryRequested);   
 }
 
 void TransactionController::run()
@@ -70,6 +73,8 @@ void TransactionController::handleProfileSelected(int profileId)
 
         connect(&mainWindowView, &MainWindow::deleteTransactionRequested,this, &TransactionController::handleDeleteTransactionRequested);
 
+        connect(&mainWindowView, &MainWindow::manageCategoriesRequested, this, &TransactionController::showCategorySelectionDialog);
+
         mainWindowInitialized = true;
     }
 
@@ -117,7 +122,7 @@ void TransactionController::refreshTransactionsView()
 
         QString typeStr = (t.getTransactionAmount() >= 0.0) ? "Przychód" : "Wydatek";
         row << typeStr;
-
+        row << categoryRepository.getNameOfCategoryBasedOnId(t.getCategoryId());
         rows.append(row);
     }
 
@@ -172,7 +177,14 @@ void TransactionController::handleAddTransactionRequested()
         return;
 
     TransactionType type = (amount >= 0.0) ? INCOME : EXPENSE;
-    int categoryId = 1;//usunac
+    selectedCategoryIdForTransaction = -1;
+    showCategorySelectionDialog();
+
+    if (selectedCategoryIdForTransaction < 0) {
+        selectedCategoryIdForTransaction = 1;
+    }
+    int categoryId = selectedCategoryIdForTransaction;
+
     Transaction t(
         0,                      
         name,
@@ -218,4 +230,34 @@ void TransactionController::handleDeleteTransactionRequested()
     }
 
     refreshTransactionsView();
+}
+
+void TransactionController::showCategorySelectionDialog()
+{
+    QVector<Category> categories = categoryRepository.getAllCategories();
+    categoryDialog.setCategories(categories);
+    connect(&categoryDialog, &CategorySelectionView::selectRequestedCategory, this, &TransactionController::handleCategorySelected);
+    categoryDialog.exec();
+}
+void TransactionController::handleCategorySelected(int categoryId)
+{
+    selectedCategoryIdForTransaction = categoryId;
+    categoryDialog.accept();
+}
+void TransactionController::handleAddCategoryRequested(const QString& categoryName)
+{
+    if (!categoryRepository.addCategory(categoryName))
+    {
+       QMessageBox::warning(&categoryDialog, tr("Error"),
+       tr("Couldn't add category"));
+    }
+    showCategorySelectionDialog();
+}
+void TransactionController::handleDeleteCategoryRequested(int categoryId)
+{
+    if (categoryId==1 || !categoryRepository.removeCategoryUsingId(categoryId)) {
+        QMessageBox::warning(&categoryDialog, tr("Error"),
+            tr("Couldn't delete category"));
+    }
+    showCategorySelectionDialog();
 }

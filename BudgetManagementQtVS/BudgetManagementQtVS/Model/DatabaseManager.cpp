@@ -33,7 +33,7 @@ DatabaseManager::DatabaseManager() {
     //Creating table for categories
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS category"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "category_name TEXT NOT NULL CHECK (category_name != ''))");
+        "category_name TEXT UNIQUE NOT NULL CHECK (category_name != ''))");
     tableCreationQuery.exec("INSERT OR IGNORE INTO category (id, category_name) VALUES (1, 'Brak Kategorii')");
 
     //Creating table for transactions

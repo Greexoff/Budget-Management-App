@@ -66,3 +66,9 @@ void CategorySelectionView::cancelButtonClicked()
     reject();
 }
 
+void CategorySelectionView::setSelectCategoryButtonVisible(bool visible)
+{
+    if (ui->selectCategoryButton) {
+        ui->selectCategoryButton->setVisible(visible);
+    }
+}

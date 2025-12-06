@@ -15,6 +15,7 @@ public:
 	~CategorySelectionView();
     void setCategories(const QVector<Category>& categories);
 
+    void setSelectCategoryButtonVisible(bool visible);
 signals:
     void selectRequestedCategory(int categoryId);
     void addRequestedCategory(const QString& categoryName);

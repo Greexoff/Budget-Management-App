@@ -51,7 +51,8 @@ class CategoryRepository : public BaseRepository
 public:
 	CategoryRepository() = default;
 	QVector<Category> getAllCategories() const;
-	bool addCategory(const Category& category);
+	bool addCategory(const QString& category);
 	bool removeCategoryUsingId(int categoryId);
+	QString getNameOfCategoryBasedOnId(int categoryId);
 };
 
