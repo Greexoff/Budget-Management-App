@@ -97,6 +97,7 @@
     <ClCompile Include="Model\Transaction.cpp" />
     <ClCompile Include="Model\Repositories.cpp" />
     <ClCompile Include="Model\User&amp;Profiles.cpp" />
+    <ClCompile Include="View\CategorySelectionView.cpp" />
     <ClCompile Include="View\LoginDialogView.cpp" />
     <ClCompile Include="View\MainWindowView.cpp" />
     <ClCompile Include="View\ProfileDialogView.cpp" />
@@ -115,9 +116,11 @@
     <ClInclude Include="Model\User&amp;Profiles.h" />
     <QtMoc Include="View\ProfileDialogView.h" />
     <QtMoc Include="View\LoginDialogView.h" />
+    <QtMoc Include="View\CategorySelectionView.h" />
     <ClInclude Include="View\View.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="CategorySelectionView.ui" />
     <QtUic Include="LoginDialogView.ui" />
     <QtUic Include="MainWindowView.ui" />
     <QtUic Include="ProfileDialogView.ui" />

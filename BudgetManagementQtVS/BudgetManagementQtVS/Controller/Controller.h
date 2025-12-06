@@ -3,10 +3,12 @@
 #include "Model/Transaction.h"
 #include "Model/Repositories.h"
 #include "Model/User&Profiles.h"
+#include "Model/Category.h"
 
 #include "View/MainWindowView.h"
 #include "View/LoginDialogView.h"
 #include "View/ProfileDialogView.h"
+#include "View/CategorySelectionView.h"
 
 #include <QObject>
 #include <QVector>
@@ -28,7 +30,6 @@ public:
     void run();
 
 private slots:
-
     void handleLoginRequested(const QString& username, const QString& password);
     void handleRegisterRequested(const QString& username, const QString& password);
 
@@ -40,18 +41,23 @@ private slots:
     void handleDeleteTransactionRequested();
 
 private:
-    LoginDialog   loginDialog;
+    LoginDialog loginDialog;
     ProfileDialog profileDialog;
     MainWindow mainWindowView;
+    CategorySelectionView categoryDialog;
 
-    UserRepository        userRepository;
-    ProfilesRepository    profilesRepository;
+    UserRepository userRepository;
+    ProfilesRepository profilesRepository;
     TransactionRepository transactionRepository;
+    CategoryRepository categoryRepository;
 
     int currentUserId = -1;
     int currentProfileId = -1;
     bool mainWindowInitialized = false;
+    int selectedCategoryIdForTransaction = -1;
 
     void showProfilesForCurrentUser();
     void refreshTransactionsView();
 };
+
+ 

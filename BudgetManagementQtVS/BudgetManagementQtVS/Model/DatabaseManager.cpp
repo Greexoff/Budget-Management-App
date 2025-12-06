@@ -22,17 +22,20 @@ DatabaseManager::DatabaseManager() {
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "username TEXT UNIQUE NOT NULL CHECK (username != ''),"
         "password TEXT NOT NULL CHECK (password != ''))");
+
     //Creating table for profiles
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS profiles"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "profile_name TEXT UNIQUE NOT NULL CHECK (profile_name != ''), "
         "user_id INTEGER, "
         "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)");
+
     //Creating table for categories
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS category"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "category_name TEXT NOT NULL CHECK (category_name != ''))");
     tableCreationQuery.exec("INSERT OR IGNORE INTO category (id, category_name) VALUES (1, 'Brak Kategorii')");
+
     //Creating table for transactions
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS transactions"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -47,6 +50,7 @@ DatabaseManager::DatabaseManager() {
         "FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET DEFAULT"
         ")");
 
+    //DO usuniecia jak juz bedzie wszystko dzialalo
     QSqlQuery adminQuery(datebaseInstance);
     adminQuery.prepare("SELECT COUNT(*) FROM users WHERE username = 'admin'");
 
@@ -69,6 +73,7 @@ DatabaseManager::DatabaseManager() {
             qDebug() << "Admin już istnieje – pomijam.";
         }
     }
+    // do tego momentu
 }
 
 DatabaseManager& DatabaseManager::instance() {

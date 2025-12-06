@@ -48,6 +48,7 @@ void MainWindow::setupConnections()
 
 	connect(ui->buttonDeleteTransaction, &QPushButton::clicked, this, &MainWindow::onButtonDeleteTransactionClicked);
     
+    connect(ui->browseCategoriesButton, &QPushButton::clicked, this, &MainWindow::onButtonManageCategoriesClicked);
 
 }
 
@@ -61,6 +62,10 @@ void MainWindow::onButtonDeleteTransactionClicked()
 	emit deleteTransactionRequested();
 }
 
+void MainWindow::onButtonManageCategoriesClicked()
+{
+    emit manageCategoriesRequested();
+}
 void MainWindow::setTransactionRows(const QVector<QStringList>& rows)
 {
     TableModel->removeRows(0, TableModel->rowCount());

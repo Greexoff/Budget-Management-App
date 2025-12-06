@@ -12,7 +12,7 @@ int UserRepository::authenticateUser(QString username, QString password) const
     QSqlQuery query(database);
     query.prepare("SELECT id, password FROM users WHERE username = :username");
     query.bindValue(":username", username);//nwm czy tego nie zamienic i dodac do tego id zeby po tym szukac//lepeij bedzie chyba po ID bo wiesz moze byc czysto teorteycznie dwa username takie smao albo mozemy zrobic ze nie mozna tworzyc 2 takich samow userow tez
-
+    //^jest w sumie unique w username w sql wiec jak username jest unikalny
 
     if(!query.exec())
     {
@@ -21,7 +21,7 @@ int UserRepository::authenticateUser(QString username, QString password) const
     }
     if (query.next())
     {
-        QString storedPassword = query.value(1).toString();//sprawdzic czy jest git //1 zamiast 2 powino byc
+        QString storedPassword = query.value(1).toString();
         if (storedPassword == password)//tu by sie w sumie hash przydal ale narazie wywalone
         {
             return query.value(0).toInt();
@@ -214,6 +214,60 @@ bool TransactionRepository::removeById(int id)
     if (!query.exec())
     {
         qDebug() << "TransactionRepository::removeById error:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+QVector<Category> CategoryRepository::getAllCategories() const
+{
+    QVector<Category> allCategories;
+
+    QSqlQuery query(database);
+
+    if (!query.exec("SELECT id, category_name FROM category"))
+    {
+        qDebug() << "CategoryRepository::error: Couldn't get categories" << query.lastError().text();
+        return allCategories;
+    }
+
+    while (query.next())
+    {
+        int id = query.value(0).toInt();
+        QString category_name = query.value(1).toString();
+
+        Category category(id, category_name);
+        allCategories.append(category);
+    }
+
+    return allCategories;
+}
+
+bool CategoryRepository::addCategory(const Category& category)
+{
+    QSqlQuery query(database);
+
+    query.prepare("INSERT INTO category (category_name) VALUES (:name)");
+    query.bindValue(":name", category.getCategoryName());
+
+    if (!query.exec())
+    {
+        qDebug() << "CategoryRepository:: error: Couldn't add category to database" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool CategoryRepository::removeCategoryUsingId(int categoryId)
+{
+    QSqlQuery query(database);
+    query.prepare("DELETE FROM category WHERE id = :id");
+    query.bindValue(":id", categoryId);
+
+    if (!query.exec())
+    {
+        qDebug() << "CategoryRepository:: error: Couldn't remove category from database" << query.lastError().text();
         return false;
     }
 

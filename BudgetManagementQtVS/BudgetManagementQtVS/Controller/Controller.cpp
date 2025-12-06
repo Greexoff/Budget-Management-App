@@ -152,7 +152,7 @@ void TransactionController::handleAddTransactionRequested()
         tr("Nowa transakcja"),
         tr("Kwota:"),
         0.0,
-        -1e9,
+        0,
         1e9,
         2,
         &correctData
@@ -172,8 +172,7 @@ void TransactionController::handleAddTransactionRequested()
         return;
 
     TransactionType type = (amount >= 0.0) ? INCOME : EXPENSE;
-    int categoryId = 0;   // TODO: jak będzie logika kategorii
-
+    int categoryId = 1;//usunac
     Transaction t(
         0,                      
         name,

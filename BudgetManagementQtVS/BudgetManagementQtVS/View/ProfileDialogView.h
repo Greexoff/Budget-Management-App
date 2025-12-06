@@ -1,5 +1,4 @@
 ﻿#pragma once
-#pragma once
 #include <QDialog>
 #include "Model/User&Profiles.h"
 
