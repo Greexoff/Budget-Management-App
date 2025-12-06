@@ -36,7 +36,6 @@ void CategorySelectionView::selectCategoryButtonClicked()
     }
 
     emit selectRequestedCategory(categoryId[row].getCategoryId());
-    accept();/////////////////////////////////////////////////////////////////////////////
 }
 
 void CategorySelectionView::addCategoryButtonClicked()
