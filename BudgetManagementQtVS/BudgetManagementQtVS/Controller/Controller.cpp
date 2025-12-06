@@ -24,6 +24,13 @@ void TransactionController::run()
 
 void TransactionController::handleLoginRequested(const QString& username, const QString& password)
 {
+    if (username.trimmed().isEmpty() || password.isEmpty()) {
+        QMessageBox::warning(&loginDialog,
+            tr("Logowanie"),
+            tr("Podaj login i hasło."));
+        return;
+    }
+
     int userId = userRepository.authenticateUser(username, password);
     if (userId < 0) {
         QMessageBox::warning(&loginDialog, tr("Logowanie"), tr("Zły login lub hasło"));

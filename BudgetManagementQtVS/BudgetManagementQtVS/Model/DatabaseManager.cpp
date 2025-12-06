@@ -41,6 +41,29 @@ DatabaseManager::DatabaseManager() {
         ")");
     //IN PROGRESS Creating table for category
     //IN PROGRESS Here make sql query for creating table for category with id, name, 
+
+    QSqlQuery adminQuery(datebaseInstance);
+    adminQuery.prepare("SELECT COUNT(*) FROM users WHERE username = 'admin'");
+
+    if (adminQuery.exec() && adminQuery.next()) {
+        if (adminQuery.value(0).toInt() == 0) {
+            QSqlQuery insertAdmin(datebaseInstance);
+            insertAdmin.prepare(
+                "INSERT INTO users (username, password) "
+                "VALUES ('admin', 'admin')"
+            );
+
+            if (insertAdmin.exec()) {
+                qDebug() << "Użytkownik admin został dodany.";
+            }
+            else {
+                qDebug() << "Błąd przy dodawaniu admina:" << insertAdmin.lastError();
+            }
+        }
+        else {
+            qDebug() << "Admin już istnieje – pomijam.";
+        }
+    }
 }
 
 DatabaseManager& DatabaseManager::instance() {
