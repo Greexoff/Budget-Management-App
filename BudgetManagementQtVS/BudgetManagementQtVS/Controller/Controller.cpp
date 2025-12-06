@@ -152,7 +152,7 @@ void TransactionController::handleAddTransactionRequested()
         tr("Nowa transakcja"),
         tr("Kwota:"),
         0.0,
-        -1e9,
+        0.0,
         1e9,
         2,
         &correctData

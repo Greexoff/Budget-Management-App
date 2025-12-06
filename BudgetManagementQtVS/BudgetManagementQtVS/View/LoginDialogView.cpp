@@ -6,7 +6,7 @@ LoginDialog::LoginDialog(QWidget* parent)
     ui(new Ui::LoginDialog)
 {
     ui->setupUi(this);
-
+    ui->editPassword->setEchoMode(QLineEdit::Password);
     setupConnections();
 }
 

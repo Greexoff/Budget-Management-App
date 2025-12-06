@@ -63,20 +63,19 @@ void MainWindow::onButtonDeleteTransactionClicked()
 
 void MainWindow::setTransactionRows(const QVector<QStringList>& rows)
 {
-    TableModel->removeRows(0, TableModel->rowCount());
+    TableModel->clear();
 
-    int row = 0;
-    for (const auto& r : rows)
-    {
-        TableModel->insertRow(row);
-        for (int col = 0; col < r.size(); ++col)
-        {
-            TableModel->setData(TableModel->index(row, col), r[col]);
-        }
-        ++row;
+    TableModel->setHorizontalHeaderLabels({ "ID", "Nazwa", "Data", "Opis", "Kwota", "Typ", "Kategoria" });
+
+    for (const QStringList& row : rows) {
+        QList<QStandardItem*> items;
+        for (const QString& value : row)
+            items.append(new QStandardItem(value));
+        TableModel->appendRow(items);
     }
 
-    ui->TransactionTabelView->resizeColumnsToContents();
+    auto header = ui->TransactionTabelView->horizontalHeader();
+    header->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 int MainWindow::selectedTranstacionId() const
