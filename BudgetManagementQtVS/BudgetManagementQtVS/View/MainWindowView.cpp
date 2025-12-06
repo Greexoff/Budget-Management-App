@@ -37,9 +37,11 @@ void MainWindow::setupTableModel()
     ui->TransactionTabelView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->TransactionTabelView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    ui->TransactionTabelView->setColumnHidden(0, true);
+    
 
     ui->TransactionTabelView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    ui->TransactionTabelView->setColumnHidden(0, true);
 }
 
 void MainWindow::setupConnections() 
@@ -81,6 +83,8 @@ void MainWindow::setTransactionRows(const QVector<QStringList>& rows)
 
     auto header = ui->TransactionTabelView->horizontalHeader();
     header->setSectionResizeMode(QHeaderView::Stretch);
+
+    ui->TransactionTabelView->setColumnHidden(0, true);
 }
 
 int MainWindow::selectedTranstacionId() const
