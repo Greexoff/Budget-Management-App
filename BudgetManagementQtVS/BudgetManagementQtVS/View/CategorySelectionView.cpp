@@ -14,7 +14,7 @@ void CategorySelectionView::connectMethodToButton()
 	connect(ui->addCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::addCategoryButtonClicked);
 	connect(ui->deleteCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::deleteCategoryButtonClicked);
 	connect(ui->cancelButton, &QPushButton::clicked, this, &CategorySelectionView::cancelButtonClicked);
-	//connect(ui.editCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::editCategoryButtonClicked); Change this to editCategoryButton
+	//connect(ui.editCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::editCategoryButtonClicked); Add logic to it later
 }
 
 void CategorySelectionView::setCategories(const QVector<Category>& categories)

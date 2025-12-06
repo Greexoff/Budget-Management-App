@@ -236,7 +236,6 @@ void TransactionController::showCategorySelectionDialog()
 {
     QVector<Category> categories = categoryRepository.getAllCategories();
     categoryDialog.setCategories(categories);
-    connect(&categoryDialog, &CategorySelectionView::selectRequestedCategory, this, &TransactionController::handleCategorySelected);
     categoryDialog.exec();
 }
 void TransactionController::handleCategorySelected(int categoryId)
