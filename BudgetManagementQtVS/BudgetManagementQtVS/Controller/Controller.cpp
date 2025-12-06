@@ -168,7 +168,7 @@ void TransactionController::handleAddTransactionRequested()
     int categoryId = 0;   // TODO: jak będzie logika kategorii
 
     Transaction t(
-        0,                      /
+        0,                      
         name,
         QDate::currentDate(),
         description,
