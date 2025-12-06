@@ -127,7 +127,7 @@ void TransactionController::handleAddTransactionRequested()
         return;
     }
 
-    bool ok = false;
+    bool correctData = false;
 
     QString name = QInputDialog::getText(
         &mainWindowView,
@@ -135,9 +135,9 @@ void TransactionController::handleAddTransactionRequested()
         tr("Nazwa:"),
         QLineEdit::Normal,
         "",
-        &ok
+        &correctData
     );
-    if (!ok || name.trimmed().isEmpty())
+    if (!correctData || name.trimmed().isEmpty())
         return;
 
     double amount = QInputDialog::getDouble(
@@ -148,9 +148,9 @@ void TransactionController::handleAddTransactionRequested()
         -1e9,
         1e9,
         2,
-        &ok
+        &correctData
     );
-    if (!ok)
+    if (!correctData)
         return;
 
     QString description = QInputDialog::getText(
@@ -159,23 +159,23 @@ void TransactionController::handleAddTransactionRequested()
         tr("Opis:"),
         QLineEdit::Normal,
         "",
-        &ok
+        &correctData
     );
-    if (!ok)
+    if (!correctData)
         return;
 
     TransactionType type = (amount >= 0.0) ? INCOME : EXPENSE;
     int categoryId = 0;   // TODO: jak będzie logika kategorii
 
     Transaction t(
-        0,                      // id (baza nada AUTOINCREMENT)
+        0,                      /
         name,
         QDate::currentDate(),
         description,
         amount,
         type,
         categoryId,
-        currentProfileId        // powiązanie z profilem
+        currentProfileId        
     );
 
     if (!transactionRepository.add(t)) {
