@@ -36,9 +36,6 @@
     <ClCompile Include="Model\DatabaseManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="View\View.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Model\Transaction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -51,21 +48,24 @@
     <ClCompile Include="Model\User&amp;Profiles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="View\MainWindowView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="View\LoginDialogView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="View\ProfileDialogView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="View\CategorySelectionView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="View\TransactionWindowView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\TransactionBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model\DatabaseManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="View\View.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model\Transaction.h">
@@ -80,6 +80,9 @@
     <ClInclude Include="Model\User&amp;Profiles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Model\TransactionBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="ProfileDialogView.ui">
@@ -88,21 +91,23 @@
     <QtUic Include="LoginDialogView.ui">
       <Filter>Ui Files</Filter>
     </QtUic>
-    <QtUic Include="MainWindowView.ui">
-      <Filter>Ui Files</Filter>
-    </QtUic>
+    <QtUic Include="CategorySelectionView.ui" />
+    <QtUic Include="TransactionWindowView.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Controller\Controller.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="View\MainWindowView.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="View\ProfileDialogView.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="View\LoginDialogView.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="View\TransactionWindowView.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="View\CategorySelectionView.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

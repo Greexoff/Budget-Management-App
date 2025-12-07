@@ -4,6 +4,7 @@
 #include "Model/Repositories.h"
 #include "Model/User&Profiles.h"
 #include "Model/Category.h"
+#include "Model/TransactionBuilder.h"
 
 #include "View/TransactionWindowView.h"
 #include "View/LoginDialogView.h"

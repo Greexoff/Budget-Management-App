@@ -206,42 +206,25 @@ void Controller::handleAddTransactionRequest()
 
     bool correctData = false;
 
-    // Get transaction name
+    TransactionBuilder builder;
+    builder.withProfileId(currentProfileId);
+
     QString name = TransactionWindowView.getTransactionNameFromInput(correctData);
-    if (!correctData || name.trimmed().isEmpty())
-        return;
+    if (!correctData || name.trimmed().isEmpty()) { return; }
+    builder.withName(name);
 
-    // Get transaction amount
     double amount = TransactionWindowView.getTransactionAmountFromInput(correctData);
-    if (!correctData)
-        return;
+    builder.withAmount(amount);
 
-    // Get transaction description
     QString description = TransactionWindowView.getTransactionDescriptionFromInput(correctData);
-    if (!correctData)
-        return;
+    builder.withDescription(description);
 
-    // WORK IN PROGRESS Determine transaction type based on amount sign
-    TransactionType type = (amount > 0.0) ? EXPENSE : INCOME;
+    //ADD transaction type 
 
-    // Prompt user to select a category
     int categoryId = getCategoryIdFromInput();
-    if (categoryId < 0) {
-        categoryId = 1; // Default category ("None")
-    }
+    builder.withCategoryId(categoryId);
 
-    // Create and save transaction
-    Transaction newTransaction(
-        0,                      // ID will be assigned by database
-        name,
-        QDate::currentDate(),
-        description,
-        amount,
-        type,
-        categoryId,
-        currentProfileId
-    );
-
+    Transaction newTransaction = builder.build();
     if (!transactionRepository.addTransaction(newTransaction))
     {
         const QString header = tr("New transaction");
