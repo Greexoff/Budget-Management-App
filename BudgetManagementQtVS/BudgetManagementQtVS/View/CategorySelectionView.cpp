@@ -109,7 +109,7 @@ void CategorySelectionView::setSelectCategoryButtonVisible(bool visible)
         ui->selectCategoryButton->setVisible(visible);
     }
 }
-void CategorySelectionView::displayCategoryMessage(QString header, QString message, QString messageType)
+void CategorySelectionView::showCategoryMessage(QString header, QString message, QString messageType)
 {
     if (messageType == "error")
     {

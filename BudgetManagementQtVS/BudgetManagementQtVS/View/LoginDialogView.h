@@ -42,7 +42,7 @@ signals:
      */
     void registerRequested(const QString& username, const QString& password);
 public slots:
-    void displayLoginMessage(QString header, QString message, QString messageType);
+    void showLoginMessage(QString header, QString message, QString messageType);
 
 private slots:
     void onButtonLoginClicked();

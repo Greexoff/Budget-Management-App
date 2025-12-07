@@ -42,7 +42,7 @@ public:
      * @param password User's password (plaintext - for development only)
      * @return User ID if authentication successful, -1 otherwise
      */
-    int authenticateUser(QString username, QString password) const;
+    int getUserIdBasedOnUsername(QString username, QString password) const;
 
     /**
      * @brief Creates a new user account
@@ -112,21 +112,21 @@ public:
      * @param transaction Transaction object to add
      * @return True if transaction added successfully, false otherwise
      */
-    bool add(const Transaction& transaction);
+    bool addTransaction(const Transaction& transaction);
 
     /**
      * @brief Deletes a transaction by ID
      * @param id ID of transaction to delete
      * @return True if transaction deleted successfully, false otherwise
      */
-    bool removeById(int id);
+    bool removeTransactionById(int id);
 
     /**
      * @brief Retrieves all transactions for a specific profile
      * @param profileId ID of the profile
      * @return Vector of Transaction objects belonging to the profile
      */
-    QVector<Transaction> getAllForProfile(int profileId) const;
+    QVector<Transaction> getAllProfileTransaction(int profileId) const;
 };
 
 /**
@@ -143,7 +143,7 @@ public:
      * @param profileId ID of the profile
      * @return Vector of Category objects belonging to the profile
      */
-    QVector<Category> getAllCategories(int profileId) const;
+    QVector<Category> getAllProfileCategories(int profileId) const;
 
     /**
      * @brief Creates a new category for a profile
@@ -158,12 +158,12 @@ public:
      * @param categoryId ID of category to delete
      * @return True if category deleted successfully, false otherwise
      */
-    bool removeCategoryUsingId(int categoryId);
+    bool removeCategoryById(int categoryId);
 
     /**
      * @brief Retrieves category name by ID
      * @param categoryId ID of the category
      * @return Category name as QString, empty string if category not found
      */
-    QString getNameOfCategoryBasedOnId(int categoryId);
+    QString getCategoryNameById(int categoryId);
 };

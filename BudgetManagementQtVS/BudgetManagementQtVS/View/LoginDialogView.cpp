@@ -59,7 +59,7 @@ void LoginDialog::onButtonCancelClicked()
 {
     reject();
 }
-void LoginDialog::displayLoginMessage(QString header, QString message, QString messageType)
+void LoginDialog::showLoginMessage(QString header, QString message, QString messageType)
 {
     if (messageType == "error")
     {

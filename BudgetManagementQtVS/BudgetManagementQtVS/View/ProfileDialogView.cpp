@@ -93,7 +93,7 @@ void ProfileDialog::onButtonCancelClicked()
 {
     reject();
 }
-void ProfileDialog::displayProfileMessage(QString header, QString message, QString messageType)
+void ProfileDialog::showProfileMessage(QString header, QString message, QString messageType)
 {
     if (messageType == "error")
     {

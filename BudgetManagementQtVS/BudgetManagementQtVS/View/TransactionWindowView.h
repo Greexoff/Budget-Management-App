@@ -33,9 +33,9 @@ public:
      * @brief Gets the ID of the currently selected transaction
      * @return int Transaction ID, or -1 if no transaction selected
      */
-    int selectedTranstacionId() const; 
+    int getSelectedTransactionId() const; 
 public slots:
-    void displayTransactionMessage(QString header, QString message, QString messageType);
+    void showTransactionMessage(QString header, QString message, QString messageType);
     QString getTransactionNameFromInput(bool& correctData);
     double getTransactionAmountFromInput(bool& correctData);
     QString getTransactionDescriptionFromInput(bool& correctData);
@@ -44,17 +44,17 @@ signals:
     /**
      * @brief Emitted when user requests to add a new transaction
      */
-    void addTransactionRequested();
+    void addTransactionRequest();
 
     /**
      * @brief Emitted when user requests to delete selected transaction
      */
-    void deleteTransactionRequested();
+    void deleteTransactionRequest();
 
     /**
      * @brief Emitted when user requests to manage categories
      */
-    void manageCategoriesRequested();
+    void showCategoriesRequest();
 
 private slots:
     void onButtonAddTransactionClicked();

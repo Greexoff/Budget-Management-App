@@ -71,7 +71,7 @@ void TransactionWindow::setupConnections()
  */
 void TransactionWindow::onButtonAddTransactionClicked()
 {
-	emit addTransactionRequested();
+	emit addTransactionRequest();
 }
 
 /**
@@ -79,7 +79,7 @@ void TransactionWindow::onButtonAddTransactionClicked()
  */
 void TransactionWindow::onButtonDeleteTransactionClicked()
 {
-	emit deleteTransactionRequested();
+	emit deleteTransactionRequest();
 }
 
 /**
@@ -87,7 +87,7 @@ void TransactionWindow::onButtonDeleteTransactionClicked()
  */
 void TransactionWindow::onButtonManageCategoriesClicked()
 {
-    emit manageCategoriesRequested();
+    emit showCategoriesRequest();
 }
 
 /**
@@ -119,7 +119,7 @@ void TransactionWindow::setTransactionRows(const QVector<QStringList>& rows)
  * @brief Collect the ID of the currently selected transaction
  * @return int Transaction ID, or -1 if no valid selection
  */
-int TransactionWindow::selectedTranstacionId() const
+int TransactionWindow::getSelectedTransactionId() const
 {
     QModelIndex index = ui->TransactionTabelView->currentIndex();
     if (!index.isValid())
@@ -129,7 +129,7 @@ int TransactionWindow::selectedTranstacionId() const
     int id = TableModel->data(TableModel->index(index.row(), 0)).toInt(&ok);
     return ok ? id : -1;
 }
-void TransactionWindow::displayTransactionMessage(QString header, QString message, QString messageType)
+void TransactionWindow::showTransactionMessage(QString header, QString message, QString messageType)
 {
     if (messageType == "error")
     {

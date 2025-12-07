@@ -19,7 +19,7 @@ BaseRepository::BaseRepository() : database(DatabaseManager::instance().database
  * @param password User's password
  * @return User ID if authentication successful, -1 otherwise
  */
-int UserRepository::authenticateUser(QString username, QString password) const
+int UserRepository::getUserIdBasedOnUsername(QString username, QString password) const
 {
     QSqlQuery query(database);
     query.prepare("SELECT id, password FROM users WHERE username = :username");
@@ -169,7 +169,7 @@ bool ProfilesRepository::removeProfileById(int profileId)
  * @param profileId ID of the profile
  * @return Vector of Transaction objects belonging to the profile
  */
-QVector<Transaction> TransactionRepository::getAllForProfile(int profileId) const
+QVector<Transaction> TransactionRepository::getAllProfileTransaction(int profileId) const
 {
     QVector<Transaction> result;
     QSqlQuery query(database);
@@ -253,7 +253,7 @@ QVector<Transaction> TransactionRepository::getAll() const
  * @param transaction Transaction object to add
  * @return True if transaction added successfully, false otherwise
  */
-bool TransactionRepository::add(const Transaction& transaction)
+bool TransactionRepository::addTransaction(const Transaction& transaction)
 {
     QSqlQuery query(database);
 
@@ -288,7 +288,7 @@ bool TransactionRepository::add(const Transaction& transaction)
  * @param id ID of transaction to delete
  * @return True if transaction deleted successfully, false otherwise
  */
-bool TransactionRepository::removeById(int id)
+bool TransactionRepository::removeTransactionById(int id)
 {
     QSqlQuery query(database);
     query.prepare("DELETE FROM transactions WHERE id = :id");
@@ -308,7 +308,7 @@ bool TransactionRepository::removeById(int id)
  * @param profileId ID of the profile
  * @return Vector of Category objects belonging to the profile
  */
-QVector<Category> CategoryRepository::getAllCategories(int profileId) const
+QVector<Category> CategoryRepository::getAllProfileCategories(int profileId) const
 {
     QVector<Category> categoriesForProfile;
 
@@ -373,7 +373,7 @@ bool CategoryRepository::addCategory(const QString& categoryName, int profileId)
  * @param categoryId ID of category to delete
  * @return True if category deleted successfully, false otherwise
  */
-bool CategoryRepository::removeCategoryUsingId(int categoryId)
+bool CategoryRepository::removeCategoryById(int categoryId)
 {
     QSqlQuery query(database);
 
@@ -417,7 +417,7 @@ bool CategoryRepository::removeCategoryUsingId(int categoryId)
  * @param categoryId ID of the category
  * @return Category name as QString, empty string if category not found
  */
-QString CategoryRepository::getNameOfCategoryBasedOnId(int categoryId)
+QString CategoryRepository::getCategoryNameById(int categoryId)
 {
     QSqlQuery query(database);
     QString categoryName = "";

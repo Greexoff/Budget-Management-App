@@ -41,27 +41,27 @@ public:
 
 private slots:
     // Authentication handlers
-    void handleLoginRequested(const QString& username, const QString& password);
-    void handleRegisterRequested(const QString& username, const QString& password);
+    void handleLoginRequest(const QString& username, const QString& password);
+    void handleRegisterRequest(const QString& username, const QString& password);
 
     // Profile management handlers
-    void handleProfileSelected(int profileId);
-    void handleAddProfileRequested(const QString& name);
-    void handleRemoveProfileRequested(int profileId);
+    void handleProfileSelection(int profileId);
+    void handleAddProfileRequest(const QString& name);
+    void handleRemoveProfileRequest(int profileId);
 
     // Transaction management handlers
-    void handleAddTransactionRequested();
-    void handleDeleteTransactionRequested();
+    void handleAddTransactionRequest();
+    void handleDeleteTransactionRequest();
 
     // Category management handlers
-    void handleCategorySelected(int categoryId);
-    void handleAddCategoryRequested(const QString& categoryName);
-    void handleDeleteCategoryRequested(int categoryId);
+    void handleCategorySelection(int categoryId);
+    void handleAddCategoryRequest(const QString& categoryName);
+    void handleDeleteCategoryRequest(int categoryId);
 
     /**
      * @brief Shows category management dialog
      */
-    void showCategorySelectionDialog();
+    void handleShowCategorySelectionRequest();
 private:
     // View instances
     LoginDialog loginDialog;
@@ -84,8 +84,8 @@ private:
     // Helper methods
     void showProfilesForCurrentUser();
     void refreshTransactionsView();
-    void openCategoryDialog(bool withSelectButton);
-    int askUserForCategoryId();
+    void showCategoryDialog(bool withSelectButton);
+    int getCategoryIdFromInput();
     void refreshCategoryDialogList();
 };
 
