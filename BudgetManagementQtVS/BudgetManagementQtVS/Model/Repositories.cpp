@@ -160,7 +160,6 @@ bool ProfilesRepository::removeProfileById(int profileId)
         qDebug() << "ProfilesRepo::removing profile to database error:" << query.lastError().text();
         return false;
     }
-
     return true;
 }
 

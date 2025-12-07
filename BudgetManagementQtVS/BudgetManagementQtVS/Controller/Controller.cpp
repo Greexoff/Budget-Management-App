@@ -347,7 +347,7 @@ void Controller::handleAddCategoryRequest(const QString& categoryName)
  */
 void Controller::handleDeleteCategoryRequest(int categoryId)
 {
-    if (categoryId == 1 || !categoryRepository.removeCategoryById(categoryId)) 
+    if (!categoryRepository.removeCategoryById(categoryId)) 
     {
         const QString header = tr("Delete category");
         const QString message = tr("Failed to delete a category.");

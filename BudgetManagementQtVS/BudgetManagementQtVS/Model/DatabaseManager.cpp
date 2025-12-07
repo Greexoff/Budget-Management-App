@@ -37,7 +37,7 @@ DatabaseManager::DatabaseManager() {
     // Create profiles table with user association
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS profiles"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "profile_name TEXT UNIQUE NOT NULL CHECK (profile_name != ''), "
+        "profile_name TEXT NOT NULL CHECK (profile_name != ''), "
         "user_id INTEGER NOT NULL, "
         "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)");
 
@@ -48,12 +48,17 @@ DatabaseManager::DatabaseManager() {
         "profile_id INTEGER NOT NULL, "
         "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
         ")");
-
     // Create trigger to automatically add default "None" category for new profiles
     tableCreationQuery.exec("CREATE TRIGGER IF NOT EXISTS insertDefaultCategory "
         "AFTER INSERT ON profiles "
         "FOR EACH ROW BEGIN INSERT INTO category (category_name, profile_id) "
         "VALUES ('None', NEW.id); "
+        "END;");
+    //Create trigger to prevent deletion of default category
+    tableCreationQuery.exec("CREATE TRIGGER IF NOT EXISTS onDeletionOfDefaultCategory "
+        "BEFORE DELETE ON category "
+        "FOR EACH ROW WHEN OLD.category_name = 'None' "
+        "BEGIN SELECT RAISE(ABORT, 'Cannot delete default category'); "
         "END;");
 
     // Create transactions table with relationships to profiles and categories
