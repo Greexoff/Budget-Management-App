@@ -5,14 +5,26 @@
 #include <QVariant>
 #include <QDebug>
 
+
+/**
+ * @brief Constructs BaseRepository with database connection
+ */
 BaseRepository::BaseRepository() : database(DatabaseManager::instance().database()) {}
 
+/**
+ * @brief Authenticates user credentials against the database
+ *
+ * Performs a secure comparison of provided credentials with stored values.
+ *
+ * @param username User's login name
+ * @param password User's password
+ * @return User ID if authentication successful, -1 otherwise
+ */
 int UserRepository::authenticateUser(QString username, QString password) const
 {
     QSqlQuery query(database);
     query.prepare("SELECT id, password FROM users WHERE username = :username");
-    query.bindValue(":username", username);//nwm czy tego nie zamienic i dodac do tego id zeby po tym szukac//lepeij bedzie chyba po ID bo wiesz moze byc czysto teorteycznie dwa username takie smao albo mozemy zrobic ze nie mozna tworzyc 2 takich samow userow tez
-    //^jest w sumie unique w username w sql wiec jak username jest unikalny
+    query.bindValue(":username", username);
 
     if(!query.exec())
     {
@@ -22,13 +34,23 @@ int UserRepository::authenticateUser(QString username, QString password) const
     if (query.next())
     {
         QString storedPassword = query.value(1).toString();
-        if (storedPassword == password)//tu by sie w sumie hash przydal ale narazie wywalone
+        if (storedPassword == password)
         {
             return query.value(0).toInt();
         }
     }
     return -1;
 }
+
+/**
+ * @brief Creates a new user account
+ *
+ * Inserts a new user record into the database. Username must be unique.
+ *
+ * @param username Desired username
+ * @param password Desired password
+ * @return True if user created successfully, false otherwise
+ */
 bool UserRepository::addUser(QString username, QString password)
 {
     QSqlQuery query(database);
@@ -42,6 +64,12 @@ bool UserRepository::addUser(QString username, QString password)
     }
     return true;
 }
+
+/**
+ * @brief Deletes a user account by ID
+ * @param userId ID of user to delete
+ * @return True if user deleted successfully, false otherwise
+ */
 bool UserRepository::removeUserById(int userId)
 {
     QSqlQuery query(database);
@@ -56,6 +84,11 @@ bool UserRepository::removeUserById(int userId)
     return true;
 }
 
+/**
+ * @brief Retrieves all profiles belonging to a specific user
+ * @param userId ID of the user
+ * @return Vector of Profile objects for the user
+ */
 QVector<Profile> ProfilesRepository::getProfilesByUserId(int userId) const
 {
     QVector<Profile> foundProfiles;
@@ -80,6 +113,13 @@ QVector<Profile> ProfilesRepository::getProfilesByUserId(int userId) const
     }
     return foundProfiles;
 }
+
+/**
+ * @brief Creates a new profile for a user
+ * @param userId ID of the owning user
+ * @param profileName Name for the new profile
+ * @return True if profile created successfully, false otherwise
+ */
 bool ProfilesRepository::addProfile(int userId, QString profileName)
 {
     QSqlQuery query(database);
@@ -94,6 +134,12 @@ bool ProfilesRepository::addProfile(int userId, QString profileName)
     }
     return true;
 }
+
+/**
+ * @brief Deletes a profile by ID
+ * @param profileId ID of profile to delete
+ * @return True if profile deleted successfully, false otherwise
+ */
 bool ProfilesRepository::removeProfileById(int profileId)
 {
     QSqlQuery query(database);
@@ -108,6 +154,11 @@ bool ProfilesRepository::removeProfileById(int profileId)
     return true;
 }
 
+/**
+ * @brief Retrieves all transactions for a specific profile
+ * @param profileId ID of the profile
+ * @return Vector of Transaction objects belonging to the profile
+ */
 QVector<Transaction> TransactionRepository::getAllForProfile(int profileId) const
 {
     QVector<Transaction> result;
@@ -139,7 +190,10 @@ QVector<Transaction> TransactionRepository::getAllForProfile(int profileId) cons
     return result;
 }
 
-
+/**
+ * @brief Retrieves all transactions from the database
+ * @return Vector of all Transaction objects
+ */
 QVector<Transaction> TransactionRepository::getAll() const
 {
     QVector<Transaction> result;
@@ -175,6 +229,16 @@ QVector<Transaction> TransactionRepository::getAll() const
     return result;
 }
 
+/**
+ * @brief Adds a new transaction to the database
+ *
+ * Determines transaction type based on amount sign:
+ * Positive amount: EXPENSE
+ * Negative amount: INCOME
+ *
+ * @param transaction Transaction object to add
+ * @return True if transaction added successfully, false otherwise
+ */
 bool TransactionRepository::add(const Transaction& transaction)
 {
     QSqlQuery query(database);
@@ -204,6 +268,11 @@ bool TransactionRepository::add(const Transaction& transaction)
     return true;
 }
 
+/**
+ * @brief Deletes a transaction by ID
+ * @param id ID of transaction to delete
+ * @return True if transaction deleted successfully, false otherwise
+ */
 bool TransactionRepository::removeById(int id)
 {
     QSqlQuery query(database);
@@ -219,6 +288,10 @@ bool TransactionRepository::removeById(int id)
     return true;
 }
 
+/**
+ * @brief Retrieves all categories from the database
+ * @return Vector of all Category objects
+ */
 QVector<Category> CategoryRepository::getAllCategories() const
 {
     QVector<Category> allCategories;
@@ -243,6 +316,14 @@ QVector<Category> CategoryRepository::getAllCategories() const
     return allCategories;
 }
 
+/**
+ * @brief Creates a new category
+ *
+ * Category names must be unique.
+ *
+ * @param categoryName Name of the category to create
+ * @return True if category created successfully, false otherwise
+ */
 bool CategoryRepository::addCategory(const QString& categoryName)
 {
     QSqlQuery query(database);
@@ -258,6 +339,11 @@ bool CategoryRepository::addCategory(const QString& categoryName)
     return true;
 }
 
+/**
+ * @brief Deletes a category by ID
+ * @param categoryId ID of category to delete
+ * @return True if category deleted successfully, false otherwise
+ */
 bool CategoryRepository::removeCategoryUsingId(int categoryId)
 {
     QSqlQuery query(database);
@@ -272,6 +358,12 @@ bool CategoryRepository::removeCategoryUsingId(int categoryId)
 
     return true;
 }
+
+/**
+ * @brief Retrieves category name by ID
+ * @param categoryId ID of the category
+ * @return Category name as QString, empty string if category not found
+ */
 QString CategoryRepository::getNameOfCategoryBasedOnId(int categoryId)
 {
     QSqlQuery query(database);

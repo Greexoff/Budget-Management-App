@@ -7,6 +7,14 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+/**
+ * @class MainWindow
+ * @brief Main application window for budget management
+ *
+ * The MainWindow provides the primary interface for viewing and managing
+ * transactions. It displays transactions in a table view and provides
+ * buttons for adding/deleting transactions and managing categories.
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -15,28 +23,54 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow();
 
-    void setTransactionRows(const QVector<QStringList>& rows);    
+    /**
+     * @brief Populates the transaction table with data
+     * @param rows Vector of string lists, each representing a transaction row
+     */
+    void setTransactionRows(const QVector<QStringList>& rows);
 
-    int selectedTranstacionId() const; //jak sie kliknie na transakcje w tabli to zwraca jej id
+    /**
+     * @brief Gets the ID of the currently selected transaction
+     * @return int Transaction ID, or -1 if no transaction selected
+     */
+    int selectedTranstacionId() const; 
 
 signals:
-    //sygnaly do oblsugi kontrolera
+    /**
+     * @brief Emitted when user requests to add a new transaction
+     */
     void addTransactionRequested();
+
+    /**
+     * @brief Emitted when user requests to delete selected transaction
+     */
     void deleteTransactionRequested();
+
+    /**
+     * @brief Emitted when user requests to manage categories
+     */
     void manageCategoriesRequested();
 
 private slots:
-
     void onButtonAddTransactionClicked();
     void onButtonDeleteTransactionClicked();
     void onButtonManageCategoriesClicked();
 
 private:
-    Ui::MainWindow* ui;
-    QStandardItemModel* TableModel = nullptr;
+    Ui::MainWindow* ui;                         ///< Pointer to UI elements
+    QStandardItemModel* TableModel = nullptr;   ///< Data model for transaction table
 
+    /**
+     * @brief Sets up connections for UI buttons
+     */
     void setupConnections();
-    void setupTableModel();         //Setupwoanie kolumn w naszej tabeli
+
+    /**
+     * @brief Initializes the transaction table model
+     *
+     * Sets up table columns, headers, and display properties.
+     */
+    void initializeTransactionTable();
 
 };
 
