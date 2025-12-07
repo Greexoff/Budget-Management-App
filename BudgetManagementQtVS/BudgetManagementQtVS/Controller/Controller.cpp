@@ -1,7 +1,6 @@
 ﻿#include "Controller.h"
 #include <QInputDialog>
 
-
 /**
  * @brief Constructs the Controller and establishes connections
  *
@@ -10,7 +9,24 @@
  *
  * @param parent Parent QObject
  */
-Controller::Controller(QObject* parent) : QObject(parent)
+Controller::Controller(
+    LoginDialog& loginDialogRef,
+    ProfileDialog& profileDialogRef,
+    CategorySelectionView& categorySelectionViewRef,
+    TransactionWindow& transactionWindowViewRef,
+    UserRepository& userRepositoryRef,
+    ProfilesRepository& profileRepositoryRef,
+    TransactionRepository& transactionRepositoryRef,
+    CategoryRepository& categoryRepositoryRef,
+    QObject* parent) : QObject(parent), 
+    loginDialog(loginDialogRef),
+    profileDialog(profileDialogRef),
+    categoryDialog(categorySelectionViewRef),
+    TransactionWindowView(transactionWindowViewRef),
+    userRepository(userRepositoryRef),
+    profilesRepository(profileRepositoryRef),
+    transactionRepository(transactionRepositoryRef),
+    categoryRepository(categoryRepositoryRef)
 {
     // Connect authentication dialog signals
     connect(&loginDialog, &LoginDialog::loginRequested,

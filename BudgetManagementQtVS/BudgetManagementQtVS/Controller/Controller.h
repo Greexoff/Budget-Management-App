@@ -16,7 +16,6 @@
 #include <QStringList>
 #include <QDate>
 
-class TransactionWindow;
 
 /**
  * @brief Main controller coordinating application flow and business logic
@@ -24,6 +23,7 @@ class TransactionWindow;
  * and handles application state transitions including login, profile selection,
  * and transaction management.
  */
+
 class Controller : public QObject
 {
     Q_OBJECT
@@ -33,7 +33,16 @@ public:
      * @brief Constructs the controller with optional parent
      * @param parent Parent QObject (optional)
      */
-    explicit Controller(QObject* parent = nullptr);
+    Controller(
+        LoginDialog& loginDialogRef,
+        ProfileDialog& profileDialogRef,
+        CategorySelectionView& categorySelectionViewRef,
+        TransactionWindow& transactionWindowViewRef,
+        UserRepository& userRepositoryRef,
+        ProfilesRepository& profileRepositoryRef,
+        TransactionRepository& transactionRepositoryRef,
+        CategoryRepository& categoryRepositoryRef,
+        QObject* parent = nullptr);
     
     /**
      * @brief Starts the application by showing the login screen
@@ -65,16 +74,16 @@ private slots:
     void handleShowCategorySelectionRequest();
 private:
     // View instances
-    LoginDialog loginDialog;
-    ProfileDialog profileDialog;
-    TransactionWindow TransactionWindowView;
-    CategorySelectionView categoryDialog;
+    LoginDialog& loginDialog;
+    ProfileDialog& profileDialog;
+    TransactionWindow& TransactionWindowView;
+    CategorySelectionView& categoryDialog;
 
     // Repository instances
-    UserRepository userRepository;
-    ProfilesRepository profilesRepository;
-    TransactionRepository transactionRepository;
-    CategoryRepository categoryRepository;
+    UserRepository& userRepository;
+    ProfilesRepository& profilesRepository;
+    TransactionRepository& transactionRepository;
+    CategoryRepository& categoryRepository;
 
     // Application state
     int currentUserId = -1;                     ///< ID of currently logged-in user

@@ -1,5 +1,11 @@
 ﻿#include "Controller/Controller.h"
+
 #include "View/TransactionWindowView.h"
+#include "View/CategorySelectionView.h"
+#include "View/LoginDialogView.h"
+#include "View/ProfileDialogView.h"
+
+#include "Model/Repositories.h"
 #include <QtWidgets/QApplication>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -23,8 +29,17 @@ int main(int argc, char *argv[])
     // Initialize database connection
     DatabaseManager::instance();
 
+    UserRepository userRepository;
+    ProfilesRepository profileRepository;
+    TransactionRepository transactionRepository;
+    CategoryRepository categoryRepository;
+
+    LoginDialog loginDialog;
+    ProfileDialog profileDialog;
+    CategorySelectionView categoryDialog;
+    TransactionWindow transactionWindowView;
     // Create controller which manages application flow
-    Controller controller;
+    Controller controller(loginDialog, profileDialog, categoryDialog, transactionWindowView, userRepository, profileRepository, transactionRepository, categoryRepository, nullptr);
 
     // Start the application by showing login screen
     controller.run();
