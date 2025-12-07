@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <QDialog>
+#include <QMessageBox>
 
 namespace Ui { class LoginDialog; }
 
@@ -40,6 +41,8 @@ signals:
      * @param password Desired password
      */
     void registerRequested(const QString& username, const QString& password);
+public slots:
+    void displayLoginMessage(QString header, QString message, QString messageType);
 
 private slots:
     void onButtonLoginClicked();

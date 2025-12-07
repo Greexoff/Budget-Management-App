@@ -12,7 +12,7 @@ ProfileDialog::ProfileDialog(QWidget* parent)
     ui(new Ui::ProfileDialog)
 {
     ui->setupUi(this);
-
+    setWindowTitle("Select profile");
     setupConnections();
 }
 
@@ -67,7 +67,7 @@ void ProfileDialog::onButtonAddClicked()
 {
     bool ok = false;
     QString name = QInputDialog::getText(
-        this, tr("Nowy profil"), tr("Nazwa profilu:"), QLineEdit::Normal, "", &ok);
+        this, tr("New profile"), tr("Profile name:"), QLineEdit::Normal, "", &ok);
     if (!ok || name.trimmed().isEmpty())
         return;
 
@@ -92,4 +92,15 @@ void ProfileDialog::onButtonRemoveClicked()
 void ProfileDialog::onButtonCancelClicked()
 {
     reject();
+}
+void ProfileDialog::displayProfileMessage(QString header, QString message, QString messageType)
+{
+    if (messageType == "error")
+    {
+        QMessageBox::warning(this, header, message);
+    }
+    else
+    {
+        QMessageBox::information(this, header, message);
+    }
 }

@@ -1,5 +1,5 @@
 ﻿#include "Controller/Controller.h"
-#include "View/MainWindowView.h"
+#include "View/TransactionWindowView.h"
 #include <QtWidgets/QApplication>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     DatabaseManager::instance();
 
     // Create controller which manages application flow
-    TransactionController controller;
+    Controller controller;
 
     // Start the application by showing login screen
     controller.run();

@@ -20,7 +20,7 @@ DatabaseManager::DatabaseManager() {
         qDebug() << "Database Error:" << datebaseInstance.lastError().text();
     }
     else {
-        qDebug() << "Database opened correctly";
+        qDebug() << "Database opened correctly.";
     }
 
     QSqlQuery tableCreationQuery;

@@ -13,7 +13,7 @@ LoginDialog::LoginDialog(QWidget* parent)
 
     // Configure password field to hide entered characters
     ui->editPassword->setEchoMode(QLineEdit::Password);
-
+    setWindowTitle("Log in");
     setupConnections();
 }
 
@@ -59,3 +59,15 @@ void LoginDialog::onButtonCancelClicked()
 {
     reject();
 }
+void LoginDialog::displayLoginMessage(QString header, QString message, QString messageType)
+{
+    if (messageType == "error")
+    {
+      QMessageBox::warning(this, header, message);
+    }
+    else
+    {
+        QMessageBox::information(this, header, message);
+    }
+}
+

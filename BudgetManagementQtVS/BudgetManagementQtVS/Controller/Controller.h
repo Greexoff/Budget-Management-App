@@ -5,7 +5,7 @@
 #include "Model/User&Profiles.h"
 #include "Model/Category.h"
 
-#include "View/MainWindowView.h"
+#include "View/TransactionWindowView.h"
 #include "View/LoginDialogView.h"
 #include "View/ProfileDialogView.h"
 #include "View/CategorySelectionView.h"
@@ -15,7 +15,7 @@
 #include <QStringList>
 #include <QDate>
 
-class MainWindow;
+class TransactionWindow;
 
 /**
  * @brief Main controller coordinating application flow and business logic
@@ -23,7 +23,7 @@ class MainWindow;
  * and handles application state transitions including login, profile selection,
  * and transaction management.
  */
-class TransactionController : public QObject
+class Controller : public QObject
 {
     Q_OBJECT
 
@@ -32,7 +32,7 @@ public:
      * @brief Constructs the controller with optional parent
      * @param parent Parent QObject (optional)
      */
-    explicit TransactionController(QObject* parent = nullptr);
+    explicit Controller(QObject* parent = nullptr);
     
     /**
      * @brief Starts the application by showing the login screen
@@ -66,7 +66,7 @@ private:
     // View instances
     LoginDialog loginDialog;
     ProfileDialog profileDialog;
-    MainWindow mainWindowView;
+    TransactionWindow TransactionWindowView;
     CategorySelectionView categoryDialog;
 
     // Repository instances

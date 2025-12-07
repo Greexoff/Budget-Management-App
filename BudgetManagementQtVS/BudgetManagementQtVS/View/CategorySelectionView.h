@@ -36,6 +36,9 @@ public:
      * @return int Selected category ID or -1 if none selected
      */
     int getSelectedCategoryId() const { return selectedCategoryId; }
+
+public slots:
+    void displayCategoryMessage(QString header, QString message, QString messageType);
 signals:
     /**
      * @brief Emitted when a category is selected

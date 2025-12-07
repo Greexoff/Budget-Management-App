@@ -15,13 +15,13 @@ QT_END_NAMESPACE
  * transactions. It displays transactions in a table view and provides
  * buttons for adding/deleting transactions and managing categories.
  */
-class MainWindow : public QMainWindow
+class TransactionWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget* parent = nullptr);
-    ~MainWindow();
+    explicit TransactionWindow(QWidget* parent = nullptr);
+    ~TransactionWindow();
 
     /**
      * @brief Populates the transaction table with data
@@ -34,6 +34,11 @@ public:
      * @return int Transaction ID, or -1 if no transaction selected
      */
     int selectedTranstacionId() const; 
+public slots:
+    void displayTransactionMessage(QString header, QString message, QString messageType);
+    QString getTransactionNameFromInput(bool& correctData);
+    double getTransactionAmountFromInput(bool& correctData);
+    QString getTransactionDescriptionFromInput(bool& correctData);
 
 signals:
     /**

@@ -24,7 +24,8 @@ public:
      * @param profiles List of Profile objects belonging to the user
      */
     void setProfiles(const QVector<Profile>& profiles);
-
+public slots:
+    void displayProfileMessage(QString header, QString message, QString messageType);
 signals:
     /**
      * @brief Emitted when user selects a profile

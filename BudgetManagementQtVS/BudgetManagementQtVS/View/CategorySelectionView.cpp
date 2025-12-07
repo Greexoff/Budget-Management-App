@@ -8,6 +8,7 @@ CategorySelectionView::CategorySelectionView(QWidget *parent)
 	: QDialog(parent), ui(new Ui::CategorySelectionView)
 {
 	ui->setupUi(this);
+    setWindowTitle("Browse category");
 	connectMethodToButton();
 }
 
@@ -106,5 +107,16 @@ void CategorySelectionView::setSelectCategoryButtonVisible(bool visible)
 {
     if (ui->selectCategoryButton) {
         ui->selectCategoryButton->setVisible(visible);
+    }
+}
+void CategorySelectionView::displayCategoryMessage(QString header, QString message, QString messageType)
+{
+    if (messageType == "error")
+    {
+        QMessageBox::warning(this, header, message);
+    }
+    else
+    {
+        QMessageBox::information(this, header, message);
     }
 }
