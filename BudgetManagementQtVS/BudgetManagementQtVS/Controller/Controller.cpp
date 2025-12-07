@@ -275,6 +275,10 @@ void TransactionController::handleDeleteCategoryRequested(int categoryId)
     }
     
     refreshCategoryDialogList();
+
+    if (currentProfileId >= 0 && mainWindowInitialized) {
+        refreshTransactionsView();
+    }
 }
 
 void TransactionController::refreshCategoryDialogList()

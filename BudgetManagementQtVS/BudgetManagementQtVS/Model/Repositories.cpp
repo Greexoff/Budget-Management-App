@@ -264,6 +264,20 @@ bool CategoryRepository::addCategory(const QString& categoryName, int profileId)
 bool CategoryRepository::removeCategoryUsingId(int categoryId)
 {
     QSqlQuery query(database);
+
+    database.transaction();
+
+    query.prepare("UPDATE transactions SET category_id = :defaultId WHERE category_id = :catId");
+    query.bindValue(":defaultId", 1);
+    query.bindValue(":catId", categoryId);
+
+
+    if (!query.exec()) {
+        qDebug() << "CategoryRepo::removeCategory update transactions error:" << query.lastError().text();
+        database.rollback();
+        return false;
+    }
+   
     query.prepare("DELETE FROM category WHERE id = :id");
     query.bindValue(":id", categoryId);
 
@@ -272,6 +286,13 @@ bool CategoryRepository::removeCategoryUsingId(int categoryId)
         qDebug() << "CategoryRepository:: error: Couldn't remove category from database" << query.lastError().text();
         return false;
     }
+
+    if (!database.commit()) {
+        qDebug() << "CategoryRepo::removeCategory commit failed:" << database.lastError().text();
+        database.rollback();
+        return false;
+    }
+
 
     return true;
 }
