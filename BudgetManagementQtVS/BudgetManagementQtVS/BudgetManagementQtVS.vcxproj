@@ -96,12 +96,12 @@
     <ClCompile Include="Model\DatabaseManager.cpp" />
     <ClCompile Include="Model\Transaction.cpp" />
     <ClCompile Include="Model\Repositories.cpp" />
+    <ClCompile Include="Model\TransactionBuilder.cpp" />
     <ClCompile Include="Model\User&amp;Profiles.cpp" />
     <ClCompile Include="View\CategorySelectionView.cpp" />
     <ClCompile Include="View\LoginDialogView.cpp" />
-    <ClCompile Include="View\MainWindowView.cpp" />
+    <ClCompile Include="View\TransactionWindowView.cpp" />
     <ClCompile Include="View\ProfileDialogView.cpp" />
-    <ClCompile Include="View\View.cpp" />
     <QtRcc Include="BudgetManagementQtVS.qrc" />
     <ClCompile Include="Controller\Controller.cpp" />
     <ClCompile Include="main.cpp" />
@@ -111,18 +111,18 @@
     <ClInclude Include="Model\Category.h" />
     <ClInclude Include="Model\DatabaseManager.h" />
     <ClInclude Include="Model\Transaction.h" />
-    <QtMoc Include="View\MainWindowView.h" />
+    <QtMoc Include="View\TransactionWindowView.h" />
     <ClInclude Include="Model\Repositories.h" />
+    <ClInclude Include="Model\TransactionBuilder.h" />
     <ClInclude Include="Model\User&amp;Profiles.h" />
     <QtMoc Include="View\ProfileDialogView.h" />
     <QtMoc Include="View\LoginDialogView.h" />
     <QtMoc Include="View\CategorySelectionView.h" />
-    <ClInclude Include="View\View.h" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="CategorySelectionView.ui" />
     <QtUic Include="LoginDialogView.ui" />
-    <QtUic Include="MainWindowView.ui" />
+    <QtUic Include="TransactionWindowView.ui" />
     <QtUic Include="ProfileDialogView.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
