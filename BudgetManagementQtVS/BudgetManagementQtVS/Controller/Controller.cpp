@@ -120,7 +120,7 @@ void TransactionController::refreshTransactionsView()
             << t.getTransactionDescription()
             << QString::number(t.getTransactionAmount(), 'f', 2);
 
-        QString typeStr = (t.getTransactionAmount() >= 0.0) ? "Przychód" : "Wydatek";
+        QString typeStr = (t.getTransactionAmount() > 0.0) ? "Wydatek" : "Przychód";
         row << typeStr;
         row << categoryRepository.getNameOfCategoryBasedOnId(t.getCategoryId());
         rows.append(row);
@@ -176,7 +176,7 @@ void TransactionController::handleAddTransactionRequested()
     if (!correctData)
         return;
 
-    TransactionType type = (amount >= 0.0) ? INCOME : EXPENSE;
+    TransactionType type = (amount > 0.0) ? EXPENSE : INCOME;
     
     int categoryId = askUserForCategoryId();
     if (categoryId < 0) {
@@ -264,7 +264,8 @@ void TransactionController::handleAddCategoryRequested(const QString& categoryNa
        QMessageBox::warning(&categoryDialog, tr("Error"),
        tr("Couldn't add category"));
     }
-    showCategorySelectionDialog();
+    
+    refreshCategoryDialogList();
 }
 void TransactionController::handleDeleteCategoryRequested(int categoryId)
 {
@@ -272,5 +273,13 @@ void TransactionController::handleDeleteCategoryRequested(int categoryId)
         QMessageBox::warning(&categoryDialog, tr("Error"),
             tr("Couldn't delete category"));
     }
-    showCategorySelectionDialog();
+    
+    refreshCategoryDialogList();
 }
+
+void TransactionController::refreshCategoryDialogList()
+{
+    QVector<Category> categories = categoryRepository.getAllCategories();
+    categoryDialog.setCategories(categories);
+}
+

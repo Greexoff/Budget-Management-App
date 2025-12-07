@@ -66,6 +66,8 @@ private:
     void openCategoryDialog(bool withSelectButton);
     int askUserForCategoryId();
 
+    void refreshCategoryDialogList();
+
 };
 
  
