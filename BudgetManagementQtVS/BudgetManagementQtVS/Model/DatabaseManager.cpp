@@ -55,11 +55,12 @@ DatabaseManager::DatabaseManager() {
         "VALUES ('None', NEW.id); "
         "END;");
     //Create trigger to prevent deletion of default category
-    tableCreationQuery.exec("CREATE TRIGGER IF NOT EXISTS onDeletionOfDefaultCategory "
+    //Need to create workaround to make 1:N connection to 'None' category
+    /*tableCreationQuery.exec("CREATE TRIGGER IF NOT EXISTS onDeletionOfDefaultCategory "
         "BEFORE DELETE ON category "
         "FOR EACH ROW WHEN OLD.category_name = 'None' "
         "BEGIN SELECT RAISE(ABORT, 'Cannot delete default category'); "
-        "END;");
+        "END;");*/
 
     // Create transactions table with relationships to profiles and categories
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS transactions"
