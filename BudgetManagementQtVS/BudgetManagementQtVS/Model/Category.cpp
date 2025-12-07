@@ -1,12 +1,14 @@
 #include "model/Category.h"
 
 /**
- * @brief Constructs a Category with the given identifier and name
- * @param categoryId Unique identifier for the category
- * @param categoryName Display name for the category
- */
-Category::Category(int categoryId, const QString& categoryName)
-	: categoryId(categoryId), categoryName(categoryName) {}
+* @brief Constructs a Category with the given identifier, name, and profile association
+* @param categoryId Unique identifier for the category
+* @param categoryName Display name for the category
+* @param profileId ID of the profile that owns this category
+*/
+Category::Category(int categoryId, const QString & categoryName, int profileId)
+	: categoryId(categoryId), categoryName(categoryName), profileId(profileId) {
+}
 
 /**
  * @brief Destructor
@@ -27,6 +29,18 @@ int Category::getCategoryId() const {
  */
 QString Category::getCategoryName() const {
 	return categoryName;
+}
+
+/**
+ * @brief Returns the ID of the profile that owns this category
+ * @return int The profile ID
+ *
+ * This method enables category isolation between different profiles,
+ * ensuring that each user's categories remain private to their profiles.
+ */
+int Category::getIdOfProfileConnectedToCategory() const
+{
+	return profileId;
 }
 
 /**

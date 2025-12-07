@@ -3,32 +3,40 @@
 #include <QMessageBox>
 
 /**
- * @brief Constructs the controller and connects signals to slots
- * 
- * This constructor sets up all necessary connections between view signals
- * and controller slot methods, enabling the MVC communication pattern.
- * 
+ * @brief Constructs the TransactionController and establishes connections
+ *
+ * Sets up connections between view signals and controller slot methods
+ * for authentication, profile management, and category operations.
+ *
  * @param parent Parent QObject
  */
-TransactionController::TransactionController(QObject* parent): QObject(parent)
+TransactionController::TransactionController(QObject* parent) : QObject(parent)
 {
-    // Connect authentication signals
-    connect(&loginDialog, &LoginDialog::loginRequested,this, &TransactionController::handleLoginRequested);
-    connect(&loginDialog, &LoginDialog::registerRequested,this, &TransactionController::handleRegisterRequested);
+    // Connect authentication dialog signals
+    connect(&loginDialog, &LoginDialog::loginRequested,
+        this, &TransactionController::handleLoginRequested);
+    connect(&loginDialog, &LoginDialog::registerRequested,
+        this, &TransactionController::handleRegisterRequested);
 
-    // Connect profile management signals
-    connect(&profileDialog, &ProfileDialog::profileSelected,this, &TransactionController::handleProfileSelected);
-    connect(&profileDialog, &ProfileDialog::addProfileRequested,this, &TransactionController::handleAddProfileRequested);
-    connect(&profileDialog, &ProfileDialog::removeProfileRequested,this, &TransactionController::handleRemoveProfileRequested);
-    
-    // Connect category management signals
-    connect(&categoryDialog, &CategorySelectionView::selectRequestedCategory, this, &TransactionController::handleCategorySelected);
-    connect(&categoryDialog, &CategorySelectionView::addRequestedCategory, this, &TransactionController::handleAddCategoryRequested);
-    connect(&categoryDialog, &CategorySelectionView::deleteRequestedCategory, this, &TransactionController::handleDeleteCategoryRequested);   
+    // Connect profile dialog signals
+    connect(&profileDialog, &ProfileDialog::profileSelected,
+        this, &TransactionController::handleProfileSelected);
+    connect(&profileDialog, &ProfileDialog::addProfileRequested,
+        this, &TransactionController::handleAddProfileRequested);
+    connect(&profileDialog, &ProfileDialog::removeProfileRequested,
+        this, &TransactionController::handleRemoveProfileRequested);
+
+    // Connect category dialog signals
+    connect(&categoryDialog, &CategorySelectionView::selectRequestedCategory,
+        this, &TransactionController::handleCategorySelected);
+    connect(&categoryDialog, &CategorySelectionView::addRequestedCategory,
+        this, &TransactionController::handleAddCategoryRequested);
+    connect(&categoryDialog, &CategorySelectionView::deleteRequestedCategory,
+        this, &TransactionController::handleDeleteCategoryRequested);
 }
 
 /**
- * @brief Starts the application flow
+ * @brief Starts the application by displaying the login screen
  */
 void TransactionController::run()
 {
@@ -44,14 +52,14 @@ void TransactionController::handleLoginRequested(const QString& username, const 
 {
     if (username.trimmed().isEmpty() || password.isEmpty()) {
         QMessageBox::warning(&loginDialog,
-            tr("Logowanie"),
-            tr("Podaj login i hasło."));
+            tr("Login"),
+            tr("Please enter username and password."));
         return;
     }
 
     int userId = userRepository.authenticateUser(username, password);
     if (userId < 0) {
-        QMessageBox::warning(&loginDialog, tr("Logowanie"), tr("Zły login lub hasło"));
+        QMessageBox::warning(&loginDialog, tr("Login"), tr("Invalid username or password"));
         return;
     }
 
@@ -68,16 +76,16 @@ void TransactionController::handleLoginRequested(const QString& username, const 
 void TransactionController::handleRegisterRequested(const QString& username, const QString& password)
 {
     if (!userRepository.addUser(username, password)) {
-        QMessageBox::warning(&loginDialog, tr("Rejestracja"), tr("Nie udało się utworzyć użytkownika"));
+        QMessageBox::warning(&loginDialog, tr("Registration"), tr("Failed to create user"));
         return;
     }
 
-    QMessageBox::information(&loginDialog, tr("Rejestracja"),
-        tr("Użytkownik utworzony. Możesz się zalogować."));
+    QMessageBox::information(&loginDialog, tr("Registration"),
+        tr("User created. You can now log in."));
 }
 
 /**
- * @brief Displays profiles associated with current user
+ * @brief Displays profiles associated with the current user
  */
 void TransactionController::showProfilesForCurrentUser()
 {
@@ -87,7 +95,11 @@ void TransactionController::showProfilesForCurrentUser()
 }
 
 /**
- * @brief Handles profile selection
+ * @brief Handles selection of a budget profile
+ *
+ * Sets the current profile and initializes the main window
+ * with the profile's transaction data.
+ *
  * @param profileId ID of the selected profile
  */
 void TransactionController::handleProfileSelected(int profileId)
@@ -95,12 +107,14 @@ void TransactionController::handleProfileSelected(int profileId)
     currentProfileId = profileId;
     profileDialog.hide();
 
+    // Initialize main window connections on first profile selection
     if (!mainWindowInitialized) {
-        connect(&mainWindowView, &MainWindow::addTransactionRequested,this, &TransactionController::handleAddTransactionRequested);
-
-        connect(&mainWindowView, &MainWindow::deleteTransactionRequested,this, &TransactionController::handleDeleteTransactionRequested);
-
-        connect(&mainWindowView, &MainWindow::manageCategoriesRequested, this, &TransactionController::showCategorySelectionDialog);
+        connect(&mainWindowView, &MainWindow::addTransactionRequested,
+            this, &TransactionController::handleAddTransactionRequested);
+        connect(&mainWindowView, &MainWindow::deleteTransactionRequested,
+            this, &TransactionController::handleDeleteTransactionRequested);
+        connect(&mainWindowView, &MainWindow::manageCategoriesRequested,
+            this, &TransactionController::showCategorySelectionDialog);
 
         mainWindowInitialized = true;
     }
@@ -110,14 +124,14 @@ void TransactionController::handleProfileSelected(int profileId)
 }
 
 /**
- * @brief Handles adding a new profile
- * @param name Name of the new profile
+ * @brief Handles creation of a new budget profile
+ * @param name Name for the new profile
  */
 void TransactionController::handleAddProfileRequested(const QString& name)
 {
     if (!profilesRepository.addProfile(currentUserId, name)) {
-        QMessageBox::warning(&profileDialog, tr("Profil"),
-            tr("Nie udało się dodać profilu"));
+        QMessageBox::warning(&profileDialog, tr("Profile"),
+            tr("Failed to add profile"));
         return;
     }
 
@@ -125,14 +139,14 @@ void TransactionController::handleAddProfileRequested(const QString& name)
 }
 
 /**
- * @brief Handles profile removal
- * @param profileId ID of profile to remove
+ * @brief Handles deletion of a budget profile
+ * @param profileId ID of the profile to delete
  */
 void TransactionController::handleRemoveProfileRequested(int profileId)
 {
     if (!profilesRepository.removeProfileById(profileId)) {
-        QMessageBox::warning(&profileDialog, tr("Profil"),
-            tr("Nie udało się usunąć profilu"));
+        QMessageBox::warning(&profileDialog, tr("Profile"),
+            tr("Failed to delete profile"));
         return;
     }
 
@@ -140,41 +154,49 @@ void TransactionController::handleRemoveProfileRequested(int profileId)
 }
 
 /**
- * @brief Refreshes the transaction display in main window
+ * @brief Refreshes the transaction display in the main window
+ *
+ * Retrieves all transactions for the current profile and updates
+ * the main window's table view with formatted data including
+ * category names resolved from category IDs.
  */
 void TransactionController::refreshTransactionsView()
 {
     if (currentProfileId < 0)
         return;
 
-    QVector<Transaction> all = transactionRepository.getAllForProfile(currentProfileId);
-    QVector<QStringList> rows;
+    QVector<Transaction> allTransactions = transactionRepository.getAllForProfile(currentProfileId);
+    QVector<QStringList> tableRows;
 
-    for (const auto& t : all) {
-        QStringList row;
-        row << QString::number(t.getTransactionId())
-            << t.getTransactionName()
-            << t.getTransactionDate().toString("yyyy-MM-dd")
-            << t.getTransactionDescription()
-            << QString::number(t.getTransactionAmount(), 'f', 2);
+    for (const auto& transaction : allTransactions) {
+        QStringList rowData;
+        rowData << QString::number(transaction.getTransactionId())
+            << transaction.getTransactionName()
+            << transaction.getTransactionDate().toString("yyyy-MM-dd")
+            << transaction.getTransactionDescription()
+            << QString::number(transaction.getTransactionAmount(), 'f', 2);
 
-        QString typeStr = (t.getTransactionAmount() > 0.0) ? "Wydatek" : "Przychód";
-        row << typeStr;
-        row << categoryRepository.getNameOfCategoryBasedOnId(t.getCategoryId());
-        rows.append(row);
+        // Determine transaction type based on amount
+        QString typeString = (transaction.getTransactionAmount() > 0.0) ? "Expense" : "Income";
+        rowData << typeString;
+
+        // Resolve category name from ID
+        rowData << categoryRepository.getNameOfCategoryBasedOnId(transaction.getCategoryId());
+
+        tableRows.append(rowData);
     }
 
-    mainWindowView.setTransactionRows(rows);
+    mainWindowView.setTransactionRows(tableRows);
 }
 
 /**
- * @brief Handles adding a new transaction
+ * @brief Handles creation of a new transaction
  */
 void TransactionController::handleAddTransactionRequested()
 {
     if (currentProfileId < 0) {
-        QMessageBox::warning(&mainWindowView, tr("Błąd"),
-            tr("Najpierw wybierz profil."));
+        QMessageBox::warning(&mainWindowView, tr("Error"),
+            tr("Please select a profile first."));
         return;
     }
 
@@ -183,8 +205,8 @@ void TransactionController::handleAddTransactionRequested()
     // Get transaction name
     QString name = QInputDialog::getText(
         &mainWindowView,
-        tr("Nowa transakcja"),
-        tr("Nazwa:"),
+        tr("New transaction"),
+        tr("Name:"),
         QLineEdit::Normal,
         "",
         &correctData
@@ -195,8 +217,8 @@ void TransactionController::handleAddTransactionRequested()
     // Get transaction amount
     double amount = QInputDialog::getDouble(
         &mainWindowView,
-        tr("Nowa transakcja"),
-        tr("Kwota:"),
+        tr("New transaction"),
+        tr("Amount:"),
         0.0,
         0,
         1e9,
@@ -209,8 +231,8 @@ void TransactionController::handleAddTransactionRequested()
     // Get transaction description
     QString description = QInputDialog::getText(
         &mainWindowView,
-        tr("Nowa transakcja"),
-        tr("Opis:"),
+        tr("New transaction"),
+        tr("Description:"),
         QLineEdit::Normal,
         "",
         &correctData
@@ -218,33 +240,32 @@ void TransactionController::handleAddTransactionRequested()
     if (!correctData)
         return;
 
-    // Determine transaction type (expense if positive, income if negative)
+    // Determine transaction type based on amount sign
     TransactionType type = (amount > 0.0) ? EXPENSE : INCOME;
-    
-    // Get category ID from user
+
+    // Prompt user to select a category
     int categoryId = askUserForCategoryId();
     if (categoryId < 0) {
-        categoryId = 1; // default category
+        categoryId = 1; // Default category ("None")
     }
 
-    // Create new transaction object
-    Transaction t(
-        0,                      
+    // Create and save transaction
+    Transaction newTransaction(
+        0,                      // ID will be assigned by database
         name,
         QDate::currentDate(),
         description,
         amount,
         type,
         categoryId,
-        currentProfileId        
+        currentProfileId
     );
 
-    // Save transaction to database
-    if (!transactionRepository.add(t)) {
+    if (!transactionRepository.add(newTransaction)) {
         QMessageBox::warning(
             &mainWindowView,
-            tr("Błąd"),
-            tr("Nie udało się dodać transakcji do bazy.")
+            tr("Error"),
+            tr("Failed to add transaction to database.")
         );
         return;
     }
@@ -253,25 +274,25 @@ void TransactionController::handleAddTransactionRequested()
 }
 
 /**
- * @brief Handles transaction deletion
+ * @brief Handles deletion of a transaction
  */
 void TransactionController::handleDeleteTransactionRequested()
 {
-    int id = mainWindowView.selectedTranstacionId();
-    if (id < 0) {
+    int transactionId = mainWindowView.selectedTranstacionId();
+    if (transactionId < 0) {
         QMessageBox::information(
             &mainWindowView,
-            tr("Usuń transakcję"),
-            tr("Nie wybrano żadnej transakcji.")
+            tr("Delete transaction"),
+            tr("No transaction selected.")
         );
         return;
     }
 
-    if (!transactionRepository.removeById(id)) {
+    if (!transactionRepository.removeById(transactionId)) {
         QMessageBox::warning(
             &mainWindowView,
-            tr("Błąd"),
-            tr("Nie udało się usunąć transakcji z bazy.")
+            tr("Error"),
+            tr("Failed to delete transaction from database.")
         );
         return;
     }
@@ -280,32 +301,32 @@ void TransactionController::handleDeleteTransactionRequested()
 }
 
 /**
- * @brief Opens category management dialog
+ * @brief Opens the category management dialog
  */
 void TransactionController::showCategorySelectionDialog()
 {
-
     openCategoryDialog(false);
-    /*QVector<Category> categories = categoryRepository.getAllCategories();
-    categoryDialog.setCategories(categories);
-    categoryDialog.exec();*/
 }
 
 /**
- * @brief Opens category dialog with optional selection button
- * @param withSelectButton True to show selection button, false for management only
+ * @brief Opens the category dialog in specified mode
+ * @param withSelectButton True for selection mode, false for management mode
+ *
+ * In selection mode, the dialog includes a "Select" button for
+ * choosing a category for a transaction. In management mode,
+ * only add/delete operations are available.
  */
 void TransactionController::openCategoryDialog(bool withSelectButton)
 {
-    QVector<Category> categories = categoryRepository.getAllCategories();
+    QVector<Category> categories = categoryRepository.getAllCategories(currentProfileId);
     categoryDialog.setCategories(categories);
     categoryDialog.setSelectCategoryButtonVisible(withSelectButton);
     categoryDialog.exec();
 }
 
 /**
- * @brief Handles category selection
- * @param categoryId ID of selected category
+ * @brief Handles category selection from the dialog
+ * @param categoryId ID of the selected category
  */
 void TransactionController::handleCategorySelected(int categoryId)
 {
@@ -314,52 +335,58 @@ void TransactionController::handleCategorySelected(int categoryId)
 }
 
 /**
- * @brief Show user to select a category
- * @return Selected category ID or -1 if cancelled
+ * @brief Prompts user to select a category for a transaction
+ * @return ID of selected category, or -1 if cancelled
  */
 int TransactionController::askUserForCategoryId()
 {
     selectedCategoryIdForTransaction = -1;
-    openCategoryDialog(true);   
-
-    return selectedCategoryIdForTransaction;   
+    openCategoryDialog(true);
+    return selectedCategoryIdForTransaction;
 }
 
 /**
- * @brief Handles adding a new category
- * @param categoryName Name of category to add
+ * @brief Handles creation of a new category
+ * @param categoryName Name of the category to create
  */
 void TransactionController::handleAddCategoryRequested(const QString& categoryName)
 {
-    if (!categoryRepository.addCategory(categoryName))
+    if (!categoryRepository.addCategory(categoryName, currentProfileId))
     {
-       QMessageBox::warning(&categoryDialog, tr("Error"),
-       tr("Couldn't add category"));
+        QMessageBox::warning(&categoryDialog, tr("Error"),
+            tr("Could not add category"));
     }
-    
+
     refreshCategoryDialogList();
 }
 
 /**
- * @brief Handles category deletion
- * @param categoryId ID of category to delete
+ * @brief Handles deletion of a category
+ * @param categoryId ID of the category to delete
  */
 void TransactionController::handleDeleteCategoryRequested(int categoryId)
 {
-    if (categoryId==1 || !categoryRepository.removeCategoryUsingId(categoryId)) {
+    if (categoryId == 1 || !categoryRepository.removeCategoryUsingId(categoryId)) {
         QMessageBox::warning(&categoryDialog, tr("Error"),
-            tr("Couldn't delete category"));
+            tr("Could not delete category"));
     }
-    
+
     refreshCategoryDialogList();
+
+    // Refresh transaction view to update any category name displays
+    if (currentProfileId >= 0 && mainWindowInitialized) {
+        refreshTransactionsView();
+    }
 }
 
 /**
- * @brief Refreshes category list in dialog
+ * @brief Refreshes the category list in the dialog
+ *
+ * Updates the category dialog with the current list of categories
+ * from the database for the active profile.
  */
 void TransactionController::refreshCategoryDialogList()
 {
-    QVector<Category> categories = categoryRepository.getAllCategories();
+    QVector<Category> categories = categoryRepository.getAllCategories(currentProfileId);
     categoryDialog.setCategories(categories);
 }
-

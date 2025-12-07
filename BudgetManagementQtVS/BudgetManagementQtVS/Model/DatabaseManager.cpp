@@ -4,13 +4,13 @@
 #include <QDebug>
 
 /**
- * @brief Private constructor - initializes database and schema
+ * @brief Constructs the DatabaseManager and initializes the database schema
  *
- * Performs the following tasks:
+ * This constructor performs the following initialization tasks:
  * 1. Establishes SQLite database connection
- * 2. Creates required tables if they don't exist
- * 3. Inserts default data (categories, demo user)
- * 4. Enables foreign key constraints
+ * 2. Creates all required tables if they don't exist
+ * 3. Sets up database triggers for automatic default category creation
+ * 4. Creates a demo admin user for development purposes
  */
 DatabaseManager::DatabaseManager() {
     datebaseInstance = QSqlDatabase::addDatabase("QSQLITE");
@@ -23,10 +23,9 @@ DatabaseManager::DatabaseManager() {
         qDebug() << "Database opened correctly";
     }
 
-
     QSqlQuery tableCreationQuery;
 
-    // Enable foreign key support
+    // Enable foreign key support for referential integrity
     tableCreationQuery.exec("PRAGMA foreign_keys = ON;");
 
     // Create users table for authentication
@@ -35,22 +34,29 @@ DatabaseManager::DatabaseManager() {
         "username TEXT UNIQUE NOT NULL CHECK (username != ''),"
         "password TEXT NOT NULL CHECK (password != ''))");
 
-    // Create profiles table
+    // Create profiles table with user association
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS profiles"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "profile_name TEXT UNIQUE NOT NULL CHECK (profile_name != ''), "
-        "user_id INTEGER, "
+        "user_id INTEGER NOT NULL, "
         "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)");
 
-    // Create categories table for transaction classification
+    // Create categories table with profile scoping
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS category"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "category_name TEXT UNIQUE NOT NULL CHECK (category_name != ''))");
+        "category_name TEXT NOT NULL CHECK (category_name != ''), "
+        "profile_id INTEGER NOT NULL, "
+        "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
+        ")");
 
-    // Insert default "No Category" entry
-    tableCreationQuery.exec("INSERT OR IGNORE INTO category (id, category_name) VALUES (1, 'Brak Kategorii')");
+    // Create trigger to automatically add default "None" category for new profiles
+    tableCreationQuery.exec("CREATE TRIGGER IF NOT EXISTS insertDefaultCategory "
+        "AFTER INSERT ON profiles "
+        "FOR EACH ROW BEGIN INSERT INTO category (category_name, profile_id) "
+        "VALUES ('None', NEW.id); "
+        "END;");
 
-    //Creating table for transactions
+    // Create transactions table with relationships to profiles and categories
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS transactions"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "name TEXT NOT NULL CHECK (name != ''), "
@@ -77,20 +83,20 @@ DatabaseManager::DatabaseManager() {
             );
 
             if (insertAdmin.exec()) {
-                qDebug() << "Użytkownik admin został dodany.";
+                qDebug() << "Demo admin user has been added.";
             }
             else {
-                qDebug() << "Błąd przy dodawaniu admina:" << insertAdmin.lastError();
+                qDebug() << "Error adding admin user:" << insertAdmin.lastError();
             }
         }
         else {
-            qDebug() << "Admin już istnieje – pomijam.";
+            qDebug() << "Admin already exists - skipping.";
         }
     }
 }
 
 /**
- * @brief Returns the singleton instance
+ * @brief Returns the singleton instance of DatabaseManager
  * @return DatabaseManager& Reference to the singleton instance
  */
 DatabaseManager& DatabaseManager::instance() {
@@ -99,8 +105,8 @@ DatabaseManager& DatabaseManager::instance() {
 }
 
 /**
- * @brief Provides access to the database connection
- * @return QSqlDatabase& Reference to the database connection
+ * @brief Provides access to the application's database connection
+ * @return QSqlDatabase& Reference to the QSqlDatabase instance
  */
 QSqlDatabase& DatabaseManager::database() {
     return datebaseInstance;
