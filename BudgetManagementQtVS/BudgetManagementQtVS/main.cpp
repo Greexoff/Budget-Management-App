@@ -29,15 +29,18 @@ int main(int argc, char *argv[])
     // Initialize database connection
     DatabaseManager::instance();
 
+    // Create repository instances for data access layer
     UserRepository userRepository;
     ProfilesRepository profileRepository;
     TransactionRepository transactionRepository;
     CategoryRepository categoryRepository;
 
+    // Create view instances for presentation layer
     LoginDialog loginDialog;
     ProfileDialog profileDialog;
     CategorySelectionView categoryDialog;
     TransactionWindow transactionWindowView;
+
     // Create controller which manages application flow
     Controller controller(loginDialog, profileDialog, categoryDialog, transactionWindowView, userRepository, profileRepository, transactionRepository, categoryRepository, nullptr);
 

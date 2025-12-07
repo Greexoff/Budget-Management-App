@@ -6,7 +6,15 @@
  *
  * Sets up connections between view signals and controller slot methods
  * for authentication, profile management, and category operations.
- *
+ * 
+ * @param loginDialogRef Reference to the login dialog view
+ * @param profileDialogRef Reference to the profile dialog view
+ * @param categorySelectionViewRef Reference to the category selection view
+ * @param transactionWindowViewRef Reference to the transaction window view
+ * @param userRepositoryRef Reference to the user repository
+ * @param profileRepositoryRef Reference to the profile repository
+ * @param transactionRepositoryRef Reference to the transaction repository
+ * @param categoryRepositoryRef Reference to the category repository
  * @param parent Parent QObject
  */
 Controller::Controller(
@@ -234,8 +242,6 @@ void Controller::handleAddTransactionRequest()
 
     QString description = TransactionWindowView.getTransactionDescriptionFromInput(correctData);
     builder.withDescription(description);
-
-    //ADD transaction type 
 
     int categoryId = getCategoryIdFromInput();
     builder.withCategoryId(categoryId);
