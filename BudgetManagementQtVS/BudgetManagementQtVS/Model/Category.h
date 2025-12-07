@@ -6,10 +6,11 @@ class Category {
 private:
 	int categoryId;
 	QString categoryName;
+	int profileId;
 public:
 
 	// constructor
-	Category(int categoryId, const QString& categoryName);
+	Category(int categoryId, const QString& categoryName, int profileId);
 
 	// destructor
 	~Category();
@@ -17,6 +18,7 @@ public:
 	// getters
 	int getCategoryId() const;
 	QString getCategoryName() const;
+	int getIdOfProfileConnectedToCategory() const;
 
 	// setters
 	void setCategoryId(int id);

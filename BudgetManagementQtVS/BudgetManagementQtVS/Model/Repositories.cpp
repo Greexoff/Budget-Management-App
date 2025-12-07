@@ -219,36 +219,39 @@ bool TransactionRepository::removeById(int id)
     return true;
 }
 
-QVector<Category> CategoryRepository::getAllCategories() const
+QVector<Category> CategoryRepository::getAllCategories(int profileId) const
 {
-    QVector<Category> allCategories;
+    QVector<Category> categoriesForProfile;
 
     QSqlQuery query(database);
 
-    if (!query.exec("SELECT id, category_name FROM category"))
+    query.prepare("SELECT id, category_name, profile_id FROM category WHERE profile_id = :profile_id");
+    query.bindValue(":profile_id", profileId);
+    if (!query.exec())
     {
         qDebug() << "CategoryRepository::error: Couldn't get categories" << query.lastError().text();
-        return allCategories;
-    }
+        return categoriesForProfile;
+    }   
 
     while (query.next())
     {
         int id = query.value(0).toInt();
         QString category_name = query.value(1).toString();
-
-        Category category(id, category_name);
-        allCategories.append(category);
+        int profileId = query.value(2).toInt();
+        Category category(id, category_name, profileId);
+        categoriesForProfile.append(category);
     }
 
-    return allCategories;
+    return categoriesForProfile;
 }
 
-bool CategoryRepository::addCategory(const QString& categoryName)
+bool CategoryRepository::addCategory(const QString& categoryName, int profileId)//TO DO ZMIANY
 {
     QSqlQuery query(database);
 
-    query.prepare("INSERT INTO category (category_name) VALUES (:name)");
+    query.prepare("INSERT INTO category (category_name, profile_id) VALUES (:name, :profile_id)");
     query.bindValue(":name", categoryName);
+    query.bindValue(":profile_id", profileId);
 
     if (!query.exec())
     {

@@ -27,15 +27,22 @@ DatabaseManager::DatabaseManager() {
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS profiles"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "profile_name TEXT UNIQUE NOT NULL CHECK (profile_name != ''), "
-        "user_id INTEGER, "
+        "user_id INTEGER NOT NULL, "
         "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)");
 
     //Creating table for categories
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS category"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "category_name TEXT UNIQUE NOT NULL CHECK (category_name != ''))");
-    tableCreationQuery.exec("INSERT OR IGNORE INTO category (id, category_name) VALUES (1, 'Brak Kategorii')");
-
+        "category_name TEXT NOT NULL CHECK (category_name != ''), "
+        "profile_id INTEGER NOT NULL, "
+        "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
+        ")");
+    //Creating trigger to create default category for each profile
+    tableCreationQuery.exec("CREATE TRIGGER IF NOT EXISTS insertDefaultCategory "
+        "AFTER INSERT ON profiles "
+        "FOR EACH ROW BEGIN INSERT INTO category (category_name, profile_id) "
+        "VALUES ('None', NEW.id); "
+        "END;");
     //Creating table for transactions
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS transactions"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "

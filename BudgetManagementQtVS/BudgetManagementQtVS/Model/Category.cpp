@@ -1,8 +1,8 @@
 #include "model/Category.h"
 
 // Constructor
-Category::Category(int categoryId, const QString& categoryName)
-	: categoryId(categoryId), categoryName(categoryName) {}
+Category::Category(int categoryId, const QString& categoryName, int profileId)
+	: categoryId(categoryId), categoryName(categoryName), profileId(profileId) {}
 
 // Destructor
 Category::~Category() {}
@@ -14,7 +14,10 @@ int Category::getCategoryId() const {
 QString Category::getCategoryName() const {
 	return categoryName;
 }
-
+int Category::getIdOfProfileConnectedToCategory() const
+{
+	return profileId;
+}
 // Setters
 void Category::setCategoryId(int id) {
 	categoryId = id;

@@ -240,7 +240,7 @@ void TransactionController::showCategorySelectionDialog()
 }
 void TransactionController::openCategoryDialog(bool withSelectButton)
 {
-    QVector<Category> categories = categoryRepository.getAllCategories();
+    QVector<Category> categories = categoryRepository.getAllCategories(currentProfileId);
     categoryDialog.setCategories(categories);
     categoryDialog.setSelectCategoryButtonVisible(withSelectButton);
     categoryDialog.exec();
@@ -259,7 +259,7 @@ int TransactionController::askUserForCategoryId()
 }
 void TransactionController::handleAddCategoryRequested(const QString& categoryName)
 {
-    if (!categoryRepository.addCategory(categoryName))
+    if (!categoryRepository.addCategory(categoryName, currentProfileId))
     {
        QMessageBox::warning(&categoryDialog, tr("Error"),
        tr("Couldn't add category"));
@@ -279,7 +279,7 @@ void TransactionController::handleDeleteCategoryRequested(int categoryId)
 
 void TransactionController::refreshCategoryDialogList()
 {
-    QVector<Category> categories = categoryRepository.getAllCategories();
+    QVector<Category> categories = categoryRepository.getAllCategories(currentProfileId);
     categoryDialog.setCategories(categories);
 }
 
