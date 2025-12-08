@@ -313,7 +313,7 @@ QVector<Category> CategoryRepository::getAllProfileCategories(int profileId) con
 
     QSqlQuery query(database);
 
-    query.prepare("SELECT id, category_name, profile_id FROM category WHERE profile_id = :profile_id");
+    query.prepare("SELECT id, category_name, profile_id FROM category WHERE profile_id = :profile_id OR id = 1");//'OR id = 1' to fetch 'None' category that does not have profile_id assinged to them
     query.bindValue(":profile_id", profileId);
 
     if (!query.exec())
@@ -374,6 +374,11 @@ bool CategoryRepository::addCategory(const QString& categoryName, int profileId)
  */
 bool CategoryRepository::removeCategoryById(int categoryId)
 {
+    //If user tries to remove 'None' category, not allow them
+    if (categoryId == 1)//Can adjust magic numbers in some type of namespace
+    {
+        return false;
+    }
     QSqlQuery query(database);
 
     // Begin transaction to ensure data consistency

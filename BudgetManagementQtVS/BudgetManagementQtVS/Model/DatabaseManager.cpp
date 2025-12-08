@@ -40,27 +40,15 @@ DatabaseManager::DatabaseManager() {
         "profile_name TEXT NOT NULL CHECK (profile_name != ''), "
         "user_id INTEGER NOT NULL, "
         "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)");
-
     // Create categories table with profile scoping
-    tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS category"
+   tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS category"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "category_name TEXT NOT NULL CHECK (category_name != ''), "
-        "profile_id INTEGER NOT NULL, "
+        "profile_id INTEGER, "
         "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
         ")");
-    // Create trigger to automatically add default "None" category for new profiles
-    tableCreationQuery.exec("CREATE TRIGGER IF NOT EXISTS insertDefaultCategory "
-        "AFTER INSERT ON profiles "
-        "FOR EACH ROW BEGIN INSERT INTO category (category_name, profile_id) "
-        "VALUES ('None', NEW.id); "
-        "END;");
-    //Create trigger to prevent deletion of default category
-    //Need to create workaround to make 1:N connection to 'None' category
-    /*tableCreationQuery.exec("CREATE TRIGGER IF NOT EXISTS onDeletionOfDefaultCategory "
-        "BEFORE DELETE ON category "
-        "FOR EACH ROW WHEN OLD.category_name = 'None' "
-        "BEGIN SELECT RAISE(ABORT, 'Cannot delete default category'); "
-        "END;");*/
+    // Insert default category into database
+   tableCreationQuery.exec("INSERT OR IGNORE INTO category (id, category_name, profile_id) VALUES (1, 'None', NULL)");
 
     // Create transactions table with relationships to profiles and categories
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS transactions"
