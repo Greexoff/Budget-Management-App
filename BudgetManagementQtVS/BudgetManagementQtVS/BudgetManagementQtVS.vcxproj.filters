@@ -63,6 +63,9 @@
     <ClCompile Include="Model\TransactionBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Controller\CategorySelectionController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model\DatabaseManager.h">
@@ -108,6 +111,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="View\CategorySelectionView.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\CategorySelectionController.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

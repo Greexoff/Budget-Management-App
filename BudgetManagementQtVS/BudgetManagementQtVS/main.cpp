@@ -1,4 +1,5 @@
 ﻿#include "Controller/Controller.h"
+#include "Controller/CategorySelectionController.h"
 
 #include "View/TransactionWindowView.h"
 #include "View/CategorySelectionView.h"
@@ -41,8 +42,9 @@ int main(int argc, char *argv[])
     CategorySelectionView categoryDialog;
     TransactionWindow transactionWindowView;
 
+    CategoryController categoryController(categoryDialog, categoryRepository, nullptr);
     // Create controller which manages application flow
-    Controller controller(loginDialog, profileDialog, categoryDialog, transactionWindowView, userRepository, profileRepository, transactionRepository, categoryRepository, nullptr);
+    Controller controller(loginDialog, profileDialog, transactionWindowView, userRepository, profileRepository, transactionRepository, categoryController, nullptr);
 
     // Start the application by showing login screen
     controller.run();

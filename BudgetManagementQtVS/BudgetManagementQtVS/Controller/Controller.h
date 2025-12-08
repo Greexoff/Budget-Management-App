@@ -3,13 +3,13 @@
 #include "Model/Transaction.h"
 #include "Model/Repositories.h"
 #include "Model/User&Profiles.h"
-#include "Model/Category.h"
 #include "Model/TransactionBuilder.h"
+
+#include "Controller/CategorySelectionController.h"
 
 #include "View/TransactionWindowView.h"
 #include "View/LoginDialogView.h"
 #include "View/ProfileDialogView.h"
-#include "View/CategorySelectionView.h"
 
 #include <QObject>
 #include <QVector>
@@ -45,22 +45,21 @@ public:
     Controller(
         LoginDialog& loginDialogRef,
         ProfileDialog& profileDialogRef,
-        CategorySelectionView& categorySelectionViewRef,
         TransactionWindow& transactionWindowViewRef,
         UserRepository& userRepositoryRef,
         ProfilesRepository& profileRepositoryRef,
         TransactionRepository& transactionRepositoryRef,
-        CategoryRepository& categoryRepositoryRef,
+        CategoryController& categoryControllerRef,
         QObject* parent = nullptr);
     
     /**
      * @brief Starts the application by showing the login screen
      */
     void run();
-
+public slots:
+    void handleCategoriesDataChangeRequest();
 private slots:
     // Authentication handlers
-
      /**
      * @brief Handles user login request
      * @param username User's login name
@@ -107,48 +106,25 @@ private slots:
      */
     void handleDeleteTransactionRequest();
 
-    // Category management handlers
 
-    /**
-     * @brief Handles category selection from dialog
-     * @param categoryId ID of the selected category
-     */
-    void handleCategorySelection(int categoryId);
-
-    /**
-     * @brief Handles request to add a new category
-     * @param categoryName Name of the category to create
-     */
-    void handleAddCategoryRequest(const QString& categoryName);
-
-    /**
-     * @brief Handles request to delete a category
-     * @param categoryId ID of the category to delete
-     */
-    void handleDeleteCategoryRequest(int categoryId);
-
-    /**
-     * @brief Shows category management dialog
-     */
-    void handleShowCategorySelectionRequest();
 private:
     // View instances 
     LoginDialog& loginDialog;                   ///< Reference to the login dialog
     ProfileDialog& profileDialog;               ///< Reference to the profile dialog
     TransactionWindow& TransactionWindowView;   ///< Reference to the transaction window
-    CategorySelectionView& categoryDialog;      ///< Reference to the category selection dialog
+
+    //Controller instances
+    CategoryController& categoryController;
 
     // Repository instances 
     UserRepository& userRepository;                 ///< Reference to the user repository
     ProfilesRepository& profilesRepository;         ///< Reference to the profiles repository
     TransactionRepository& transactionRepository;   ///< Reference to the transaction repository
-    CategoryRepository& categoryRepository;         ///< Reference to the category repository
 
     // Application state
     int currentUserId = -1;                     ///< ID of currently logged-in user
     int currentProfileId = -1;                  ///< ID of currently selected profile
     bool mainWindowInitialized = false;         ///< Flag indicating if main window is set up
-    int selectedCategoryIdForTransaction = -1;  ///< ID of category selected for transaction
 
     // Helper methods
 
@@ -162,22 +138,7 @@ private:
      */
     void refreshTransactionsView();
 
-    /**
-     * @brief Displays the category dialog in specified mode
-     * @param withSelectButton True for selection mode, false for management mode
-     */
-    void showCategoryDialog(bool withSelectButton);
-
-    /**
-     * @brief Prompts user to select a category for a transaction
-     * @return ID of selected category, or -1 if cancelled
-     */
-    int getCategoryIdFromInput();
-
-    /**
-     * @brief Refreshes the category list in the dialog
-     */
-    void refreshCategoryDialogList();
+    void handleShowCategoriesRequestFromView();
 };
 
  

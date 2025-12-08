@@ -20,21 +20,19 @@
 Controller::Controller(
     LoginDialog& loginDialogRef,
     ProfileDialog& profileDialogRef,
-    CategorySelectionView& categorySelectionViewRef,
     TransactionWindow& transactionWindowViewRef,
     UserRepository& userRepositoryRef,
     ProfilesRepository& profileRepositoryRef,
     TransactionRepository& transactionRepositoryRef,
-    CategoryRepository& categoryRepositoryRef,
+    CategoryController& categoryControllerRef,
     QObject* parent) : QObject(parent), 
     loginDialog(loginDialogRef),
     profileDialog(profileDialogRef),
-    categoryDialog(categorySelectionViewRef),
     TransactionWindowView(transactionWindowViewRef),
     userRepository(userRepositoryRef),
     profilesRepository(profileRepositoryRef),
     transactionRepository(transactionRepositoryRef),
-    categoryRepository(categoryRepositoryRef)
+    categoryController(categoryControllerRef)
 {
     // Connect authentication dialog signals
     connect(&loginDialog, &LoginDialog::loginRequested,
@@ -50,13 +48,8 @@ Controller::Controller(
     connect(&profileDialog, &ProfileDialog::removeProfileRequested,
         this, &Controller::handleRemoveProfileRequest);
 
-    // Connect category dialog signals
-    connect(&categoryDialog, &CategorySelectionView::selectRequestedCategory,
-        this, &Controller::handleCategorySelection);
-    connect(&categoryDialog, &CategorySelectionView::addRequestedCategory,
-        this, &Controller::handleAddCategoryRequest);
-    connect(&categoryDialog, &CategorySelectionView::deleteRequestedCategory,
-        this, &Controller::handleDeleteCategoryRequest);
+    connect(&categoryController, &CategoryController::categoriesDataChanged,
+        this, &Controller::handleCategoriesDataChangeRequest);
 }
 
 /**
@@ -141,7 +134,7 @@ void Controller::handleProfileSelection(int profileId)
         connect(&TransactionWindowView, &TransactionWindow::deleteTransactionRequest,
             this, &Controller::handleDeleteTransactionRequest);
         connect(&TransactionWindowView, &TransactionWindow::showCategoriesRequest,
-            this, &Controller::handleShowCategorySelectionRequest);
+            this, &Controller::handleShowCategoriesRequestFromView);
 
         mainWindowInitialized = true;
     }
@@ -208,7 +201,7 @@ void Controller::refreshTransactionsView()
         rowData << typeString;
 
         // Resolve category name from ID
-        rowData << categoryRepository.getCategoryNameById(transaction.getCategoryId());
+        rowData << categoryController.getCategoryNameById(transaction.getCategoryId());
 
         tableRows.append(rowData);
     }
@@ -243,7 +236,7 @@ void Controller::handleAddTransactionRequest()
     QString description = TransactionWindowView.getTransactionDescriptionFromInput(correctData);
     builder.withDescription(description);
 
-    int categoryId = getCategoryIdFromInput();
+    int categoryId = categoryController.getCategoryIdFromInput();
     builder.withCategoryId(categoryId);
 
     Transaction newTransaction = builder.build();
@@ -279,97 +272,14 @@ void Controller::handleDeleteTransactionRequest()
     }
     refreshTransactionsView();
 }
-
-/**
- * @brief Displays the category management dialog
- */
-void Controller::handleShowCategorySelectionRequest()
+void Controller::handleCategoriesDataChangeRequest()
 {
-    showCategoryDialog(false);
-}
-
-/**
- * @brief Displays the category dialog in specified mode
- * @param withSelectButton True for selection mode, false for management mode
- *
- * In selection mode, the dialog includes a "Select" button for
- * choosing a category for a transaction. In management mode,
- * only add/delete operations are available.
- */
-void Controller::showCategoryDialog(bool withSelectButton)
-{
-    QVector<Category> categories = categoryRepository.getAllProfileCategories(currentProfileId);
-    categoryDialog.setCategories(categories);
-    categoryDialog.setSelectCategoryButtonVisible(withSelectButton);
-    categoryDialog.exec();
-}
-
-/**
- * @brief Handles category selection from the dialog
- * @param categoryId ID of the selected category
- */
-void Controller::handleCategorySelection(int categoryId)
-{
-    selectedCategoryIdForTransaction = categoryId;
-    categoryDialog.accept();
-}
-
-/**
- * @brief Prompts user to select a category for a transaction
- * @return ID of selected category, or -1 if cancelled
- */
-int Controller::getCategoryIdFromInput()
-{
-    selectedCategoryIdForTransaction = -1;
-    showCategoryDialog(true);
-    return selectedCategoryIdForTransaction;
-}
-
-/**
- * @brief Handles creation of a new category
- * @param categoryName Name of the category to create
- */
-void Controller::handleAddCategoryRequest(const QString& categoryName)
-{
-    if (!categoryRepository.addCategory(categoryName, currentProfileId))
-    {
-        const QString header = tr("New category");
-        const QString message = tr("Failed to add a category.");
-        categoryDialog.showCategoryMessage(header, message, "error");
-    }
-
-    refreshCategoryDialogList();
-}
-
-/**
- * @brief Handles deletion of a category
- * @param categoryId ID of the category to delete
- */
-void Controller::handleDeleteCategoryRequest(int categoryId)
-{
-    if (!categoryRepository.removeCategoryById(categoryId)) 
-    {
-        const QString header = tr("Delete category");
-        const QString message = tr("Failed to delete a category.");
-        categoryDialog.showCategoryMessage(header, message, "error");
-    }
-
-    refreshCategoryDialogList();
-
     // Refresh transaction view to update any category name displays
     if (currentProfileId >= 0 && mainWindowInitialized) {
         refreshTransactionsView();
     }
 }
-
-/**
- * @brief Refreshes the category list in the dialog
- *
- * Updates the category dialog with the current list of categories
- * from the database for the active profile.
- */
-void Controller::refreshCategoryDialogList()
+void Controller::handleShowCategoriesRequestFromView()
 {
-    QVector<Category> categories = categoryRepository.getAllProfileCategories(currentProfileId);
-    categoryDialog.setCategories(categories);
+    categoryController.handleShowCategorySelectionRequest(currentProfileId);
 }
