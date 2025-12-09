@@ -57,9 +57,6 @@
     <ClCompile Include="Controller\BaseController.cpp">
       <Filter>Source Files\Controller</Filter>
     </ClCompile>
-    <ClCompile Include="Controller\Controller.cpp">
-      <Filter>Source Files\Controller</Filter>
-    </ClCompile>
     <ClCompile Include="Controller\CategorySelectionController.cpp">
       <Filter>Source Files\Controller</Filter>
     </ClCompile>
@@ -117,6 +114,9 @@
     <ClCompile Include="Model\Repositories\BaseRepository.cpp">
       <Filter>Source Files\Model\Repositories</Filter>
     </ClCompile>
+    <ClCompile Include="Controller\ControllerManager.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model\Transaction.h">
@@ -130,15 +130,6 @@
     </ClInclude>
     <ClInclude Include="Model\Category.h">
       <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\TransactionController.h">
-      <Filter>Header Files\Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\UserController.h">
-      <Filter>Header Files\Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\ProfileController.h">
-      <Filter>Header Files\Controller</Filter>
     </ClInclude>
     <ClInclude Include="Model\User.h">
       <Filter>Header Files\Model</Filter>
@@ -179,9 +170,6 @@
     <QtMoc Include="Controller\CategorySelectionController.h">
       <Filter>Header Files\Controller</Filter>
     </QtMoc>
-    <QtMoc Include="Controller\Controller.h">
-      <Filter>Header Files\Controller</Filter>
-    </QtMoc>
     <QtMoc Include="View\TransactionWindowView.h">
       <Filter>Header Files\View</Filter>
     </QtMoc>
@@ -193,6 +181,18 @@
     </QtMoc>
     <QtMoc Include="View\CategorySelectionView.h">
       <Filter>Header Files\View</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\ControllerManager.h">
+      <Filter>Header Files\Controller</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\ProfileController.h">
+      <Filter>Header Files\Controller</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\TransactionController.h">
+      <Filter>Header Files\Controller</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\UserController.h">
+      <Filter>Header Files\Controller</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

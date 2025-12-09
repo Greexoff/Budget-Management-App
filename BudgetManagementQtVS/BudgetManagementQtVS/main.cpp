@@ -1,5 +1,9 @@
 ﻿#include "Controller/Controller.h"
+#include "Controller/UserController.h"
+#include "Controller/ProfileController.h"
+#include "Controller/TransactionController.h"
 #include "Controller/CategorySelectionController.h"
+#include "Controller/ControllerManager.h"
 
 #include "View/TransactionWindowView.h"
 #include "View/CategorySelectionView.h"
@@ -43,15 +47,17 @@ int main(int argc, char *argv[])
     // Create view instances for presentation layer
     LoginDialog loginDialog;
     ProfileDialog profileDialog;
+    TransactionWindow transactionWindow;
     CategorySelectionView categoryDialog;
-    TransactionWindow transactionWindowView;
 
+    UserController userController(loginDialog, userRepository, nullptr);
+    ProfileController profileController(profileDialog, profileRepository, nullptr);
+    TransactionController transactionController(transactionWindow, transactionRepository, categoryRepository, nullptr);
     CategoryController categoryController(categoryDialog, categoryRepository, nullptr);
-    // Create controller which manages application flow
-    Controller controller(loginDialog, profileDialog, transactionWindowView, userRepository, profileRepository, transactionRepository, categoryController, nullptr);
 
-    // Start the application by showing login screen
-    controller.run();
+    ControllerManager controllerManager(userController, profileController, transactionController, categoryController);
+
+    userController.run();
 
     // Enter Qt event loop (application runs until quit)
     return app.exec();

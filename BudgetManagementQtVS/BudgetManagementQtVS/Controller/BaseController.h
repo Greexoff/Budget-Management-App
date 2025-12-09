@@ -8,7 +8,7 @@ class BaseController : public QObject
 {
 	Q_OBJECT
 public:
-	explicit BaseController(QObject* parent = nullptr) : QObject(parent), currentProfileId(0), currentUserId(0), mainWindowInitialized(false) {}
+	explicit BaseController(QObject* parent = nullptr): QObject(parent) {}
 protected:
 	void setProfileId(int profileId);
 	int getProfileId();
@@ -20,7 +20,7 @@ protected:
 	bool getMainWindowInitializedAttribute();
 
 private:
-	int currentProfileId;
-	int currentUserId;
-	bool mainWindowInitialized;
+	static int s_currentProfileId;
+	static int s_currentUserId;
+	static bool s_mainWindowInitialized;
 };

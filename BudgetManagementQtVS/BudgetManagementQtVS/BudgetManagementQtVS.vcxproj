@@ -94,6 +94,7 @@
   <ItemGroup>
     <ClCompile Include="Controller\BaseController.cpp" />
     <ClCompile Include="Controller\CategorySelectionController.cpp" />
+    <ClCompile Include="Controller\ControllerManager.cpp" />
     <ClCompile Include="Controller\ProfileController.cpp" />
     <ClCompile Include="Controller\TransactionController.cpp" />
     <ClCompile Include="Controller\UserController.cpp" />
@@ -113,10 +114,10 @@
     <ClCompile Include="View\TransactionWindowView.cpp" />
     <ClCompile Include="View\ProfileDialogView.cpp" />
     <QtRcc Include="BudgetManagementQtVS.qrc" />
-    <ClCompile Include="Controller\Controller.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="Controller\ControllerManager.h" />
     <ClInclude Include="Model\Profile.h" />
     <ClInclude Include="Model\Repositories\BaseRepository.h" />
     <ClInclude Include="Model\Repositories\CategoryRepository.h" />
@@ -124,12 +125,11 @@
     <ClInclude Include="Model\Repositories\TransactionRepository.h" />
     <ClInclude Include="Model\Repositories\UserRepository.h" />
     <ClInclude Include="Model\User.h" />
-    <QtMoc Include="Controller\Controller.h" />
     <QtMoc Include="Controller\CategorySelectionController.h" />
     <QtMoc Include="Controller\BaseController.h" />
-    <ClInclude Include="Controller\ProfileController.h" />
-    <ClInclude Include="Controller\TransactionController.h" />
-    <ClInclude Include="Controller\UserController.h" />
+    <QtMoc Include="Controller\ProfileController.h" />
+    <QtMoc Include="Controller\TransactionController.h" />
+    <QtMoc Include="Controller\UserController.h" />
     <ClInclude Include="Model\Category.h" />
     <ClInclude Include="Model\DatabaseManager.h" />
     <ClInclude Include="Model\Transaction.h" />

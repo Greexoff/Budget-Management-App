@@ -3,11 +3,10 @@
 CategoryController::CategoryController(
     CategorySelectionView& categorySelectionViewRef,
     CategoryRepository& categoryRepositoryRef, 
-    QObject* parent) : QObject(parent),
+    QObject* parent) : BaseController(parent),
     categoryDialog(categorySelectionViewRef),   
     categoryRepository(categoryRepositoryRef)
-{
-    
+{    
     connect(&categoryDialog, &CategorySelectionView::selectRequestedCategory,
         this, &CategoryController::handleCategorySelection);
     connect(&categoryDialog, &CategorySelectionView::addRequestedCategory,
@@ -18,16 +17,10 @@ CategoryController::CategoryController(
 
 void CategoryController::showCategoryDialog(bool withSelectButton)
 {
-    QVector<Category> categories = categoryRepository.getAllProfileCategories(currentProfileId);
+    QVector<Category> categories = categoryRepository.getAllProfileCategories(getProfileId());
     categoryDialog.setCategories(categories);
     categoryDialog.setSelectCategoryButtonVisible(withSelectButton);
     categoryDialog.exec();
-}
-
-void CategoryController::handleShowCategorySelectionRequest(int currentProfileId)
-{
-    this->currentProfileId = currentProfileId;
-    showCategoryDialog(false);
 }
 
 void CategoryController::handleCategorySelection(int categoryId)
@@ -36,17 +29,10 @@ void CategoryController::handleCategorySelection(int categoryId)
     categoryDialog.accept();
 }
 
-int CategoryController::getCategoryIdFromInput()
-{
-    selectedCategoryIdForTransaction = 1;
-    showCategoryDialog(true);
-    return selectedCategoryIdForTransaction;
-}
-
 
 void CategoryController::handleAddCategoryRequest(const QString& categoryName)
 {
-    if (!categoryRepository.addCategory(categoryName, currentProfileId))
+    if (!categoryRepository.addCategory(categoryName, getProfileId()))
     {
         const QString header = tr("New category");
         const QString message = tr("Failed to add a category.");
@@ -74,10 +60,17 @@ void CategoryController::handleDeleteCategoryRequest(int categoryId)
 
 void CategoryController::refreshCategoryDialogList()
 {
-    QVector<Category> categories = categoryRepository.getAllProfileCategories(currentProfileId);
+    QVector<Category> categories = categoryRepository.getAllProfileCategories(getProfileId());
     categoryDialog.setCategories(categories);
 }
-QString CategoryController::getCategoryNameById(int categoryId)
+
+void CategoryController::handleCategorySelectionWhileAddingTransactionRequest(TransactionBuilder& builder)
 {
-    return categoryRepository.getCategoryNameById(categoryId);
+    showCategoryDialog(true);
+    builder.withCategoryId(selectedCategoryIdForTransaction);
+    emit categorySelected(builder);
+}
+void CategoryController::handleCategorySelectionFromTransactionWindow(bool selectButtonVisibility)
+{
+    showCategoryDialog(selectButtonVisibility);
 }

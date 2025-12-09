@@ -1,28 +1,33 @@
 #include "Controller/BaseController.h"
 
+int BaseController::s_currentUserId = 0;
+int BaseController::s_currentProfileId = 0;
+bool BaseController::s_mainWindowInitialized = false;
+
+	
 void BaseController::setProfileId(int profileId)
 {
-	currentProfileId = profileId;
+	s_currentProfileId = profileId;
 }
 int BaseController::getProfileId()
 {
-	return currentProfileId;
+	return s_currentProfileId;
 }
 
 void BaseController::setUserId(int userId)
 {
-	currentUserId = userId;
+	s_currentUserId = userId;
 }
 int BaseController::getUserId()
 {
-	return currentUserId;
+	return s_currentUserId;
 }
 
 void BaseController::setMainWindowInitializedAttribute(bool value)
 {
-	mainWindowInitialized = value;
+	s_mainWindowInitialized = value;
 }
 bool BaseController::getMainWindowInitializedAttribute()
 {
-	return mainWindowInitialized;
+	return s_mainWindowInitialized;
 }
