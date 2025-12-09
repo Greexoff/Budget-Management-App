@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <QDialog>
-#include "Model/User&Profiles.h"
+#include <Model/User.h>
+#include <Model/Profile.h>
 
 namespace Ui { class ProfileDialog; }
 

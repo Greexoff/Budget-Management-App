@@ -6,7 +6,11 @@
 #include "View/LoginDialogView.h"
 #include "View/ProfileDialogView.h"
 
-#include "Model/Repositories.h"
+#include <Model/Repositories/CategoryRepository.h>
+#include <Model/Repositories/UserRepository.h>
+#include <Model/Repositories/ProfileRepository.h>
+#include <Model/Repositories/TransactionRepository.h>
+
 #include <QtWidgets/QApplication>
 #include <QSqlDatabase>
 #include <QSqlQuery>

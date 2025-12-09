@@ -1,0 +1,141 @@
+#include <Model/Repositories/TransactionRepository.h>
+
+
+/**
+ * @brief Retrieves all transactions for a specific profile
+ * @param profileId ID of the profile
+ * @return Vector of Transaction objects belonging to the profile
+ */
+QVector<Transaction> TransactionRepository::getAllProfileTransaction(int profileId) const
+{
+    QVector<Transaction> result;
+    QSqlQuery query(database);
+
+    query.prepare(
+        "SELECT id, name, date, description, amount, type, category_id, profile_id "
+        "FROM transactions WHERE profile_id = :profileId"
+    );
+    query.bindValue(":profileId", profileId);
+
+    if (!query.exec())
+    {
+        qDebug() << "Transaction retrieval for profile failed:" << query.lastError().text();
+        return result;
+    }
+
+    while (query.next()) {
+        int id = query.value(0).toInt();
+        QString name = query.value(1).toString();
+        QString dateStr = query.value(2).toString();
+        QString description = query.value(3).toString();
+        double amount = query.value(4).toDouble();
+        QString typeStr = query.value(5).toString();
+        int categoryId = query.value(6).toInt();
+        int profileId = query.value(7).toInt();
+
+        QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
+        TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
+
+        Transaction transaction(id, name, date, description, amount, type, categoryId, profileId);
+        result.append(transaction);
+    }
+
+    return result;
+}
+
+/**
+ * @brief Retrieves all transactions from the database
+ * @return Vector of all Transaction objects
+ */
+QVector<Transaction> TransactionRepository::getAll() const
+{
+    QVector<Transaction> result;
+
+    QSqlQuery query(database);
+
+    if (!query.exec("SELECT id, name, date, description, amount, type, profile_id, category_id FROM transactions"))
+    {
+        qDebug() << "TransactionRepository::getAll error:" << query.lastError().text();
+        return result;
+    }
+
+    while (query.next())
+    {
+        int id = query.value(0).toInt();
+        QString name = query.value(1).toString();
+        QString dateStr = query.value(2).toString();
+        QString description = query.value(3).toString();
+        double amount = query.value(4).toDouble();
+        QString typeStr = query.value(5).toString();
+        int associatedProfileId = query.value(6).toInt();
+        int categoryId = query.value(7).toInt();
+        QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
+
+        TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
+
+        Transaction transaction(id, name, date, description, amount, type, categoryId, associatedProfileId);
+        result.append(transaction);
+    }
+
+    return result;
+}
+
+/**
+ * @brief Adds a new transaction to the database
+ *
+ * Determines transaction type based on amount sign:
+ * Positive amount: EXPENSE
+ * Negative amount: INCOME
+ *
+ * @param transaction Transaction object to add
+ * @return True if transaction added successfully, false otherwise
+ */
+bool TransactionRepository::addTransaction(const Transaction& transaction)
+{
+    QSqlQuery query(database);
+
+    query.prepare(
+        "INSERT INTO transactions (name, type, date, description, amount, category_id, profile_id) "
+        "VALUES (:name, :type, :date, :description, :amount, :category_id, :profile_id)"
+    );
+
+    query.bindValue(":name", transaction.getTransactionName());
+
+    // Determine transaction type based on amount sign
+    QString typeStr = (transaction.getTransactionAmount() >= 0.0) ? "INCOME" : "EXPENSE";
+    query.bindValue(":type", typeStr);
+
+    query.bindValue(":date", transaction.getTransactionDate().toString("yyyy-MM-dd"));
+    query.bindValue(":description", transaction.getTransactionDescription());
+    query.bindValue(":amount", transaction.getTransactionAmount());
+    query.bindValue(":profile_id", transaction.getAssociatedProfileId());
+    query.bindValue(":category_id", transaction.getCategoryId());
+
+    if (!query.exec())
+    {
+        qDebug() << "TransactionRepository::add error:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * @brief Deletes a transaction by ID
+ * @param id ID of transaction to delete
+ * @return True if transaction deleted successfully, false otherwise
+ */
+bool TransactionRepository::removeTransactionById(int id)
+{
+    QSqlQuery query(database);
+    query.prepare("DELETE FROM transactions WHERE id = :id");
+    query.bindValue(":id", id);
+
+    if (!query.exec())
+    {
+        qDebug() << "TransactionRepository::removeById error:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}

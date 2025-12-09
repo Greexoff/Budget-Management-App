@@ -92,13 +92,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Controller\BaseController.cpp" />
     <ClCompile Include="Controller\CategorySelectionController.cpp" />
+    <ClCompile Include="Controller\ProfileController.cpp" />
+    <ClCompile Include="Controller\TransactionController.cpp" />
+    <ClCompile Include="Controller\UserController.cpp" />
     <ClCompile Include="Model\Category.cpp" />
     <ClCompile Include="Model\DatabaseManager.cpp" />
+    <ClCompile Include="Model\Profile.cpp" />
+    <ClCompile Include="Model\Repositories\BaseRepository.cpp" />
+    <ClCompile Include="Model\Repositories\CategoryRepository.cpp" />
+    <ClCompile Include="Model\Repositories\ProfileRepository.cpp" />
+    <ClCompile Include="Model\Repositories\TransactionRepository.cpp" />
+    <ClCompile Include="Model\Repositories\UserRepository.cpp" />
     <ClCompile Include="Model\Transaction.cpp" />
-    <ClCompile Include="Model\Repositories.cpp" />
     <ClCompile Include="Model\TransactionBuilder.cpp" />
-    <ClCompile Include="Model\User&amp;Profiles.cpp" />
+    <ClCompile Include="Model\User.cpp" />
     <ClCompile Include="View\CategorySelectionView.cpp" />
     <ClCompile Include="View\LoginDialogView.cpp" />
     <ClCompile Include="View\TransactionWindowView.cpp" />
@@ -108,15 +117,24 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Model\Profile.h" />
+    <ClInclude Include="Model\Repositories\BaseRepository.h" />
+    <ClInclude Include="Model\Repositories\CategoryRepository.h" />
+    <ClInclude Include="Model\Repositories\ProfileRepository.h" />
+    <ClInclude Include="Model\Repositories\TransactionRepository.h" />
+    <ClInclude Include="Model\Repositories\UserRepository.h" />
+    <ClInclude Include="Model\User.h" />
     <QtMoc Include="Controller\Controller.h" />
     <QtMoc Include="Controller\CategorySelectionController.h" />
+    <QtMoc Include="Controller\BaseController.h" />
+    <ClInclude Include="Controller\ProfileController.h" />
+    <ClInclude Include="Controller\TransactionController.h" />
+    <ClInclude Include="Controller\UserController.h" />
     <ClInclude Include="Model\Category.h" />
     <ClInclude Include="Model\DatabaseManager.h" />
     <ClInclude Include="Model\Transaction.h" />
     <QtMoc Include="View\TransactionWindowView.h" />
-    <ClInclude Include="Model\Repositories.h" />
     <ClInclude Include="Model\TransactionBuilder.h" />
-    <ClInclude Include="Model\User&amp;Profiles.h" />
     <QtMoc Include="View\ProfileDialogView.h" />
     <QtMoc Include="View\LoginDialogView.h" />
     <QtMoc Include="View\CategorySelectionView.h" />

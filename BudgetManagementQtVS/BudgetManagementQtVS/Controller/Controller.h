@@ -1,8 +1,14 @@
 ﻿#pragma once
 
 #include "Model/Transaction.h"
-#include "Model/Repositories.h"
-#include "Model/User&Profiles.h"
+
+#include <Model/Repositories/CategoryRepository.h>
+#include <Model/Repositories/UserRepository.h>
+#include <Model/Repositories/ProfileRepository.h>
+#include <Model/Repositories/TransactionRepository.h>
+
+#include <Model/User.h>
+#include <Model/Profile.h>
 #include "Model/TransactionBuilder.h"
 
 #include "Controller/CategorySelectionController.h"

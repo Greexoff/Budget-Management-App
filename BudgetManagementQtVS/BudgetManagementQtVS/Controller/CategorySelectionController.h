@@ -1,5 +1,5 @@
 #pragma once
-#include "Model/Repositories.h"
+#include <Model/Repositories/CategoryRepository.h>
 #include "Model/Category.h"
 
 #include "View/CategorySelectionView.h"
