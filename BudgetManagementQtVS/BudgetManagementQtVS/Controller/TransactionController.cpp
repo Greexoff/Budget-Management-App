@@ -7,27 +7,51 @@ TransactionController::TransactionController(TransactionWindow& transactionWindo
 void TransactionController::startAddingTransactionRequest()
 {
     if (getProfileId() < 0) {
-        const QString header = tr("New transaction");
-        const QString message = tr("Please select a profile first.");
-        transactionWindow.showTransactionMessage(header, message, "error");
+        transactionWindow.showTransactionMessage(tr("New transaction"), tr("Please select a profile first."), "error");
         return;
     }
 
-    bool correctData = false;
+    QVector<Category> categories = categoryRepository.getAllProfileCategories(getProfileId());
+    QVector<FinancialAccount> accounts = financialAccountRepository.getAllProfileFinancialAccounts(getProfileId());
 
-    TransactionBuilder builder;
-    builder.withProfileId(getProfileId());
+    if (accounts.isEmpty()) {
+        transactionWindow.showTransactionMessage(tr("Warning"), tr("You need to add a Financial Account first!"), "error");
+        return;
+    }
 
-    QString name = transactionWindow.getTransactionNameFromInput(correctData);
-    if (!correctData || name.trimmed().isEmpty()) { return; }
-    builder.withName(name);
+    AddTransactionDialogView dialog(&transactionWindow);
 
-    double amount = transactionWindow.getTransactionAmountFromInput(correctData);
-    builder.withAmount(amount);
+    dialog.setCategories(categories);
+    dialog.setFinancialAccounts(accounts);
 
-    QString description = transactionWindow.getTransactionDescriptionFromInput(correctData);
-    builder.withDescription(description);
-    emit categorySelectionRequest(builder);
+
+    if (dialog.exec() == QDialog::Accepted) {
+
+        QString name = dialog.getName();
+
+        if (name.trimmed().isEmpty()) {
+            transactionWindow.showTransactionMessage(tr("Error"), tr("Transaction name cannot be empty."), "error");
+            return;
+        }
+
+        TransactionBuilder builder;
+        builder.withProfileId(getProfileId())
+            .withName(name)
+            .withAmount(dialog.getAmount())
+            .withDate(dialog.getDate())
+            .withDescription(dialog.getDescription())
+            .withCategoryId(dialog.getSelectedCategoryId())
+            .withFinancialAccountId(dialog.getSelectedFinancialAccountId());
+
+        Transaction newTransaction = builder.build();
+
+        if (transactionRepository.addTransaction(newTransaction)) {
+            refreshTransactionsView();
+        }
+        else {
+            transactionWindow.showTransactionMessage(tr("Error"), tr("Failed to add transaction to database."), "error");
+        }
+    }
 }
 void TransactionController::finalizeTransaction(TransactionBuilder& builder)
 {
@@ -169,28 +193,53 @@ void TransactionController::handleEditTransactionRequest()
     }
 
     Transaction currentTrans = transactionRepository.getTransactionById(transactionId);
+    if (currentTrans.getTransactionId() == -1) return; 
 
-    if (currentTrans.getTransactionId() == -1) return;
+    QVector<Category> categories = categoryRepository.getAllProfileCategories(getProfileId());
+    QVector<FinancialAccount> accounts = financialAccountRepository.getAllProfileFinancialAccounts(getProfileId());
 
-    bool correctData = false;
+    AddTransactionDialogView dialog(&transactionWindow);
+    dialog.setWindowTitle(tr("Edit Transaction")); 
 
-    TransactionBuilder builder;
-    builder.withId(currentTrans.getTransactionId()) 
-        .withProfileId(getProfileId())
-        .withDate(currentTrans.getTransactionDate()); 
+    dialog.setCategories(categories);
+    dialog.setFinancialAccounts(accounts);
 
-    QString name = transactionWindow.getTransactionNameFromInput(correctData, currentTrans.getTransactionName());
-    if (!correctData || name.trimmed().isEmpty()) return;
-    builder.withName(name);
 
-    double amount = transactionWindow.getTransactionAmountFromInput(correctData, currentTrans.getTransactionAmount());
-    if (!correctData) return;
-    builder.withAmount(amount);
+    dialog.setName(currentTrans.getTransactionName());
+    dialog.setAmount(currentTrans.getTransactionAmount());
+    dialog.setDate(currentTrans.getTransactionDate());
+    dialog.setDescription(currentTrans.getTransactionDescription());
+    dialog.setSelectedCategoryId(currentTrans.getCategoryId());
+    dialog.setSelectedFinancialAccountId(currentTrans.getFinancialAccountId());
 
-    QString description = transactionWindow.getTransactionDescriptionFromInput(correctData, currentTrans.getTransactionDescription());
-    if (!correctData) return;
-    builder.withDescription(description);
-    emit categorySelectionRequest(builder);
+    if (dialog.exec() == QDialog::Accepted) {
+
+        QString name = dialog.getName();
+        if (name.trimmed().isEmpty()) {
+            transactionWindow.showTransactionMessage(tr("Error"), tr("Transaction name cannot be empty."), "error");
+            return;
+        }
+
+
+        TransactionBuilder builder;
+        builder.withId(currentTrans.getTransactionId()) 
+            .withProfileId(getProfileId())
+            .withName(name)
+            .withAmount(dialog.getAmount())
+            .withDate(dialog.getDate())
+            .withDescription(dialog.getDescription())
+            .withCategoryId(dialog.getSelectedCategoryId())
+            .withFinancialAccountId(dialog.getSelectedFinancialAccountId());
+
+        Transaction updatedTransaction = builder.build();
+
+        if (transactionRepository.updateTransaction(updatedTransaction)) {
+            refreshTransactionsView();
+        }
+        else {
+            transactionWindow.showTransactionMessage(tr("Error"), tr("Failed to update transaction."), "error");
+        }
+    }
 }
 
 void TransactionController::handleBackToProfileRequest()

@@ -185,7 +185,7 @@ Transaction TransactionRepository::getTransactionById(int id) const
         int financialAccountId = query.value(8).toInt();
         TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
 
-        return Transaction(tId, name, date, desc, amount, type, catId, profId,financialAccountId);
+        return Transaction(tId, name, date, desc, amount, type, catId, financialAccountId, profId);
     }
     return Transaction(-1, "", QDate(), "", 0, EXPENSE, 1, -1, 1);
 }

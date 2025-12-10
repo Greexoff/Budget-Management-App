@@ -7,6 +7,7 @@
 #include "Model/TransactionBuilder.h"
 
 #include "View/TransactionWindowView.h"
+#include "View/AddTransactionDialogView.h"
 
 class TransactionController : public BaseController
 {
