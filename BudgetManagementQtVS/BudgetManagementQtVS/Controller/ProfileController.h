@@ -13,6 +13,7 @@ public:
     ProfileController(ProfileDialog& profileDialogRef, ProfilesRepository& profileRepositoryRef, QObject* parent = nullptr);
 signals:
     void profileSelected();
+    void logout();
 public slots:
     /**
     brief Displays profiles associated with the current user
@@ -42,4 +43,6 @@ private:
     void handleRemoveProfileRequest(int profileId);
 
     void handleEditProfileRequest(int profileId, const QString& newName);
+
+    void handleLogoutRequest();
 };

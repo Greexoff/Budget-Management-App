@@ -58,6 +58,8 @@ signals:
 
     void editTransactionRequest();
 
+    void backToProfileRequested();
+
 private slots:
     void onButtonAddTransactionClicked();
     void onButtonDeleteTransactionClicked();
@@ -79,6 +81,8 @@ private:
      * Sets up table columns, headers, and display properties.
      */
     void initializeTransactionTable();
+
+    void onButtonChangeProfileClicked();
 
 };
 

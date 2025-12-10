@@ -48,13 +48,15 @@ signals:
 
     void editProfileRequested(int profileId, const QString& newName);
 
+    void logoutRequested();
+
 private slots:
     void onButtonSelectClicked();
     void onButtonAddClicked();
     void onButtonRemoveClicked();
     void onButtonCancelClicked();
     void onButtonEditClicked();
-
+    void onButtonLogoutClicked();
 private:
     Ui::ProfileDialog* ui;          ///< Pointer to UI elements
     QVector<Profile> profilesId;    ///< Local copy of user's profiles

@@ -13,4 +13,8 @@ ControllerManager::ControllerManager(UserController& userControllerRef, ProfileC
         &categoryController, &CategoryController::handleCategorySelectionFromTransactionWindow);
     connect(&categoryController, &CategoryController::categoriesDataChanged,
         &transactionController, &TransactionController::handleCategoriesDataChangeRequest);
+    connect(&transactionController, &TransactionController::returnToProfileView,
+        &profileController, &ProfileController::showProfilesForCurrentUser);
+    connect(&profileController, &ProfileController::logout,
+        &userController, &UserController::run);
 }

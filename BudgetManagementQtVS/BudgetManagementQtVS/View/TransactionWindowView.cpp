@@ -65,6 +65,7 @@ void TransactionWindow::setupConnections()
 	connect(ui->buttonDeleteTransaction, &QPushButton::clicked, this, &TransactionWindow::onButtonDeleteTransactionClicked);
     connect(ui->browseCategoriesButton, &QPushButton::clicked, this, &TransactionWindow::onButtonManageCategoriesClicked);
     connect(ui->buttonEdit, &QPushButton::clicked, this, &TransactionWindow::onButtonEditTransactionClicked);
+    connect(ui->changeProfileButton, &QPushButton::clicked, this, &TransactionWindow::onButtonChangeProfileClicked);
 }
 
 /**
@@ -163,4 +164,9 @@ QString TransactionWindow::getTransactionDescriptionFromInput(bool& correctData,
 {
     return QInputDialog::getText(this, tr("Transaction"), tr("Description:"),
         QLineEdit::Normal, defaultValue, &correctData);
+}
+
+void TransactionWindow::onButtonChangeProfileClicked()
+{
+    emit backToProfileRequested();
 }

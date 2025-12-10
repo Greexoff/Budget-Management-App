@@ -111,20 +111,34 @@ void TransactionController::refreshTransactionsView()
 
 void TransactionController::initializeMainWindow()
 {
-    connect(&transactionWindow, &TransactionWindow::addTransactionRequest,
-        this, &TransactionController::startAddingTransactionRequest);
-    connect(&transactionWindow, &TransactionWindow::deleteTransactionRequest,
-        this, &TransactionController::handleDeleteTransactionRequest);
-    connect(&transactionWindow, &TransactionWindow::showCategoriesRequest,
-        this, &TransactionController::handleShowCategoriesRequestFromView);
-    connect(&transactionWindow, &TransactionWindow::editTransactionRequest,
-        this, &TransactionController::handleEditTransactionRequest);
+    // Sprawdzamy flagê TUTAJ. Jeœli false (pierwsze uruchomienie), robimy connecty.
+    // Jeœli true (powrót do profilu i ponowny wybór), pomijamy connecty.
+    if (!getMainWindowInitializedAttribute()) {
+        connect(&transactionWindow, &TransactionWindow::addTransactionRequest,
+            this, &TransactionController::startAddingTransactionRequest);
 
-    setMainWindowInitializedAttribute(true);
+        connect(&transactionWindow, &TransactionWindow::deleteTransactionRequest,
+            this, &TransactionController::handleDeleteTransactionRequest);
 
-     refreshTransactionsView();
-     transactionWindow.show();
+        connect(&transactionWindow, &TransactionWindow::showCategoriesRequest,
+            this, &TransactionController::handleShowCategoriesRequestFromView);
+
+        // Pamiêtaj o pod³¹czeniu sygna³ów edycji i powrotu, które robiliœmy wczeœniej!
+        connect(&transactionWindow, &TransactionWindow::editTransactionRequest,
+            this, &TransactionController::handleEditTransactionRequest);
+
+        connect(&transactionWindow, &TransactionWindow::backToProfileRequested,
+            this, &TransactionController::handleBackToProfileRequest);
+
+        // Oznaczamy, ¿e po³¹czenia s¹ ju¿ zrobione
+        setMainWindowInitializedAttribute(true);
+    }
+
+    // Te metody wykonujemy ZAWSZE, niezale¿nie czy to pierwszy raz, czy kolejny
+    refreshTransactionsView();
+    transactionWindow.show(); // To jest kluczowe - musi siê wywo³aæ, ¿eby program nie zgas³
 }
+
 void TransactionController::handleShowCategoriesRequestFromView()
 {
     emit showCategories(false);
@@ -167,4 +181,10 @@ void TransactionController::handleEditTransactionRequest()
     if (!correctData) return;
     builder.withDescription(description);
     emit categorySelectionRequest(builder);
+}
+
+void TransactionController::handleBackToProfileRequest()
+{
+    transactionWindow.hide();
+    emit returnToProfileView();
 }

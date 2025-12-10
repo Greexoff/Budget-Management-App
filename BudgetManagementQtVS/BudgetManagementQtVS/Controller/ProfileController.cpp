@@ -11,6 +11,8 @@ ProfileController::ProfileController(ProfileDialog& profileDialogRef, ProfilesRe
         this, &ProfileController::handleRemoveProfileRequest);
     connect(&profileDialog, &ProfileDialog::editProfileRequested,
         this, &ProfileController::handleEditProfileRequest);
+    connect(&profileDialog, &ProfileDialog::logoutRequested,
+        this, &ProfileController::handleLogoutRequest);
 }
 /**
  * @brief Displays profiles associated with the current user
@@ -35,9 +37,10 @@ void ProfileController::handleProfileSelection(int profileId)
     setProfileId(profileId);
     profileDialog.hide();
 
+    emit profileSelected();
     // Initialize main window connections on first profile selection
-    if (!getMainWindowInitializedAttribute()) {
-        emit profileSelected();
+    //if (!getMainWindowInitializedAttribute()) {
+       // emit profileSelected();
        /* connect(&TransactionWindowView, &TransactionWindow::addTransactionRequest,
             this, &Controller::handleAddTransactionRequest);
         connect(&TransactionWindowView, &TransactionWindow::deleteTransactionRequest,
@@ -46,7 +49,7 @@ void ProfileController::handleProfileSelection(int profileId)
             this, &Controller::handleShowCategoriesRequestFromView);
             */
        // setMainWindowInitializedAttribute(true);
-    }
+    //}
 
    // refreshTransactionsView();
    // TransactionWindowView.show();
@@ -91,4 +94,14 @@ void ProfileController::handleEditProfileRequest(int profileId, const QString& n
         return;
     }
     showProfilesForCurrentUser();
+}
+
+void ProfileController::handleLogoutRequest()
+{
+    setUserId(-1);
+    setProfileId(-1);
+
+    profileDialog.hide();
+
+    emit logout();
 }

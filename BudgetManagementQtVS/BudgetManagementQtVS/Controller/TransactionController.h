@@ -15,6 +15,7 @@ public:
 signals: 
     void categorySelectionRequest(TransactionBuilder& builder);
     void showCategories(bool selectButtonVisibility);
+    void returnToProfileView();
 public slots:
     /**
    * @brief Handles request to add a new transaction
@@ -39,4 +40,6 @@ private:
     void refreshTransactionsView();
 
     void handleEditTransactionRequest();
+
+    void handleBackToProfileRequest();
 };

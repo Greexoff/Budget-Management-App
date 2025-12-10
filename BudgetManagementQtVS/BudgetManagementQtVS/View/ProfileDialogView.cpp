@@ -34,6 +34,7 @@ void ProfileDialog::setupConnections()
     connect(ui->buttonRemove, &QPushButton::clicked, this, &ProfileDialog::onButtonRemoveClicked);
     connect(ui->buttonCancel, &QPushButton::clicked, this, &ProfileDialog::onButtonCancelClicked);
     connect(ui->buttonEdit, &QPushButton::clicked, this, &ProfileDialog::onButtonEditClicked);
+    connect(ui->logoutButton, &QPushButton::clicked, this, &ProfileDialog::onButtonLogoutClicked);
 }
 
 /**
@@ -121,4 +122,9 @@ void ProfileDialog::onButtonEditClicked()
     if (ok && !newName.trimmed().isEmpty()) {
         emit editProfileRequested(id, newName);
     }
+}
+
+void ProfileDialog::onButtonLogoutClicked()
+{
+    emit logoutRequested();
 }
