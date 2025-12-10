@@ -1,5 +1,6 @@
 ﻿#include "LoginDialogView.h"
 #include "ui_LoginDialogView.h"
+#include <QApplication>
 
 /**
  * @brief Constructs the login dialog with password masking
@@ -57,7 +58,7 @@ void LoginDialog::onButtonRegisterClicked()
  */
 void LoginDialog::onButtonCancelClicked()
 {
-    reject();
+    QApplication::quit();
 }
 void LoginDialog::showLoginMessage(QString header, QString message, QString messageType)
 {

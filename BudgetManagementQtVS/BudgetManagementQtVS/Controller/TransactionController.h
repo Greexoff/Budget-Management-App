@@ -18,15 +18,16 @@ signals:
     void showCategories(bool selectButtonVisibility);
     void financialAccountSelectionRequest(TransactionBuilder& builder);
     void showFinancialAccounts(bool selectButtonVisibility);
+    void returnToProfileView();
 public slots:
     /**
    * @brief Handles request to add a new transaction
    */
     void startAddingTransactionRequest();
-    void finalizeAddingTransaction(TransactionBuilder& builder);
     void initializeMainWindow();
     void handleCategoriesDataChangeRequest();
     void handleFinancialAccountsDataChangeRequest();
+    void finalizeTransaction(TransactionBuilder& builder);
 private:
 	TransactionWindow& transactionWindow;
 	TransactionRepository& transactionRepository;
@@ -45,4 +46,7 @@ private:
     */
     void refreshTransactionsView();
 
+    void handleEditTransactionRequest();
+
+    void handleBackToProfileRequest();
 };

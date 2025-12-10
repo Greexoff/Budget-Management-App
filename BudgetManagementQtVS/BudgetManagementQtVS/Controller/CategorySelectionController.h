@@ -29,6 +29,7 @@ public slots:
     void handleCategorySelectionFromTransactionWindow(bool selectButtonVisibility);
     void handleAddCategoryRequest(const QString& categoryName);
     void handleDeleteCategoryRequest(int categoryId);
+    void handleEditCategoryRequest(int categoryId, const QString& newName);
 
 private:
     CategorySelectionView& categoryDialog;      ///< Reference to the category selection dialog

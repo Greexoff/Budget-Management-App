@@ -12,7 +12,7 @@ ControllerManager::ControllerManager(UserController& userControllerRef, ProfileC
     connect(&categoryController, &CategoryController::categorySelected,
         &financialAccountController, &FinancialAccountController::handleFinancialAccountSelectionWhileAddingTransactionRequest);
     connect(&financialAccountController, &FinancialAccountController::financialAccountSelected,
-        &transactionController, &TransactionController::finalizeAddingTransaction);
+        &transactionController, &TransactionController::finalizeTransaction);
     connect(&transactionController, &TransactionController::showCategories,
         &categoryController, &CategoryController::handleCategorySelectionFromTransactionWindow);
     connect(&transactionController, &TransactionController::showFinancialAccounts,

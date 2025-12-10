@@ -1,4 +1,5 @@
 #include "Controller/ProfileController.h"
+#include <QApplication>
 
 ProfileController::ProfileController(ProfileDialog& profileDialogRef, ProfilesRepository& profileRepositoryRef, QObject* parent) : BaseController(parent), profileDialog(profileDialogRef), profileRepository(profileRepositoryRef)
 {
@@ -9,6 +10,10 @@ ProfileController::ProfileController(ProfileDialog& profileDialogRef, ProfilesRe
         this, &ProfileController::handleAddProfileRequest);
     connect(&profileDialog, &ProfileDialog::removeProfileRequested,
         this, &ProfileController::handleRemoveProfileRequest);
+    connect(&profileDialog, &ProfileDialog::editProfileRequested,
+        this, &ProfileController::handleEditProfileRequest);
+    connect(&profileDialog, &ProfileDialog::logoutRequested,
+        this, &ProfileController::handleLogoutRequest);
 }
 /**
  * @brief Displays profiles associated with the current user
@@ -17,7 +22,9 @@ void ProfileController::showProfilesForCurrentUser()
 {
     QVector<Profile> profiles = profileRepository.getProfilesByUserId(getUserId());
     profileDialog.setProfiles(profiles);
-    profileDialog.exec();
+    if (profileDialog.exec() == QDialog::Rejected) {
+        QApplication::quit();
+    }
 }
 
 /**
@@ -31,23 +38,9 @@ void ProfileController::showProfilesForCurrentUser()
 void ProfileController::handleProfileSelection(int profileId)
 {
     setProfileId(profileId);
-    profileDialog.hide();
+    profileDialog.accept();
 
-    // Initialize main window connections on first profile selection
-    if (!getMainWindowInitializedAttribute()) {
-        emit profileSelected();
-       /* connect(&TransactionWindowView, &TransactionWindow::addTransactionRequest,
-            this, &Controller::handleAddTransactionRequest);
-        connect(&TransactionWindowView, &TransactionWindow::deleteTransactionRequest,
-            this, &Controller::handleDeleteTransactionRequest);
-        connect(&TransactionWindowView, &TransactionWindow::showCategoriesRequest,
-            this, &Controller::handleShowCategoriesRequestFromView);
-            */
-       // setMainWindowInitializedAttribute(true);
-    }
-
-   // refreshTransactionsView();
-   // TransactionWindowView.show();
+    emit profileSelected();
 }
 
 /**
@@ -78,4 +71,25 @@ void ProfileController::handleRemoveProfileRequest(int profileId)
         return;
     }
     showProfilesForCurrentUser();
+}
+
+void ProfileController::handleEditProfileRequest(int profileId, const QString& newName)
+{
+    if (!profileRepository.updateProfile(profileId, newName)) {
+        const QString header = tr("Edit Profile");
+        const QString message = tr("Failed to update profile.");
+        profileDialog.showProfileMessage(header, message, "error");
+        return;
+    }
+    showProfilesForCurrentUser();
+}
+
+void ProfileController::handleLogoutRequest()
+{
+    setUserId(-1);
+    setProfileId(-1);
+
+    profileDialog.hide();
+
+    emit logout();
 }

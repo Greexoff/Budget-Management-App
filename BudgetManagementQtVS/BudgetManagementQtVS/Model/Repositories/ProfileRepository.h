@@ -30,4 +30,7 @@ public:
      * @return True if profile deleted successfully, false otherwise
      */
     bool removeProfileById(int profileId);
+
+    //edycja profilu
+    bool updateProfile(int profileId, const QString& newName);
 };

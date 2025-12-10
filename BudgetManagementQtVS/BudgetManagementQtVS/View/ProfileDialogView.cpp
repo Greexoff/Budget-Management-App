@@ -33,6 +33,8 @@ void ProfileDialog::setupConnections()
     connect(ui->buttonAdd, &QPushButton::clicked, this, &ProfileDialog::onButtonAddClicked);
     connect(ui->buttonRemove, &QPushButton::clicked, this, &ProfileDialog::onButtonRemoveClicked);
     connect(ui->buttonCancel, &QPushButton::clicked, this, &ProfileDialog::onButtonCancelClicked);
+    connect(ui->buttonEdit, &QPushButton::clicked, this, &ProfileDialog::onButtonEditClicked);
+    connect(ui->logoutButton, &QPushButton::clicked, this, &ProfileDialog::onButtonLogoutClicked);
 }
 
 /**
@@ -103,4 +105,26 @@ void ProfileDialog::showProfileMessage(QString header, QString message, QString 
     {
         QMessageBox::information(this, header, message);
     }
+}
+
+void ProfileDialog::onButtonEditClicked()
+{
+    int row = ui->listProfiles->currentRow();
+    if (row < 0 || row >= profilesId.size()) return;
+
+    int id = profilesId[row].getProfileId();
+    QString currentName = profilesId[row].getProfileName();
+
+    bool ok = false;
+    QString newName = QInputDialog::getText(this, tr("Edit Profile"), tr("New Name:"),
+        QLineEdit::Normal, currentName, &ok);
+
+    if (ok && !newName.trimmed().isEmpty()) {
+        emit editProfileRequested(id, newName);
+    }
+}
+
+void ProfileDialog::onButtonLogoutClicked()
+{
+    emit logoutRequested();
 }

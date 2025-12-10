@@ -13,6 +13,8 @@ CategoryController::CategoryController(
         this, &CategoryController::handleAddCategoryRequest);
     connect(&categoryDialog, &CategorySelectionView::deleteRequestedCategory,
         this, &CategoryController::handleDeleteCategoryRequest);
+    connect(&categoryDialog, &CategorySelectionView::editRequestedCategory,
+        this, &CategoryController::handleEditCategoryRequest);
 }
 
 void CategoryController::showCategoryDialog(bool withSelectButton)
@@ -73,4 +75,19 @@ void CategoryController::handleCategorySelectionWhileAddingTransactionRequest(Tr
 void CategoryController::handleCategorySelectionFromTransactionWindow(bool selectButtonVisibility)
 {
     showCategoryDialog(selectButtonVisibility);
+}
+
+void CategoryController::handleEditCategoryRequest(int categoryId, const QString& newName)
+{
+    if (!categoryRepository.updateCategory(categoryId, newName))
+    {
+        const QString header = tr("Edit category");
+        const QString message = tr("Failed to update category.");
+        categoryDialog.showCategoryMessage(header, message, "error");
+        return;
+    }
+
+    refreshCategoryDialogList();
+
+    emit categoriesDataChanged();
 }

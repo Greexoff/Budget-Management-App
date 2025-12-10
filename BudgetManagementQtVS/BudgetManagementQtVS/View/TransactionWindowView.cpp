@@ -65,6 +65,8 @@ void TransactionWindow::setupConnections()
 	connect(ui->buttonAddTransaction, &QPushButton::clicked, this, &TransactionWindow::onButtonAddTransactionClicked);
 	connect(ui->buttonDeleteTransaction, &QPushButton::clicked, this, &TransactionWindow::onButtonDeleteTransactionClicked);
     connect(ui->browseCategoriesButton, &QPushButton::clicked, this, &TransactionWindow::onButtonManageCategoriesClicked);
+    connect(ui->buttonEdit, &QPushButton::clicked, this, &TransactionWindow::onButtonEditTransactionClicked);
+    connect(ui->changeProfileButton, &QPushButton::clicked, this, &TransactionWindow::onButtonChangeProfileClicked);
     connect(ui->browseFinancialAccountsButton, &QPushButton::clicked, this, &TransactionWindow::onButtonManageFinancialAccountsClicked);
 }
 
@@ -147,36 +149,31 @@ void TransactionWindow::showTransactionMessage(QString header, QString message, 
         QMessageBox::information(this, header, message);
     }
 }
-QString TransactionWindow::getTransactionNameFromInput(bool& correctData)
+
+void TransactionWindow::onButtonEditTransactionClicked()
 {
-    return QInputDialog::getText(
-        this,
-        tr("New transaction"),
-        tr("Name:"),
-        QLineEdit::Normal,
-        "",
-        &correctData
-    );
+    emit editTransactionRequest();
 }
-double TransactionWindow::getTransactionAmountFromInput(bool& correctData)
+
+QString TransactionWindow::getTransactionNameFromInput(bool& correctData, const QString& defaultValue)
 {
-    return QInputDialog::getDouble(this,
-        tr("New transaction"),
-        tr("Amount:"),
-        0.0,
-        0,
-        1e9,
-        2,
-        &correctData);
+    return QInputDialog::getText(this, tr("Transaction"), tr("Name:"),
+        QLineEdit::Normal, defaultValue, &correctData);
 }
-QString TransactionWindow::getTransactionDescriptionFromInput(bool& correctData)
+
+double TransactionWindow::getTransactionAmountFromInput(bool& correctData, double defaultValue)
 {
-    return QInputDialog::getText(
-        this,
-        tr("New transaction"),
-        tr("Description:"),
-        QLineEdit::Normal,
-        "",
-        &correctData
-    );
+    return QInputDialog::getDouble(this, tr("Transaction"), tr("Amount:"),
+        defaultValue, -1e9, 1e9, 2, &correctData);
+}
+
+QString TransactionWindow::getTransactionDescriptionFromInput(bool& correctData, const QString& defaultValue)
+{
+    return QInputDialog::getText(this, tr("Transaction"), tr("Description:"),
+        QLineEdit::Normal, defaultValue, &correctData);
+}
+
+void TransactionWindow::onButtonChangeProfileClicked()
+{
+    emit backToProfileRequested();
 }

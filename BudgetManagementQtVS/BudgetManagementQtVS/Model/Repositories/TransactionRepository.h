@@ -35,4 +35,8 @@ public:
      * @return Vector of Transaction objects belonging to the profile
      */
     QVector<Transaction> getAllProfileTransaction(int profileId) const;
+
+    //edycja transakcji
+    bool updateTransaction(const Transaction& transaction);
+    Transaction getTransactionById(int id) const;
 };

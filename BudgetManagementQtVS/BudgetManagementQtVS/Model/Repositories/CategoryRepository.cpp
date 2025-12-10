@@ -140,3 +140,19 @@ QString CategoryRepository::getCategoryNameById(int categoryId)
 
     return categoryName;
 }
+
+bool CategoryRepository::updateCategory(int categoryId, const QString& newName)
+{
+    if (categoryId == 1) return false;
+
+    QSqlQuery query(database);
+    query.prepare("UPDATE category SET category_name = :name WHERE id = :id");
+    query.bindValue(":name", newName);
+    query.bindValue(":id", categoryId);
+
+    if (!query.exec()) {
+        qDebug() << "CategoryRepo::updateCategory error:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
