@@ -30,10 +30,13 @@ signals:
 
 	void deleteRequestedFinancialAccount(int financialAccountId);
 
+	void editRequestedFinancialAccount(int financialAccountId, const QString& name, const QString& type, double balance);
+
 private slots:
 	void selectFinancialAccountButtonClicked();
 	void addFinancialAccountButtonClicked();
 	void deleteFinancialAccountButtonClicked();
+	void editFinancialAccountButtonClicked();
 	void cancelFinancialAccountButtonClicked();
 
 private:

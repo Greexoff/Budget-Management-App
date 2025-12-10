@@ -9,6 +9,7 @@ FinancialAccountController::FinancialAccountController(FinancialAccountSelection
 	connect(&financialAccountDialog, &FinancialAccountSelectionView::selectRequestedFinancialAccount, this, &FinancialAccountController::handleFinancialAccountSelection);
 	connect(&financialAccountDialog, &FinancialAccountSelectionView::addRequestedFinancialAccount, this, &FinancialAccountController::handleFinancialAccountAddRequest);
 	connect(&financialAccountDialog, &FinancialAccountSelectionView::deleteRequestedFinancialAccount, this, &FinancialAccountController::handleFinancialAccountDeleteRequest);
+	connect(&financialAccountDialog, &FinancialAccountSelectionView::editRequestedFinancialAccount,this, &FinancialAccountController::handleFinancialAccountEditRequest);
 
 }
 
@@ -60,4 +61,16 @@ void FinancialAccountController::handleFinancialAccountSelectionWhileAddingTrans
 
 void FinancialAccountController::handleFinancialAccountSelectionFromTransactionWindow(bool selectButtonVisibility) {
 	showFinancialAccountDialog(selectButtonVisibility);
+}
+
+void FinancialAccountController::handleFinancialAccountEditRequest(int id, const QString& name, const QString& type, double balance)
+{
+	if (financialAccountRepository.updateFinancialAccount(id, name, type, balance)) {
+		refresFinancialAccountDialogList();
+
+		emit financialAccountDataChanged();
+	}
+	else {
+		financialAccountDialog.showFinancialAccountMessage(tr("Edit Account"), tr("Failed to update account."), "error");
+	}
 }

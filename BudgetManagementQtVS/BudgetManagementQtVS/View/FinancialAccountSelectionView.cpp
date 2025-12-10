@@ -18,6 +18,7 @@ void FinancialAccountSelectionView::connectMethodToButton() {
 	connect(ui->addFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::addFinancialAccountButtonClicked);
 	connect(ui->deleteFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::deleteFinancialAccountButtonClicked);
 	connect(ui->cancelFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::cancelFinancialAccountButtonClicked);
+	connect(ui->editFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::editFinancialAccountButtonClicked);
 }
 
 void FinancialAccountSelectionView::setupTable() {
@@ -113,4 +114,39 @@ void FinancialAccountSelectionView::showFinancialAccountMessage(QString header, 
 	{
 		QMessageBox::information(this, header, message);
 	}
+}
+
+void FinancialAccountSelectionView::editFinancialAccountButtonClicked() {
+	int row = ui->financialAccountsTable->currentRow();
+
+	// Sprawdzenie, czy coś jest zaznaczone
+	if (row < 0 || row >= financialAccountId.size()) {
+		return;
+	}
+	FinancialAccount currentFinancialAccount = financialAccountId[0]; 
+
+	QString currentNameInTable = ui->financialAccountsTable->item(row, 0)->text();
+	for (const auto& acc : financialAccountId) {
+		if (acc.getFinancialAccountName() == currentNameInTable) {
+			currentFinancialAccount = acc;
+			break;
+		}
+	}
+
+	if (currentFinancialAccount.getFinancialAccountId() == 1) {
+		showFinancialAccountMessage(tr("Error"), tr("Cannot edit default account."), "error");
+		return;
+	}
+
+	bool ok = false;
+	QString newName = QInputDialog::getText(this, tr("Edit Account"), tr("Name:"), QLineEdit::Normal, currentFinancialAccount.getFinancialAccountName(), &ok);
+	if (!ok || newName.trimmed().isEmpty()) return;
+
+	QString newType = QInputDialog::getText(this, tr("Edit Account"), tr("Type:"), QLineEdit::Normal, currentFinancialAccount.getFinancialAccountType(), &ok);
+	if (!ok || newType.trimmed().isEmpty()) return;
+
+	double newBalance = QInputDialog::getDouble(this, tr("Edit Account"), tr("Balance:"), currentFinancialAccount.getFinancialAccountBalance(), -1e9, 1e9, 2, &ok);
+	if (!ok) return;
+
+	emit editRequestedFinancialAccount(currentFinancialAccount.getFinancialAccountId(), newName, newType, newBalance);
 }
