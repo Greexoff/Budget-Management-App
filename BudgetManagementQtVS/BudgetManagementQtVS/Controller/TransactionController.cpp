@@ -113,14 +113,8 @@ void TransactionController::refreshTransactionsView()
 
 void TransactionController::initializeMainWindow()
 {
-    connect(&transactionWindow, &TransactionWindow::addTransactionRequest,
-        this, &TransactionController::startAddingTransactionRequest);
-    connect(&transactionWindow, &TransactionWindow::deleteTransactionRequest,
-        this, &TransactionController::handleDeleteTransactionRequest);
-    connect(&transactionWindow, &TransactionWindow::showCategoriesRequest,
-        this, &TransactionController::handleShowCategoriesRequestFromView);
-    connect(&transactionWindow, &TransactionWindow::showFinancialAccountsRequest,
-        this, &TransactionController::handleShowFinancialAccountsRequestFromView);
+
+
     if (!getMainWindowInitializedAttribute()) {
         connect(&transactionWindow, &TransactionWindow::addTransactionRequest,
             this, &TransactionController::startAddingTransactionRequest);
@@ -132,6 +126,8 @@ void TransactionController::initializeMainWindow()
             this, &TransactionController::handleEditTransactionRequest);
         connect(&transactionWindow, &TransactionWindow::backToProfileRequested,
             this, &TransactionController::handleBackToProfileRequest);
+        connect(&transactionWindow, &TransactionWindow::showFinancialAccountsRequest,
+            this, &TransactionController::handleShowFinancialAccountsRequestFromView);
 
         setMainWindowInitializedAttribute(true);
     }

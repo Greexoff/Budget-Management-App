@@ -149,7 +149,7 @@ bool TransactionRepository::removeTransactionById(int id)
 bool TransactionRepository::updateTransaction(const Transaction& transaction)
 {
     QSqlQuery query(database);
-    query.prepare("UPDATE transactions SET name=:name, description=:desc, amount=:amount, category_id=:catId, type=:type WHERE id=:id");
+    query.prepare("UPDATE transactions SET name=:name, description=:desc, amount=:amount, category_id=:catId, type=:type,financialAccount_id=:financialAccountId WHERE id=:id");
 
     query.bindValue(":name", transaction.getTransactionName());
     query.bindValue(":desc", transaction.getTransactionDescription());
@@ -158,6 +158,7 @@ bool TransactionRepository::updateTransaction(const Transaction& transaction)
     QString typeStr = (transaction.getTransactionAmount() >= 0.0) ? "INCOME" : "EXPENSE";
     query.bindValue(":type", typeStr);
     query.bindValue(":id", transaction.getTransactionId());
+    query.bindValue(":financialAccountId", transaction.getFinancialAccountId());
 
     if (!query.exec()) {
         qDebug() << "TransactionRepo::update error:" << query.lastError().text();

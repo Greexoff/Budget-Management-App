@@ -21,4 +21,8 @@ ControllerManager::ControllerManager(UserController& userControllerRef, ProfileC
         &transactionController, &TransactionController::handleCategoriesDataChangeRequest);
     connect(&financialAccountController, &FinancialAccountController::financialAccountDataChanged,
         &transactionController, &TransactionController::handleFinancialAccountsDataChangeRequest);
+    connect(&profileController, &ProfileController::logout,
+        &userController, &UserController::run);
+    connect(&transactionController, &TransactionController::returnToProfileView,
+        &profileController, &ProfileController::showProfilesForCurrentUser);
 }

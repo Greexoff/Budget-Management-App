@@ -1,4 +1,4 @@
-#include "Controller/ProfileController.h"
+﻿#include "Controller/ProfileController.h"
 #include <QApplication>
 
 ProfileController::ProfileController(ProfileDialog& profileDialogRef, ProfilesRepository& profileRepositoryRef, QObject* parent) : BaseController(parent), profileDialog(profileDialogRef), profileRepository(profileRepositoryRef)
@@ -89,7 +89,7 @@ void ProfileController::handleLogoutRequest()
     setUserId(-1);
     setProfileId(-1);
 
-    profileDialog.hide();
+    profileDialog.accept();
 
     emit logout();
 }
