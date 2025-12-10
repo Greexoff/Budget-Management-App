@@ -36,9 +36,9 @@ public:
     int getSelectedTransactionId() const; 
 public slots:
     void showTransactionMessage(QString header, QString message, QString messageType);
-    QString getTransactionNameFromInput(bool& correctData);
-    double getTransactionAmountFromInput(bool& correctData);
-    QString getTransactionDescriptionFromInput(bool& correctData);
+    QString getTransactionNameFromInput(bool& correctData, const QString& defaultValue = "");
+    double getTransactionAmountFromInput(bool& correctData, double defaultValue = 0.0);
+    QString getTransactionDescriptionFromInput(bool& correctData, const QString& defaultValue = "");
 
 signals:
     /**
@@ -56,10 +56,13 @@ signals:
      */
     void showCategoriesRequest();
 
+    void editTransactionRequest();
+
 private slots:
     void onButtonAddTransactionClicked();
     void onButtonDeleteTransactionClicked();
     void onButtonManageCategoriesClicked();
+    void onButtonEditTransactionClicked();
 
 private:
     Ui::MainWindow* ui;                         ///< Pointer to UI elements

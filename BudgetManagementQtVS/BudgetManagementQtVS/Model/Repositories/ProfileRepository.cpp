@@ -77,3 +77,18 @@ bool ProfilesRepository::removeProfileById(int profileId)
     }
     return true;
 }
+
+//edycja profilu
+bool ProfilesRepository::updateProfile(int profileId, const QString& newName)
+{
+    QSqlQuery query(database);
+    query.prepare("UPDATE profiles SET profile_name = :name WHERE id = :id");
+    query.bindValue(":name", newName);
+    query.bindValue(":id", profileId);
+
+    if (!query.exec()) {
+        qDebug() << "ProfilesRepo::updateProfile error:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}

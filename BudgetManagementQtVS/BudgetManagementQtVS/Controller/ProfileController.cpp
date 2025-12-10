@@ -9,6 +9,8 @@ ProfileController::ProfileController(ProfileDialog& profileDialogRef, ProfilesRe
         this, &ProfileController::handleAddProfileRequest);
     connect(&profileDialog, &ProfileDialog::removeProfileRequested,
         this, &ProfileController::handleRemoveProfileRequest);
+    connect(&profileDialog, &ProfileDialog::editProfileRequested,
+        this, &ProfileController::handleEditProfileRequest);
 }
 /**
  * @brief Displays profiles associated with the current user
@@ -74,6 +76,17 @@ void ProfileController::handleRemoveProfileRequest(int profileId)
     if (!profileRepository.removeProfileById(profileId)) {
         const QString header = tr("Delete profile");
         const QString message = tr("Failed to delete a profile.");
+        profileDialog.showProfileMessage(header, message, "error");
+        return;
+    }
+    showProfilesForCurrentUser();
+}
+
+void ProfileController::handleEditProfileRequest(int profileId, const QString& newName)
+{
+    if (!profileRepository.updateProfile(profileId, newName)) {
+        const QString header = tr("Edit Profile");
+        const QString message = tr("Failed to update profile.");
         profileDialog.showProfileMessage(header, message, "error");
         return;
     }

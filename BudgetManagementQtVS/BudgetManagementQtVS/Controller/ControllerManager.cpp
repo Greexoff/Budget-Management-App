@@ -8,7 +8,7 @@ ControllerManager::ControllerManager(UserController& userControllerRef, ProfileC
     connect(&transactionController, &TransactionController::categorySelectionRequest,
         &categoryController, &CategoryController::handleCategorySelectionWhileAddingTransactionRequest);
     connect(&categoryController, &CategoryController::categorySelected,
-        &transactionController, &TransactionController::finalizeAddingTransaction);
+        &transactionController, &TransactionController::finalizeTransaction);
     connect(&transactionController, &TransactionController::showCategories,
         &categoryController, &CategoryController::handleCategorySelectionFromTransactionWindow);
     connect(&categoryController, &CategoryController::categoriesDataChanged,

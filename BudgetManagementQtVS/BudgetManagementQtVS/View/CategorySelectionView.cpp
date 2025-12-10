@@ -29,7 +29,7 @@ void CategorySelectionView::connectMethodToButton()
 	connect(ui->addCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::addCategoryButtonClicked);
 	connect(ui->deleteCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::deleteCategoryButtonClicked);
 	connect(ui->cancelButton, &QPushButton::clicked, this, &CategorySelectionView::cancelButtonClicked);
-	//connect(ui.editCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::editCategoryButtonClicked); Add logic to it later
+    connect(ui->editCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::editCategoryButtonClicked);
 }
 
 /**
@@ -118,5 +118,36 @@ void CategorySelectionView::showCategoryMessage(QString header, QString message,
     else
     {
         QMessageBox::information(this, header, message);
+    }
+}
+
+void CategorySelectionView::editCategoryButtonClicked()
+{
+    int row = ui->categoriesList->currentRow();
+
+    if (row < 0 || row >= categoryId.size()) {
+        return;
+    }
+
+    Category currentCat = categoryId[row];
+
+    if (currentCat.getCategoryId() == 1) {
+        showCategoryMessage(tr("Edit category"), tr("Cannot edit default category."), "error");
+        return;
+    }
+
+    bool ok = false;
+
+    QString newName = QInputDialog::getText(
+        this,
+        tr("Edit category"),
+        tr("New name:"),
+        QLineEdit::Normal,
+        currentCat.getCategoryName(),
+        &ok
+    );
+
+    if (ok && !newName.trimmed().isEmpty()) {
+        emit editRequestedCategory(currentCat.getCategoryId(), newName);
     }
 }

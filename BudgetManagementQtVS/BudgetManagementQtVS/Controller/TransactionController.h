@@ -20,9 +20,9 @@ public slots:
    * @brief Handles request to add a new transaction
    */
     void startAddingTransactionRequest();
-    void finalizeAddingTransaction(TransactionBuilder& builder);
     void initializeMainWindow();
     void handleCategoriesDataChangeRequest();
+    void finalizeTransaction(TransactionBuilder& builder);
 private:
 	TransactionWindow& transactionWindow;
 	TransactionRepository& transactionRepository;
@@ -38,4 +38,5 @@ private:
     */
     void refreshTransactionsView();
 
+    void handleEditTransactionRequest();
 };

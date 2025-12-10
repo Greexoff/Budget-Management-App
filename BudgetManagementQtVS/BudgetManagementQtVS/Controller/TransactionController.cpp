@@ -28,18 +28,27 @@ void TransactionController::startAddingTransactionRequest()
     builder.withDescription(description);
     emit categorySelectionRequest(builder);
 }
-void TransactionController::finalizeAddingTransaction(TransactionBuilder& builder)
+void TransactionController::finalizeTransaction(TransactionBuilder& builder)
 {
-    bool correctData = false;
-    Transaction newTransaction = builder.build();
-    if (!transactionRepository.addTransaction(newTransaction))
-    {
-        const QString header = tr("New transaction");
-        const QString message = tr("Failed to add transaction.");
-        transactionWindow.showTransactionMessage(header, message, "error");
-        return;
+    Transaction transaction = builder.build();
+    bool success = false;
+
+    if (transaction.getTransactionId() > 0) {
+        success = transactionRepository.updateTransaction(transaction);
+        if (!success) {
+            transactionWindow.showTransactionMessage(tr("Edit transaction"), tr("Failed to update transaction."), "error");
+        }
     }
-    refreshTransactionsView();
+    else {
+        success = transactionRepository.addTransaction(transaction);
+        if (!success) {
+            transactionWindow.showTransactionMessage(tr("New transaction"), tr("Failed to add transaction."), "error");
+        }
+    }
+
+    if (success) {
+        refreshTransactionsView();
+    }
 }
 
 /**
@@ -90,11 +99,9 @@ void TransactionController::refreshTransactionsView()
             << transaction.getTransactionDescription()
             << QString::number(transaction.getTransactionAmount(), 'f', 2);
 
-        // Determine transaction type based on amount
         QString typeString = (transaction.getTransactionAmount() > 0.0) ? "Expense" : "Income";
         rowData << typeString;
 
-        // Resolve category name from ID
         rowData << categoryRepository.getCategoryNameById(transaction.getCategoryId());
         tableRows.append(rowData);
     }
@@ -110,6 +117,8 @@ void TransactionController::initializeMainWindow()
         this, &TransactionController::handleDeleteTransactionRequest);
     connect(&transactionWindow, &TransactionWindow::showCategoriesRequest,
         this, &TransactionController::handleShowCategoriesRequestFromView);
+    connect(&transactionWindow, &TransactionWindow::editTransactionRequest,
+        this, &TransactionController::handleEditTransactionRequest);
 
     setMainWindowInitializedAttribute(true);
 
@@ -122,8 +131,40 @@ void TransactionController::handleShowCategoriesRequestFromView()
 }
 void TransactionController::handleCategoriesDataChangeRequest()
 {
-    // Refresh transaction view to update any category name displays
     if (getProfileId() >= 0 && getMainWindowInitializedAttribute()) {
         refreshTransactionsView();
     }
+}
+
+void TransactionController::handleEditTransactionRequest()
+{
+    int transactionId = transactionWindow.getSelectedTransactionId();
+    if (transactionId < 0) {
+        transactionWindow.showTransactionMessage(tr("Edit transaction"), tr("No transaction selected."), "error");
+        return;
+    }
+
+    Transaction currentTrans = transactionRepository.getTransactionById(transactionId);
+
+    if (currentTrans.getTransactionId() == -1) return;
+
+    bool correctData = false;
+
+    TransactionBuilder builder;
+    builder.withId(currentTrans.getTransactionId()) 
+        .withProfileId(getProfileId())
+        .withDate(currentTrans.getTransactionDate()); 
+
+    QString name = transactionWindow.getTransactionNameFromInput(correctData, currentTrans.getTransactionName());
+    if (!correctData || name.trimmed().isEmpty()) return;
+    builder.withName(name);
+
+    double amount = transactionWindow.getTransactionAmountFromInput(correctData, currentTrans.getTransactionAmount());
+    if (!correctData) return;
+    builder.withAmount(amount);
+
+    QString description = transactionWindow.getTransactionDescriptionFromInput(correctData, currentTrans.getTransactionDescription());
+    if (!correctData) return;
+    builder.withDescription(description);
+    emit categorySelectionRequest(builder);
 }

@@ -38,4 +38,6 @@ public:
      * @return Category name as QString, empty string if category not found
      */
     QString getCategoryNameById(int categoryId);
+
+    bool updateCategory(int categoryId, const QString& newName);
 };

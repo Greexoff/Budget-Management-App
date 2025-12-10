@@ -139,3 +139,45 @@ bool TransactionRepository::removeTransactionById(int id)
 
     return true;
 }
+
+bool TransactionRepository::updateTransaction(const Transaction& transaction)
+{
+    QSqlQuery query(database);
+    query.prepare("UPDATE transactions SET name=:name, description=:desc, amount=:amount, category_id=:catId, type=:type WHERE id=:id");
+
+    query.bindValue(":name", transaction.getTransactionName());
+    query.bindValue(":desc", transaction.getTransactionDescription());
+    query.bindValue(":amount", transaction.getTransactionAmount());
+    query.bindValue(":catId", transaction.getCategoryId());
+    QString typeStr = (transaction.getTransactionAmount() >= 0.0) ? "INCOME" : "EXPENSE";
+    query.bindValue(":type", typeStr);
+    query.bindValue(":id", transaction.getTransactionId());
+
+    if (!query.exec()) {
+        qDebug() << "TransactionRepo::update error:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+Transaction TransactionRepository::getTransactionById(int id) const
+{
+    QSqlQuery query(database);
+    query.prepare("SELECT id, name, date, description, amount, type, category_id, profile_id FROM transactions WHERE id = :id");
+    query.bindValue(":id", id);
+
+    if (query.exec() && query.next()) {
+        int tId = query.value(0).toInt();
+        QString name = query.value(1).toString();
+        QDate date = QDate::fromString(query.value(2).toString(), "yyyy-MM-dd");
+        QString desc = query.value(3).toString();
+        double amount = query.value(4).toDouble();
+        QString typeStr = query.value(5).toString();
+        int catId = query.value(6).toInt();
+        int profId = query.value(7).toInt();
+        TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
+
+        return Transaction(tId, name, date, desc, amount, type, catId, profId);
+    }
+    return Transaction(-1, "", QDate(), "", 0, EXPENSE, 1, -1);
+}

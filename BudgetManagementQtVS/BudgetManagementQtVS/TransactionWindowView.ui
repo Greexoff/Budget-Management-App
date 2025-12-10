@@ -27,10 +27,10 @@
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>16</x>
       <y>230</y>
-      <width>215</width>
-      <height>80</height>
+      <width>241</width>
+      <height>91</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -53,10 +53,10 @@
    <widget class="QWidget" name="horizontalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>230</y>
-      <width>160</width>
-      <height>80</height>
+      <x>440</x>
+      <y>240</y>
+      <width>151</width>
+      <height>71</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -64,6 +64,25 @@
       <widget class="QPushButton" name="browseCategoriesButton">
        <property name="text">
         <string>Browse categories</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>240</y>
+      <width>141</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="buttonEdit">
+       <property name="text">
+        <string>Edit transaction</string>
        </property>
       </widget>
      </item>

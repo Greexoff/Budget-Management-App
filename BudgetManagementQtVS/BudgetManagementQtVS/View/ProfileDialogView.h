@@ -46,11 +46,14 @@ signals:
      */
     void removeProfileRequested(int profileId);
 
+    void editProfileRequested(int profileId, const QString& newName);
+
 private slots:
     void onButtonSelectClicked();
     void onButtonAddClicked();
     void onButtonRemoveClicked();
     void onButtonCancelClicked();
+    void onButtonEditClicked();
 
 private:
     Ui::ProfileDialog* ui;          ///< Pointer to UI elements

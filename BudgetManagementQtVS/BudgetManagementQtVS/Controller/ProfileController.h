@@ -41,4 +41,5 @@ private:
      */
     void handleRemoveProfileRequest(int profileId);
 
+    void handleEditProfileRequest(int profileId, const QString& newName);
 };
