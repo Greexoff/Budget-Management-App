@@ -1,4 +1,5 @@
 #include "Controller/ProfileController.h"
+#include <QApplication>
 
 ProfileController::ProfileController(ProfileDialog& profileDialogRef, ProfilesRepository& profileRepositoryRef, QObject* parent) : BaseController(parent), profileDialog(profileDialogRef), profileRepository(profileRepositoryRef)
 {
@@ -21,7 +22,9 @@ void ProfileController::showProfilesForCurrentUser()
 {
     QVector<Profile> profiles = profileRepository.getProfilesByUserId(getUserId());
     profileDialog.setProfiles(profiles);
-    profileDialog.exec();
+    if (profileDialog.exec() == QDialog::Rejected) {
+        QApplication::quit();
+    }
 }
 
 /**
@@ -35,24 +38,9 @@ void ProfileController::showProfilesForCurrentUser()
 void ProfileController::handleProfileSelection(int profileId)
 {
     setProfileId(profileId);
-    profileDialog.hide();
+    profileDialog.accept();
 
     emit profileSelected();
-    // Initialize main window connections on first profile selection
-    //if (!getMainWindowInitializedAttribute()) {
-       // emit profileSelected();
-       /* connect(&TransactionWindowView, &TransactionWindow::addTransactionRequest,
-            this, &Controller::handleAddTransactionRequest);
-        connect(&TransactionWindowView, &TransactionWindow::deleteTransactionRequest,
-            this, &Controller::handleDeleteTransactionRequest);
-        connect(&TransactionWindowView, &TransactionWindow::showCategoriesRequest,
-            this, &Controller::handleShowCategoriesRequestFromView);
-            */
-       // setMainWindowInitializedAttribute(true);
-    //}
-
-   // refreshTransactionsView();
-   // TransactionWindowView.show();
 }
 
 /**
