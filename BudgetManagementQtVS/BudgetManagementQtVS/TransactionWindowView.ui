@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>1010</width>
+    <height>614</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,16 +19,16 @@
      <rect>
       <x>0</x>
       <y>20</y>
-      <width>601</width>
-      <height>191</height>
+      <width>1011</width>
+      <height>381</height>
      </rect>
     </property>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>230</y>
+      <x>70</x>
+      <y>440</y>
       <width>215</width>
       <height>80</height>
      </rect>
@@ -53,9 +53,9 @@
    <widget class="QWidget" name="horizontalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>230</y>
-      <width>160</width>
+      <x>710</x>
+      <y>440</y>
+      <width>270</width>
       <height>80</height>
      </rect>
     </property>
@@ -67,6 +67,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="browseFinancialAccountsButton">
+       <property name="text">
+        <string>Browse financial accounts</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -75,7 +82,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
+     <width>1010</width>
      <height>21</height>
     </rect>
    </property>

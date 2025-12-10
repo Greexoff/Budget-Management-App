@@ -56,10 +56,13 @@ signals:
      */
     void showCategoriesRequest();
 
+    void showFinancialAccountsRequest();
+
 private slots:
     void onButtonAddTransactionClicked();
     void onButtonDeleteTransactionClicked();
     void onButtonManageCategoriesClicked();
+    void onButtonManageFinancialAccountsClicked();
 
 private:
     Ui::MainWindow* ui;                         ///< Pointer to UI elements

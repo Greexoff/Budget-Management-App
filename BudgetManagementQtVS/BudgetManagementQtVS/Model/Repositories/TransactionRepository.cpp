@@ -1,4 +1,4 @@
-#include <Model/Repositories/TransactionRepository.h>
+﻿#include <Model/Repositories/TransactionRepository.h>
 
 
 /**
@@ -12,7 +12,7 @@ QVector<Transaction> TransactionRepository::getAllProfileTransaction(int profile
     QSqlQuery query(database);
 
     query.prepare(
-        "SELECT id, name, date, description, amount, type, category_id, profile_id "
+        "SELECT id, name, date, description, amount, type, category_id, financialAccount_id, profile_id "
         "FROM transactions WHERE profile_id = :profileId"
     );
     query.bindValue(":profileId", profileId);
@@ -31,12 +31,13 @@ QVector<Transaction> TransactionRepository::getAllProfileTransaction(int profile
         double amount = query.value(4).toDouble();
         QString typeStr = query.value(5).toString();
         int categoryId = query.value(6).toInt();
-        int profileId = query.value(7).toInt();
+        int financialAccountId = query.value(7).toInt();
+        int profileId = query.value(8).toInt();
 
         QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
         TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
 
-        Transaction transaction(id, name, date, description, amount, type, categoryId, profileId);
+        Transaction transaction(id, name, date, description, amount, type, categoryId, financialAccountId, profileId);
         result.append(transaction);
     }
 
@@ -53,7 +54,7 @@ QVector<Transaction> TransactionRepository::getAll() const
 
     QSqlQuery query(database);
 
-    if (!query.exec("SELECT id, name, date, description, amount, type, profile_id, category_id FROM transactions"))
+    if (!query.exec("SELECT id, name, date, description, amount, type, profile_id, category_id, financialAccount_id FROM transactions"))
     {
         qDebug() << "TransactionRepository::getAll error:" << query.lastError().text();
         return result;
@@ -69,11 +70,13 @@ QVector<Transaction> TransactionRepository::getAll() const
         QString typeStr = query.value(5).toString();
         int associatedProfileId = query.value(6).toInt();
         int categoryId = query.value(7).toInt();
+        int financialAccountId = query.value(8).toInt();
         QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
-
+        
+             
         TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
 
-        Transaction transaction(id, name, date, description, amount, type, categoryId, associatedProfileId);
+        Transaction transaction(id, name, date, description, amount, type, categoryId,financialAccountId, associatedProfileId);
         result.append(transaction);
     }
 
@@ -95,9 +98,11 @@ bool TransactionRepository::addTransaction(const Transaction& transaction)
     QSqlQuery query(database);
 
     query.prepare(
-        "INSERT INTO transactions (name, type, date, description, amount, category_id, profile_id) "
-        "VALUES (:name, :type, :date, :description, :amount, :category_id, :profile_id)"
+        "INSERT INTO transactions (name, type, date, description, amount, category_id ,financialAccount_id, profile_id) "
+        "VALUES (:name, :type, :date, :description, :amount, :category_id, :financialAccount_id, :profile_id)" 
     );
+
+
 
     query.bindValue(":name", transaction.getTransactionName());
 
@@ -110,6 +115,7 @@ bool TransactionRepository::addTransaction(const Transaction& transaction)
     query.bindValue(":amount", transaction.getTransactionAmount());
     query.bindValue(":profile_id", transaction.getAssociatedProfileId());
     query.bindValue(":category_id", transaction.getCategoryId());
+    query.bindValue(":financialAccount_id", transaction.getFinancialAccountId());
 
     if (!query.exec())
     {

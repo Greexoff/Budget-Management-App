@@ -1,5 +1,6 @@
-#include "Controller/TransactionController.h"
-TransactionController::TransactionController(TransactionWindow& transactionWindowRef, TransactionRepository& transactionRepositoryRef, CategoryRepository& categoryRepositoryRef, QObject* parent) : BaseController(parent), transactionWindow(transactionWindowRef), transactionRepository(transactionRepositoryRef), categoryRepository(categoryRepositoryRef) {}
+﻿#include "Controller/TransactionController.h"
+TransactionController::TransactionController(TransactionWindow& transactionWindowRef, TransactionRepository& transactionRepositoryRef, CategoryRepository& categoryRepositoryRef, FinancialAccountRepository& financialAccountRepositoryRef, QObject* parent)
+    : BaseController(parent), transactionWindow(transactionWindowRef), transactionRepository(transactionRepositoryRef), categoryRepository(categoryRepositoryRef), financialAccountRepository(financialAccountRepositoryRef) {}
 /**
  * @brief Handles creation of a new transaction
  */
@@ -96,6 +97,7 @@ void TransactionController::refreshTransactionsView()
 
         // Resolve category name from ID
         rowData << categoryRepository.getCategoryNameById(transaction.getCategoryId());
+        rowData << financialAccountRepository.getFinancialAccountNameById(transaction.getFinancialAccountId());
         tableRows.append(rowData);
     }
 
@@ -110,6 +112,8 @@ void TransactionController::initializeMainWindow()
         this, &TransactionController::handleDeleteTransactionRequest);
     connect(&transactionWindow, &TransactionWindow::showCategoriesRequest,
         this, &TransactionController::handleShowCategoriesRequestFromView);
+    connect(&transactionWindow, &TransactionWindow::showFinancialAccountsRequest,
+        this, &TransactionController::handleShowFinancialAccountsRequestFromView);
 
     setMainWindowInitializedAttribute(true);
 
@@ -123,6 +127,18 @@ void TransactionController::handleShowCategoriesRequestFromView()
 void TransactionController::handleCategoriesDataChangeRequest()
 {
     // Refresh transaction view to update any category name displays
+    if (getProfileId() >= 0 && getMainWindowInitializedAttribute()) {
+        refreshTransactionsView();
+    }
+}
+
+void TransactionController::handleShowFinancialAccountsRequestFromView()
+{
+    emit showFinancialAccounts(false);
+}
+void TransactionController::handleFinancialAccountsDataChangeRequest()
+{
+    // Refresh transaction view to update any financial account name displays
     if (getProfileId() >= 0 && getMainWindowInitializedAttribute()) {
         refreshTransactionsView();
     }

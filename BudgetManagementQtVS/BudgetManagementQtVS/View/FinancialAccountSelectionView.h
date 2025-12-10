@@ -1,0 +1,47 @@
+﻿#pragma once
+
+#include <QDialog>
+#include <QInputDialog>
+#include <QMessageBox>
+#include "ui_FinancialAccountSelectionView.h"
+#include "Model/FinancialAccount.h"
+
+class FinancialAccountSelectionView : public QDialog {
+	Q_OBJECT
+
+public:
+	explicit FinancialAccountSelectionView(QWidget* parent = nullptr);
+	~FinancialAccountSelectionView();
+
+	void setFinancialAccounts(const QVector<FinancialAccount>& financialAccounts);
+
+	void setSelectFinancialAccountButtonVisible(bool visible);
+
+	int getSelectedFinancialAccountId() const { return selectedFinancialAccountId; }
+
+public slots:
+	void showFinancialAccountMessage(QString header, QString message, QString messageType);
+
+signals:
+
+	void selectRequestedFinancialAccount(int financialAccountId);
+
+	void addRequestedFinancialAccount(const QString& financialAccountName, const QString& financialAccountType, double financialAccount_balance);
+
+	void deleteRequestedFinancialAccount(int financialAccountId);
+
+private slots:
+	void selectFinancialAccountButtonClicked();
+	void addFinancialAccountButtonClicked();
+	void deleteFinancialAccountButtonClicked();
+	void cancelFinancialAccountButtonClicked();
+
+private:
+	Ui::FinancialAccountSelectionView* ui;
+	QVector<FinancialAccount> financialAccountId;
+	int selectedFinancialAccountId = -1;
+
+	void connectMethodToButton();
+
+	void setupTable();
+};

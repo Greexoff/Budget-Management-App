@@ -1,9 +1,10 @@
-#pragma once
+﻿#pragma once
 #include <QObject>
 #include <Controller/UserController.h>
 #include <Controller/ProfileController.h>
 #include <Controller/TransactionController.h>
 #include <Controller/CategorySelectionController.h>
+#include <Controller/FinancialAccountSelectionController.h>
 
 #include <Model/TransactionBuilder.h>
 
@@ -16,6 +17,7 @@ public:
         ProfileController& profileControllerRef,
         TransactionController& transactionControllerRef,
         CategoryController& categoryControllerRef,
+        FinancialAccountController& financialAccountControllerRef,
         QObject* parent = nullptr);
 
 private:
@@ -23,4 +25,5 @@ private:
     ProfileController& profileController;
     TransactionController& transactionController;
     CategoryController& categoryController;
+    FinancialAccountController& financialAccountController;
 };

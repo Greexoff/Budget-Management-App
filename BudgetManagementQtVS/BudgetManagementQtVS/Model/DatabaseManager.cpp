@@ -47,10 +47,21 @@ DatabaseManager::DatabaseManager() {
         "profile_id INTEGER, "
         "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
         ")");
+   // Create financialAccounts table with profile scoping
+   tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS financialAccount"
+       "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
+       "financialAccount_name TEXT NOT NULL CHECK (financialAccount_name != ''), "
+       "financialAccount_type TEXT NOT NULL, "
+       "financialAccount_balance REAL DEFAULT 0, "
+       "profile_id INTEGER, "
+       "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
+       ")");
     // Insert default category into database
    tableCreationQuery.exec("INSERT OR IGNORE INTO category (id, category_name, profile_id) VALUES (1, 'None', NULL)");
+   // Insert default financial account into database
+   tableCreationQuery.exec("INSERT OR IGNORE INTO financialAccount (id, financialAccount_name, financialAccount_type, profile_id) VALUES (1, 'None', 'Default', NULL)");
 
-    // Create transactions table with relationships to profiles and categories
+    // Create transactions table with relationships to profiles, categories and financial account
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS transactions"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "name TEXT NOT NULL CHECK (name != ''), "
@@ -59,9 +70,11 @@ DatabaseManager::DatabaseManager() {
         "description TEXT, "
         "amount REAL NOT NULL, "
         "category_id INTEGER DEFAULT 1, "
+        "financialAccount_id INTEGER DEFAULT 1, "
         "profile_id INTEGER, "
         "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE, "
-        "FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET DEFAULT"
+        "FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET DEFAULT, "
+        "FOREIGN KEY (financialAccount_id) REFERENCES financialAccount(id) ON DELETE SET DEFAULT"
         ")");
 
     // DEVELOPMENT: Create demo admin user for testing

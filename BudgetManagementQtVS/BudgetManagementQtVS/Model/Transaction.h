@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <QString>
 #include <QDate>
 
@@ -31,6 +31,7 @@ private:
 	double transactionAmount;				///< Transaction amount
 	TransactionType transactionType;		///< Classification as INCOME or EXPENSE
 	int categoryId;							///< ID of associated category for classification
+	int financialAccountId;					///< ID of associated financialAccount for classification
 	int associatedProfileId;				///< ID of budget profile this transaction belongs to
 public:
 
@@ -45,7 +46,7 @@ public:
 	 * @param categoryId ID of associated category
 	 * @param associatedProfileId ID of owning profile
 	 */
-	Transaction(int TransactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId, int associadedProfileId);
+	Transaction(int TransactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId,int financialAccountId, int associadedProfileId);
 
 	/**
 	 * @brief Destructor
@@ -60,6 +61,7 @@ public:
 	QString getTransactionDescription() const;
 	double getTransactionAmount() const;
 	int getCategoryId() const;
+	int getFinancialAccountId() const;
 	int getAssociatedProfileId() const;
 
 	// Setters	
@@ -70,6 +72,7 @@ public:
 	void setTransactionAmount(double amount);
 	void setTransactionType(TransactionType type);
 	void setCategoryId(int id);
+	void setFinancialAccountId(int id);
 	void setAssociatedProfileId(int associadedProfileId);
 
 	/**
@@ -82,6 +85,6 @@ public:
 	 * @param categoryId Updated category ID
 	 * @param associatedProfileId Updated profile ID
 	 */
-	void editTransaction(const QString& name, const QDate& date, const QString& description, double amount, TransactionType type, int categoryId, int associatedProfileId);
+	void editTransaction(const QString& name, const QDate& date, const QString& description, double amount, TransactionType type, int categoryId,int financialAccountId, int associatedProfileId);
 
 };

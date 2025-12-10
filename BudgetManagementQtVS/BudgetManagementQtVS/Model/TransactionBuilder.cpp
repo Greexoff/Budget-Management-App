@@ -1,4 +1,4 @@
-#include "Model/TransactionBuilder.h"
+﻿#include "Model/TransactionBuilder.h"
 
 /**
  * @brief Sets the transaction identifier
@@ -76,6 +76,12 @@ TransactionBuilder& TransactionBuilder::withCategoryId(int newCategoryId)
     return *this;
 }
 
+TransactionBuilder& TransactionBuilder::withFinancialAccountId(int newFinancialAccountId)
+{
+    financialAccountId = newFinancialAccountId;
+    return *this;
+}
+
 /**
  * @brief Sets the profile identifier
  * @param newProfileId New profile ID
@@ -92,5 +98,5 @@ TransactionBuilder& TransactionBuilder::withProfileId(int newProfileId)
  * @return Completed Transaction object with all configured properties
  */
 Transaction TransactionBuilder::build() const {
-    return Transaction(id, name, date, description, amount, type, categoryId, profileId);
+    return Transaction(id, name, date, description, amount, type, categoryId, financialAccountId, profileId);
 }

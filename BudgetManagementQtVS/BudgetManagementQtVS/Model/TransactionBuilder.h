@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <QString>
 #include <QDate>
 #include "Model/Transaction.h"
@@ -60,6 +60,8 @@ public:
 	 */
 	TransactionBuilder& withCategoryId(int newCategoryId);
 
+	TransactionBuilder& withFinancialAccountId(int newFinancialAccountId);
+
 	/**
 	 * @brief Sets the profile identifier
 	 * @param newProfileId New profile ID
@@ -80,5 +82,6 @@ private:
 	double amount = 0.0;                ///< Transaction amount
 	TransactionType type = EXPENSE;     ///< Transaction type 
 	int categoryId = 1;                 ///< Associated category ID 
+	int financialAccountId = 1;
 	int profileId = -1;                 ///< Associated profile ID
 };

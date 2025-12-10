@@ -95,14 +95,17 @@
     <ClCompile Include="Controller\BaseController.cpp" />
     <ClCompile Include="Controller\CategorySelectionController.cpp" />
     <ClCompile Include="Controller\ControllerManager.cpp" />
+    <ClCompile Include="Controller\FinancialAccountSelectionController.cpp" />
     <ClCompile Include="Controller\ProfileController.cpp" />
     <ClCompile Include="Controller\TransactionController.cpp" />
     <ClCompile Include="Controller\UserController.cpp" />
     <ClCompile Include="Model\Category.cpp" />
     <ClCompile Include="Model\DatabaseManager.cpp" />
+    <ClCompile Include="Model\FinancialAccount.cpp" />
     <ClCompile Include="Model\Profile.cpp" />
     <ClCompile Include="Model\Repositories\BaseRepository.cpp" />
     <ClCompile Include="Model\Repositories\CategoryRepository.cpp" />
+    <ClCompile Include="Model\Repositories\FinancialAccountRepository.cpp" />
     <ClCompile Include="Model\Repositories\ProfileRepository.cpp" />
     <ClCompile Include="Model\Repositories\TransactionRepository.cpp" />
     <ClCompile Include="Model\Repositories\UserRepository.cpp" />
@@ -110,6 +113,7 @@
     <ClCompile Include="Model\TransactionBuilder.cpp" />
     <ClCompile Include="Model\User.cpp" />
     <ClCompile Include="View\CategorySelectionView.cpp" />
+    <ClCompile Include="View\FinancialAccountSelectionView.cpp" />
     <ClCompile Include="View\LoginDialogView.cpp" />
     <ClCompile Include="View\TransactionWindowView.cpp" />
     <ClCompile Include="View\ProfileDialogView.cpp" />
@@ -117,10 +121,14 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="View\FinancialAccountSelectionView.h" />
     <QtMoc Include="Controller\ControllerManager.h" />
+    <QtMoc Include="Controller\FinancialAccountSelectionController.h" />
+    <ClInclude Include="Model\FinancialAccount.h" />
     <ClInclude Include="Model\Profile.h" />
     <ClInclude Include="Model\Repositories\BaseRepository.h" />
     <ClInclude Include="Model\Repositories\CategoryRepository.h" />
+    <ClInclude Include="Model\Repositories\FinancialAccountRepository.h" />
     <ClInclude Include="Model\Repositories\ProfileRepository.h" />
     <ClInclude Include="Model\Repositories\TransactionRepository.h" />
     <ClInclude Include="Model\Repositories\UserRepository.h" />
@@ -141,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="CategorySelectionView.ui" />
+    <QtUic Include="FinancialAccountSelectionView.ui" />
     <QtUic Include="LoginDialogView.ui" />
     <QtUic Include="TransactionWindowView.ui" />
     <QtUic Include="ProfileDialogView.ui" />

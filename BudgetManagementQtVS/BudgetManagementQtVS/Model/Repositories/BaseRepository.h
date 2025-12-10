@@ -13,6 +13,7 @@
 #include <Model/User.h>
 #include <Model/Profile.h>
 #include <Model/Category.h>
+#include <Model/FinancialAccount.h>
 
 /**
  * @class BaseRepository

@@ -40,6 +40,7 @@ void TransactionWindow::initializeTransactionTable()
     TableModel->setHeaderData(4, Qt::Horizontal, tr("Amount"));
     TableModel->setHeaderData(5, Qt::Horizontal, tr("Type"));
     TableModel->setHeaderData(6, Qt::Horizontal, tr("Category"));
+    TableModel->setHeaderData(7, Qt::Horizontal, tr("Financial Account"));
 
     // Apply model to table view
     ui->TransactionTabelView->setModel(TableModel);
@@ -64,6 +65,7 @@ void TransactionWindow::setupConnections()
 	connect(ui->buttonAddTransaction, &QPushButton::clicked, this, &TransactionWindow::onButtonAddTransactionClicked);
 	connect(ui->buttonDeleteTransaction, &QPushButton::clicked, this, &TransactionWindow::onButtonDeleteTransactionClicked);
     connect(ui->browseCategoriesButton, &QPushButton::clicked, this, &TransactionWindow::onButtonManageCategoriesClicked);
+    connect(ui->browseFinancialAccountsButton, &QPushButton::clicked, this, &TransactionWindow::onButtonManageFinancialAccountsClicked);
 }
 
 /**
@@ -90,6 +92,11 @@ void TransactionWindow::onButtonManageCategoriesClicked()
     emit showCategoriesRequest();
 }
 
+void TransactionWindow::onButtonManageFinancialAccountsClicked()
+{
+    emit showFinancialAccountsRequest();
+}
+
 /**
  * @brief Updates the transaction table with new data
  * @param rows Vector of transaction data rows
@@ -99,7 +106,7 @@ void TransactionWindow::setTransactionRows(const QVector<QStringList>& rows)
     TableModel->clear();
 
     // Set column headers
-    TableModel->setHorizontalHeaderLabels({ "ID", "Name", "Date", "Description", "Amount", "Type", "Category" });
+    TableModel->setHorizontalHeaderLabels({ "ID", "Name", "Date", "Description", "Amount", "Type", "Category","Financial account"});
 
     // Add transaction rows
     for (const QStringList& row : rows) {

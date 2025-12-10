@@ -11,7 +11,7 @@
  * @param categoryId ID of classification category
  * @param associatedProfileId ID of owning budget profile
  */
-Transaction::Transaction(int transactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId, int associatedProfileId)
+Transaction::Transaction(int transactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId, int financialAccountId, int associatedProfileId)
 {
 	this->transactionId = transactionId;
 	this->transactionName = transactionName;
@@ -20,6 +20,7 @@ Transaction::Transaction(int transactionId, QString transactionName, QDate trans
 	this->transactionAmount = transactionAmount;
 	this->transactionType = transactionType;
 	this->categoryId = categoryId;
+	this->financialAccountId = financialAccountId;
 	this->associatedProfileId = associatedProfileId;
 }
 
@@ -83,6 +84,11 @@ double Transaction::getTransactionAmount() const
 int Transaction::getCategoryId() const
 {
 	return categoryId;
+}
+
+int Transaction::getFinancialAccountId() const
+{
+	return financialAccountId;
 }
 
 /**
@@ -159,6 +165,11 @@ void Transaction::setCategoryId(int id)
 	categoryId = id;
 }
 
+void Transaction::setFinancialAccountId(int id)
+{
+	financialAccountId = id;
+}
+
 /**
  * @brief Updates the owning profile ID
  * @param associadedProfileId New profile identifier
@@ -178,7 +189,7 @@ void Transaction::setAssociatedProfileId(int associadedProfileId)
  * @param categoryId Updated category ID
  * @param associatedProfileId Updated profile ID
  */
-void Transaction::editTransaction(const QString& name, const QDate& date, const QString& description, double amount, TransactionType type, int categoryId, int associatedProfileId)
+void Transaction::editTransaction(const QString& name, const QDate& date, const QString& description, double amount, TransactionType type, int categoryId,int financialAccountId, int associatedProfileId)
 {
 	setTransactionName(name);
 	setTransactionDate(date);
@@ -186,6 +197,7 @@ void Transaction::editTransaction(const QString& name, const QDate& date, const 
 	setTransactionAmount(amount);
 	setTransactionType(type);
 	setCategoryId(categoryId);
+	setFinancialAccountId(financialAccountId);
 	setAssociatedProfileId(associatedProfileId);
 }
 
