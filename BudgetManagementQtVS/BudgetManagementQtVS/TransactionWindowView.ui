@@ -17,8 +17,8 @@
    <widget class="QTableView" name="TransactionTabelView">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>20</y>
+      <x>-10</x>
+      <y>70</y>
       <width>1011</width>
       <height>381</height>
      </rect>
@@ -77,6 +77,45 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QProgressBar" name="budgetProgressBar">
+    <property name="geometry">
+     <rect>
+      <x>787</x>
+      <y>20</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>24</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="budgetLabel">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>20</y>
+      <width>371</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Budget: 0.00 PLN</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="editBudgetButton">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>20</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set budget</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

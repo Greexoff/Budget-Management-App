@@ -16,5 +16,4 @@ public:
 	bool updateFinancialAccount(int financialAccountId, const QString& newName, const QString& newType, double newBalance);
 
 	QString getFinancialAccountNameById(int financialAccountId);
-
 };

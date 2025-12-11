@@ -33,4 +33,7 @@ public:
 
     //edycja profilu
     bool updateProfile(int profileId, const QString& newName);
+
+    double getBudgetLimit(int profileId) const;
+    bool setBudgetLimit(int profileId, double limit);
 };

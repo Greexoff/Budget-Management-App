@@ -68,6 +68,7 @@ void TransactionWindow::setupConnections()
     connect(ui->buttonEdit, &QPushButton::clicked, this, &TransactionWindow::onButtonEditTransactionClicked);
     connect(ui->changeProfileButton, &QPushButton::clicked, this, &TransactionWindow::onButtonChangeProfileClicked);
     connect(ui->browseFinancialAccountsButton, &QPushButton::clicked, this, &TransactionWindow::onButtonManageFinancialAccountsClicked);
+    connect(ui->editBudgetButton, &QPushButton::clicked, this, &TransactionWindow::onButtonEditBudgetClicked);
 }
 
 /**
@@ -176,4 +177,32 @@ QString TransactionWindow::getTransactionDescriptionFromInput(bool& correctData,
 void TransactionWindow::onButtonChangeProfileClicked()
 {
     emit backToProfileRequested();
+}
+
+void TransactionWindow::onButtonEditBudgetClicked()
+{
+    emit editBudgetRequest();
+}
+
+void TransactionWindow::updateBudgetDisplay(double limit, double spent)
+{
+    ui->budgetProgressBar->setRange(0, 100);
+
+    double percentage = (limit > 0) ? (spent / limit) * 100.0 : 0.0;
+
+    int visualValue = (percentage > 100.0) ? 100 : static_cast<int>(percentage);
+    ui->budgetProgressBar->setValue(visualValue);
+
+    if (spent > limit && limit > 0) {
+        ui->budgetProgressBar->setStyleSheet("QProgressBar::chunk { background-color: #ff4d4d; }");
+    }
+    else {
+        ui->budgetProgressBar->setStyleSheet("QProgressBar::chunk { background-color: #4CAF50; }"); 
+    }
+
+    double remaining = limit - spent;
+    ui->budgetLabel->setText(QString("Wydano: %1 / Limit: %2 PLN (Pozostało: %3 PLN)")
+        .arg(QString::number(spent, 'f', 2))
+        .arg(QString::number(limit, 'f', 2))
+        .arg(QString::number(remaining, 'f', 2)));
 }

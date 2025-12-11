@@ -77,6 +77,11 @@ double Transaction::getTransactionAmount() const
 	return transactionAmount;
 }
 
+TransactionType Transaction::getTransactionType() const
+{
+	return transactionType;
+}
+
 /**
  * @brief Returns the ID of the associated category
  * @return int Category ID

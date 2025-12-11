@@ -96,18 +96,14 @@ QVector<Transaction> TransactionRepository::getAll() const
 bool TransactionRepository::addTransaction(const Transaction& transaction)
 {
     QSqlQuery query(database);
-
     query.prepare(
         "INSERT INTO transactions (name, type, date, description, amount, category_id ,financialAccount_id, profile_id) "
-        "VALUES (:name, :type, :date, :description, :amount, :category_id, :financialAccount_id, :profile_id)" 
+        "VALUES (:name, :type, :date, :description, :amount, :category_id, :financialAccount_id, :profile_id)"
     );
-
-
 
     query.bindValue(":name", transaction.getTransactionName());
 
-    // Determine transaction type based on amount sign
-    QString typeStr = (transaction.getTransactionAmount() >= 0.0) ? "INCOME" : "EXPENSE";
+    QString typeStr = (transaction.getTransactionType() == INCOME) ? "INCOME" : "EXPENSE";
     query.bindValue(":type", typeStr);
 
     query.bindValue(":date", transaction.getTransactionDate().toString("yyyy-MM-dd"));
@@ -117,12 +113,10 @@ bool TransactionRepository::addTransaction(const Transaction& transaction)
     query.bindValue(":category_id", transaction.getCategoryId());
     query.bindValue(":financialAccount_id", transaction.getFinancialAccountId());
 
-    if (!query.exec())
-    {
+    if (!query.exec()) {
         qDebug() << "TransactionRepository::add error:" << query.lastError().text();
         return false;
     }
-
     return true;
 }
 
@@ -149,14 +143,30 @@ bool TransactionRepository::removeTransactionById(int id)
 bool TransactionRepository::updateTransaction(const Transaction& transaction)
 {
     QSqlQuery query(database);
-    query.prepare("UPDATE transactions SET name=:name, description=:desc, amount=:amount, category_id=:catId, type=:type,financialAccount_id=:financialAccountId WHERE id=:id");
+
+    query.prepare(
+        "UPDATE transactions SET "
+        "name=:name, "
+        "description=:desc, "
+        "date=:date, "          
+        "amount=:amount, "
+        "category_id=:catId, "
+        "type=:type, "
+        "financialAccount_id=:financialAccountId "
+        "WHERE id=:id"
+    );
 
     query.bindValue(":name", transaction.getTransactionName());
     query.bindValue(":desc", transaction.getTransactionDescription());
+
+    query.bindValue(":date", transaction.getTransactionDate().toString("yyyy-MM-dd")); 
+
     query.bindValue(":amount", transaction.getTransactionAmount());
     query.bindValue(":catId", transaction.getCategoryId());
-    QString typeStr = (transaction.getTransactionAmount() >= 0.0) ? "INCOME" : "EXPENSE";
+
+    QString typeStr = (transaction.getTransactionType() == INCOME) ? "INCOME" : "EXPENSE";
     query.bindValue(":type", typeStr);
+
     query.bindValue(":id", transaction.getTransactionId());
     query.bindValue(":financialAccountId", transaction.getFinancialAccountId());
 
@@ -188,4 +198,24 @@ Transaction TransactionRepository::getTransactionById(int id) const
         return Transaction(tId, name, date, desc, amount, type, catId, financialAccountId, profId);
     }
     return Transaction(-1, "", QDate(), "", 0, EXPENSE, 1, -1, 1);
+}
+
+double TransactionRepository::getMonthlyExpenses(int profileId, int month, int year) const
+{
+    QSqlQuery query(database);
+    query.prepare(
+        "SELECT SUM(amount) "
+        "FROM transactions "
+        "WHERE profile_id = :id "
+        "AND strftime('%m', date) = :month AND strftime('%Y', date) = :year"
+    );
+
+    query.bindValue(":id", profileId);
+    query.bindValue(":month", QString("%1").arg(month, 2, 10, QChar('0')));
+    query.bindValue(":year", QString::number(year));
+
+    if (query.exec() && query.next()) {
+        return query.value(0).toDouble();
+    }
+    return 0.0;
 }

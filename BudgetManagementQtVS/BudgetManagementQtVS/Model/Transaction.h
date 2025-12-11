@@ -64,6 +64,8 @@ public:
 	int getFinancialAccountId() const;
 	int getAssociatedProfileId() const;
 
+	TransactionType getTransactionType() const;
+
 	// Setters	
 	void setTransactionId(int id);
 	void setTransactionName(const QString& name);
@@ -86,5 +88,4 @@ public:
 	 * @param associatedProfileId Updated profile ID
 	 */
 	void editTransaction(const QString& name, const QDate& date, const QString& description, double amount, TransactionType type, int categoryId,int financialAccountId, int associatedProfileId);
-
 };

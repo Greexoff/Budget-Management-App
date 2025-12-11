@@ -34,6 +34,8 @@ public:
      * @return int Transaction ID, or -1 if no transaction selected
      */
     int getSelectedTransactionId() const; 
+
+    void updateBudgetDisplay(double limit, double spent);
 public slots:
     void showTransactionMessage(QString header, QString message, QString messageType);
     QString getTransactionNameFromInput(bool& correctData, const QString& defaultValue = "");
@@ -62,12 +64,15 @@ signals:
 
     void backToProfileRequested();
 
+    void editBudgetRequest();
+
 private slots:
     void onButtonAddTransactionClicked();
     void onButtonDeleteTransactionClicked();
     void onButtonManageCategoriesClicked();
     void onButtonManageFinancialAccountsClicked();
     void onButtonEditTransactionClicked();
+    void onButtonEditBudgetClicked();
 
 private:
     Ui::MainWindow* ui;                         ///< Pointer to UI elements

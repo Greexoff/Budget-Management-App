@@ -32,7 +32,7 @@
  * @param argv Command line argument values
  * @return int Application exit code
  */
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     // Initialize Qt application framework
     QApplication app(argc, argv);
@@ -40,14 +40,14 @@ int main(int argc, char *argv[])
     // Initialize database connection
     DatabaseManager::instance();
 
-    // Create repository instances for data access layer
+    // Create repository instances
     UserRepository userRepository;
     ProfilesRepository profileRepository;
     TransactionRepository transactionRepository;
     CategoryRepository categoryRepository;
     FinancialAccountRepository financialAccountRepository;
 
-    // Create view instances for presentation layer
+    // Create view instances
     LoginDialog loginDialog;
     ProfileDialog profileDialog;
     TransactionWindow transactionWindow;
@@ -56,15 +56,22 @@ int main(int argc, char *argv[])
 
     UserController userController(loginDialog, userRepository, nullptr);
     ProfileController profileController(profileDialog, profileRepository, nullptr);
-    TransactionController transactionController(transactionWindow, transactionRepository, categoryRepository, financialAccountRepository, nullptr);
+
+    TransactionController transactionController(
+        transactionWindow,
+        transactionRepository,
+        categoryRepository,
+        financialAccountRepository,
+        profileRepository,
+        nullptr
+    );
+
     CategoryController categoryController(categoryDialog, categoryRepository, nullptr);
     FinancialAccountController financialAccountController(financialAccountDialog, financialAccountRepository, nullptr);
-
 
     ControllerManager controllerManager(userController, profileController, transactionController, categoryController, financialAccountController);
 
     userController.run();
 
-    // Enter Qt event loop (application runs until quit)
     return app.exec();
 }

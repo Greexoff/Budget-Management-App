@@ -39,4 +39,6 @@ public:
     //edycja transakcji
     bool updateTransaction(const Transaction& transaction);
     Transaction getTransactionById(int id) const;
+
+    double getMonthlyExpenses(int profileId, int month, int year) const;
 };

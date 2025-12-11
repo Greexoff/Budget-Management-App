@@ -39,6 +39,7 @@ DatabaseManager::DatabaseManager() {
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "profile_name TEXT NOT NULL CHECK (profile_name != ''), "
         "user_id INTEGER NOT NULL, "
+        "budget_limit REAL DEFAULT 0, " 
         "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)");
     // Create categories table with profile scoping
    tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS category"
