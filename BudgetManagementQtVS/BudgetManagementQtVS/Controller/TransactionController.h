@@ -42,8 +42,8 @@ private:
     ProfilesRepository& profileRepository;
 
     std::unique_ptr<SortStrategy> sortingStrategy;
-    SortOrder lastSortingOrder=SortOrder::DESCENDING;//Change this later
-    int lastSelectedColumn = 1;//Name
+    SortOrder lastSortingOrder = SortOrder::DESCENDING;
+    int lastSelectedColumn = -1;
 
     /**
     * @brief Handles request to delete a transaction
