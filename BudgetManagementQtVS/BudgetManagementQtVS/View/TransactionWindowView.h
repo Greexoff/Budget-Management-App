@@ -66,6 +66,8 @@ signals:
 
     void editBudgetRequest();
 
+    void columnSortRequest(int columnId);
+
 private slots:
     void onButtonAddTransactionClicked();
     void onButtonDeleteTransactionClicked();
@@ -73,6 +75,7 @@ private slots:
     void onButtonManageFinancialAccountsClicked();
     void onButtonEditTransactionClicked();
     void onButtonEditBudgetClicked();
+    void onColumnHeaderClicked(int columnId);
 
 private:
     Ui::MainWindow* ui;                         ///< Pointer to UI elements

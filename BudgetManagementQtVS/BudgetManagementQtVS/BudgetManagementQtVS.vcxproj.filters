@@ -117,6 +117,24 @@
     <ClCompile Include="Controller\ControllerManager.cpp">
       <Filter>Source Files\Controller</Filter>
     </ClCompile>
+    <ClCompile Include="View\AddTransactionDialogView.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\FinancialAccount.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Repositories\FinancialAccountRepository.cpp">
+      <Filter>Source Files\Model\Repositories</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\FinancialAccountSelectionController.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="View\FinancialAccountSelectionView.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\SortStrategy.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model\Transaction.h">
@@ -152,6 +170,15 @@
     <ClInclude Include="Model\Repositories\BaseRepository.h">
       <Filter>Header Files\Model\Repositories</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Repositories\FinancialAccountRepository.h">
+      <Filter>Header Files\Model\Repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\FinancialAccount.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\SortStrategy.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="ProfileDialogView.ui">
@@ -160,8 +187,18 @@
     <QtUic Include="LoginDialogView.ui">
       <Filter>Ui Files</Filter>
     </QtUic>
-    <QtUic Include="CategorySelectionView.ui" />
-    <QtUic Include="TransactionWindowView.ui" />
+    <QtUic Include="AddTransactionDialogView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
+    <QtUic Include="CategorySelectionView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
+    <QtUic Include="FinancialAccountSelectionView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
+    <QtUic Include="TransactionWindowView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Controller\BaseController.h">
@@ -192,6 +229,15 @@
       <Filter>Header Files\Controller</Filter>
     </QtMoc>
     <QtMoc Include="Controller\UserController.h">
+      <Filter>Header Files\Controller</Filter>
+    </QtMoc>
+    <QtMoc Include="View\AddTransactionDialogView.h">
+      <Filter>Header Files\View</Filter>
+    </QtMoc>
+    <QtMoc Include="View\FinancialAccountSelectionView.h">
+      <Filter>Header Files\View</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\FinancialAccountSelectionController.h">
       <Filter>Header Files\Controller</Filter>
     </QtMoc>
   </ItemGroup>

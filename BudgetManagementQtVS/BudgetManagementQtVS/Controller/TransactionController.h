@@ -1,15 +1,17 @@
 ﻿#pragma once
 #include "Controller/BaseController.h"
 
-#include "Model/Repositories/TransactionRepository.h"
-#include "Model/Repositories/CategoryRepository.h"
+#include <Model/Repositories/TransactionRepository.h>
+#include <Model/Repositories/CategoryRepository.h>
 #include <Model/Repositories/FinancialAccountRepository.h>
 #include <Model/Repositories/ProfileRepository.h>
-#include "Model/TransactionBuilder.h"
+#include <Model/TransactionBuilder.h>
+#include <Model/SortStrategy.h>
 
 #include "View/TransactionWindowView.h"
 #include "View/AddTransactionDialogView.h"
 
+#include <memory>
 class TransactionController : public BaseController
 {
     Q_OBJECT
@@ -38,6 +40,11 @@ private:
     CategoryRepository& categoryRepository;
     FinancialAccountRepository& financialAccountRepository;
     ProfilesRepository& profileRepository;
+
+    std::unique_ptr<SortStrategy> sortingStrategy;
+    SortOrder lastSortingOrder=SortOrder::DESCENDING;//Change this later
+    int lastSelectedColumn = 1;//Name
+
     /**
     * @brief Handles request to delete a transaction
     */
@@ -54,4 +61,8 @@ private:
     void handleEditTransactionRequest();
 
     void handleBackToProfileRequest();
+
+    void handleSortingRequest(int columnId);
+
+    void executeTransactionSorting(QVector<Transaction>& allTransactions);
 };

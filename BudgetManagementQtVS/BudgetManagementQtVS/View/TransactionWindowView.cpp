@@ -32,7 +32,7 @@ TransactionWindow::~TransactionWindow()
 void TransactionWindow::initializeTransactionTable()
 {
     // Define table columns
-    TableModel->setColumnCount(7);
+    TableModel->setColumnCount(8);
     TableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
     TableModel->setHeaderData(1, Qt::Horizontal, tr("Name"));
     TableModel->setHeaderData(2, Qt::Horizontal, tr("Date"));
@@ -69,6 +69,9 @@ void TransactionWindow::setupConnections()
     connect(ui->changeProfileButton, &QPushButton::clicked, this, &TransactionWindow::onButtonChangeProfileClicked);
     connect(ui->browseFinancialAccountsButton, &QPushButton::clicked, this, &TransactionWindow::onButtonManageFinancialAccountsClicked);
     connect(ui->editBudgetButton, &QPushButton::clicked, this, &TransactionWindow::onButtonEditBudgetClicked);
+
+    QHeaderView* header = ui->TransactionTabelView->horizontalHeader();
+    connect(header, &QHeaderView::sectionClicked, this, &TransactionWindow::onColumnHeaderClicked);
 }
 
 /**
@@ -201,8 +204,12 @@ void TransactionWindow::updateBudgetDisplay(double limit, double spent)
     }
 
     double remaining = limit - spent;
-    ui->budgetLabel->setText(QString("Wydano: %1 / Limit: %2 PLN (Pozostało: %3 PLN)")
+    ui->budgetLabel->setText(QString("Spent: %1 / Limit: %2 PLN (Remaining: %3 PLN)")
         .arg(QString::number(spent, 'f', 2))
         .arg(QString::number(limit, 'f', 2))
         .arg(QString::number(remaining, 'f', 2)));
+}
+void TransactionWindow::onColumnHeaderClicked(int columnId)
+{
+    emit columnSortRequest(columnId);
 }

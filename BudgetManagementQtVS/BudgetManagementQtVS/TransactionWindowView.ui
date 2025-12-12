@@ -20,7 +20,7 @@
       <x>-10</x>
       <y>70</y>
       <width>1011</width>
-      <height>381</height>
+      <height>351</height>
      </rect>
     </property>
    </widget>
@@ -81,7 +81,7 @@
    <widget class="QProgressBar" name="budgetProgressBar">
     <property name="geometry">
      <rect>
-      <x>787</x>
+      <x>810</x>
       <y>20</y>
       <width>121</width>
       <height>31</height>

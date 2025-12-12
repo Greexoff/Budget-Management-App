@@ -25,4 +25,5 @@ ControllerManager::ControllerManager(UserController& userControllerRef, ProfileC
         &userController, &UserController::run);
     connect(&transactionController, &TransactionController::returnToProfileView,
         &profileController, &ProfileController::showProfilesForCurrentUser);
+
 }

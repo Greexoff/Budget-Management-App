@@ -94,6 +94,7 @@ void TransactionController::refreshTransactionsView()
 {
     if (getProfileId() < 0) return;
     QVector<Transaction> allTransactions = transactionRepository.getAllProfileTransaction(getProfileId());
+    executeTransactionSorting(allTransactions);
     QVector<QStringList> tableRows;
 
     for (const auto& transaction : allTransactions) {
@@ -137,6 +138,8 @@ void TransactionController::initializeMainWindow()
         connect(&transactionWindow, &TransactionWindow::editBudgetRequest, this, &TransactionController::handleEditBudgetRequest);
 
         setMainWindowInitializedAttribute(true);
+        connect(&transactionWindow, &TransactionWindow::columnSortRequest,
+            this, &TransactionController::handleSortingRequest);
     }
 
     refreshTransactionsView();
@@ -236,5 +239,67 @@ void TransactionController::handleEditBudgetRequest()
     if (ok) {
         profileRepository.setBudgetLimit(getProfileId(), newLimit);
         refreshTransactionsView();
+    }
+}
+void TransactionController::handleSortingRequest(int columnId)
+{
+    int currentColumnId = columnId;
+    SortOrder newOrder;
+    
+    if (currentColumnId == lastSelectedColumn)
+    {
+        if (lastSortingOrder == SortOrder::ASCENDING)
+        {
+            newOrder = SortOrder::DESCENDING;
+        }
+        else
+        {
+            newOrder = SortOrder::ASCENDING;
+        }
+    }
+    else
+    {
+        newOrder = SortOrder::ASCENDING;
+    }
+
+    lastSelectedColumn = currentColumnId;
+    lastSortingOrder = newOrder;
+
+    switch (columnId) {
+    case 1://Name
+        sortingStrategy = std::make_unique<SortByName>(lastSortingOrder);
+        break;
+    case 2://Date
+        sortingStrategy = std::make_unique<SortByDate>(lastSortingOrder);
+        break;
+    case 3://Description
+        sortingStrategy = std::make_unique<SortByDescription>(lastSortingOrder);
+        break;
+    case 4://Amount
+        sortingStrategy = std::make_unique<SortByAmount>(lastSortingOrder);
+        break;
+    case 5://Type
+        sortingStrategy = std::make_unique<SortByType>(lastSortingOrder);
+        break;
+    case 6://Category
+        sortingStrategy = std::make_unique<SortByCategory>(lastSortingOrder);
+        break;
+    case 7://Financial Account
+        sortingStrategy = std::make_unique<SortByFinancialAccount>(lastSortingOrder);
+        break;
+    default:
+        qDebug() << "Unknown ID of column";
+        return;
+        break;
+    }
+    refreshTransactionsView();
+}
+void TransactionController::executeTransactionSorting(QVector<Transaction>& allTransactions)
+{
+    if (sortingStrategy != nullptr)
+    {
+        SortContext sortingContext;
+        sortingContext.setStrategy(std::move(sortingStrategy));
+        sortingContext.executeStrategy(allTransactions);
     }
 }
