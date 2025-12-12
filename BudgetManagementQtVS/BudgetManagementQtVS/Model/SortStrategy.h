@@ -1,6 +1,7 @@
 #pragma once
 #include <Model/Transaction.h>
 #include <Model/Repositories/CategoryRepository.h>
+#include <Model/Repositories/FinancialAccountRepository.h>
 #include <QVector>
 #include <algorithm>
 #include <memory>

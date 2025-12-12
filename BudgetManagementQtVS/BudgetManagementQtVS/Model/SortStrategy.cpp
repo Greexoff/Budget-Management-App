@@ -56,8 +56,9 @@ bool SortByCategory::compare(const Transaction& transactionA, const Transaction&
 	return categoryRepository.getCategoryNameById(transactionA.getCategoryId()) < categoryRepository.getCategoryNameById(transactionB.getCategoryId());
 }
 
-bool SortByFinancialAccount::compare(const Transaction& transactionA, const Transaction& transactionB)//IN FUTURE: SWITCH TO SORT BY FACCOUNT NAME, NOT ITS ID
+bool SortByFinancialAccount::compare(const Transaction& transactionA, const Transaction& transactionB)
 {
-	return transactionA.getFinancialAccountId() < transactionB.getFinancialAccountId();
+	FinancialAccountRepository fAccountRepository;
+	return fAccountRepository.getFinancialAccountNameById(transactionA.getFinancialAccountId()) < fAccountRepository.getFinancialAccountNameById(transactionB.getFinancialAccountId());
 }
 
