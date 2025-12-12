@@ -69,7 +69,6 @@ public:
 	 */
 	TransactionBuilder& withProfileId(int newProfileId);
 
-	TransactionBuilder& withCategoryName(QString newCategoryName);
 	/**
 	 * @brief Constructs the final Transaction object
 	 * @return Completed Transaction object with all configured properties
@@ -85,5 +84,4 @@ private:
 	int categoryId = 1;                 ///< Associated category ID 
 	int financialAccountId = 1;
 	int profileId = -1;                 ///< Associated profile ID
-	QString categoryName;
 };

@@ -52,7 +52,8 @@ bool SortByType::compare(const Transaction& transactionA, const Transaction& tra
 
 bool SortByCategory::compare(const Transaction& transactionA, const Transaction& transactionB)
 {
-	return transactionA.getTransactionCategoryName() < transactionB.getTransactionCategoryName();
+	CategoryRepository categoryRepository;
+	return categoryRepository.getCategoryNameById(transactionA.getCategoryId()) < categoryRepository.getCategoryNameById(transactionB.getCategoryId());
 }
 
 bool SortByFinancialAccount::compare(const Transaction& transactionA, const Transaction& transactionB)//IN FUTURE: SWITCH TO SORT BY FACCOUNT NAME, NOT ITS ID

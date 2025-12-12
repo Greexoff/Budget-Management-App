@@ -32,7 +32,6 @@ private:
 	int categoryId;							///< ID of associated category for classification
 	int financialAccountId;					///< ID of associated financialAccount for classification
 	int associatedProfileId;				///< ID of budget profile this transaction belongs to
-	QString categoryName;
 public:
 
 	/**
@@ -46,7 +45,7 @@ public:
 	 * @param categoryId ID of associated category
 	 * @param associatedProfileId ID of owning profile
 	 */
-	Transaction(int TransactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId,int financialAccountId, int associadedProfileId, QString categoryName);
+	Transaction(int TransactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId,int financialAccountId, int associadedProfileId);
 
 	/**
 	 * @brief Destructor
@@ -63,7 +62,6 @@ public:
 	int getCategoryId() const;
 	int getFinancialAccountId() const;
 	int getAssociatedProfileId() const;
-	QString getTransactionCategoryName() const;
 
 	TransactionType getTransactionType() const;
 

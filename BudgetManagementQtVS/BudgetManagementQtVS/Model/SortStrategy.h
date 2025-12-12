@@ -1,5 +1,6 @@
 #pragma once
 #include <Model/Transaction.h>
+#include <Model/Repositories/CategoryRepository.h>
 #include <QVector>
 #include <algorithm>
 #include <memory>

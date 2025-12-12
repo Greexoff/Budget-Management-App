@@ -92,15 +92,11 @@ TransactionBuilder& TransactionBuilder::withProfileId(int newProfileId)
     profileId = newProfileId;
     return *this;
 }
-TransactionBuilder& TransactionBuilder::withCategoryName(QString newCategoryName)
-{
-    categoryName = newCategoryName;
-    return *this;
-}
+
 /**
  * @brief Constructs the final Transaction object
  * @return Completed Transaction object with all configured properties
  */
 Transaction TransactionBuilder::build() const {
-    return Transaction(id, name, date, description, amount, type, categoryId, financialAccountId, profileId, categoryName);
+    return Transaction(id, name, date, description, amount, type, categoryId, financialAccountId, profileId);
 }

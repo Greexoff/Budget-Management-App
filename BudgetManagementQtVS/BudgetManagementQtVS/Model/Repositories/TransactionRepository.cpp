@@ -37,10 +37,7 @@ QVector<Transaction> TransactionRepository::getAllProfileTransaction(int profile
         QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
         TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
 
-        CategoryRepository categoryRepository;
-        QString categoryName = categoryRepository.getCategoryNameById(categoryId);
-
-        Transaction transaction(id, name, date, description, amount, type, categoryId, financialAccountId, profileId, categoryName);
+        Transaction transaction(id, name, date, description, amount, type, categoryId, financialAccountId, profileId);
         result.append(transaction);
     }
 
@@ -78,10 +75,7 @@ QVector<Transaction> TransactionRepository::getAll() const
              
         TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
 
-        CategoryRepository categoryRepository;
-        QString categoryName = categoryRepository.getCategoryNameById(categoryId);
-
-        Transaction transaction(id, name, date, description, amount, type, categoryId,financialAccountId, associatedProfileId, categoryName);
+        Transaction transaction(id, name, date, description, amount, type, categoryId,financialAccountId, associatedProfileId);
         result.append(transaction);
     }
 
@@ -200,12 +194,9 @@ Transaction TransactionRepository::getTransactionById(int id) const
         int financialAccountId = query.value(8).toInt();
         TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
 
-        CategoryRepository categoryRepository;
-        QString categoryName = categoryRepository.getCategoryNameById(catId);
-
-        return Transaction(tId, name, date, desc, amount, type, catId, financialAccountId, profId, categoryName);
+        return Transaction(tId, name, date, desc, amount, type, catId, financialAccountId, profId);
     }
-    return Transaction(-1, "", QDate(), "", 0, EXPENSE, 1, -1, 1, "");
+    return Transaction(-1, "", QDate(), "", 0, EXPENSE, 1, -1, 1);
 }
 
 double TransactionRepository::getMonthlyExpenses(int profileId, int month, int year) const
