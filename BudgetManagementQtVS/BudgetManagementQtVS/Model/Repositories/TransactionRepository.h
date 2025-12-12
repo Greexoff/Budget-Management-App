@@ -1,5 +1,6 @@
 #pragma once
 #include <Model/Repositories/BaseRepository.h>
+#include <Model/Repositories/CategoryRepository.h>
 /**
  * @class TransactionRepository
  * @brief Handles database operations for financial transaction management

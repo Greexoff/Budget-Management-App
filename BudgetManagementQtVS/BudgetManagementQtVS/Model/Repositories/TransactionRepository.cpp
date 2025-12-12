@@ -37,7 +37,10 @@ QVector<Transaction> TransactionRepository::getAllProfileTransaction(int profile
         QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
         TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
 
-        Transaction transaction(id, name, date, description, amount, type, categoryId, financialAccountId, profileId);
+        CategoryRepository categoryRepository;
+        QString categoryName = categoryRepository.getCategoryNameById(categoryId);
+
+        Transaction transaction(id, name, date, description, amount, type, categoryId, financialAccountId, profileId, categoryName);
         result.append(transaction);
     }
 
@@ -59,7 +62,6 @@ QVector<Transaction> TransactionRepository::getAll() const
         qDebug() << "TransactionRepository::getAll error:" << query.lastError().text();
         return result;
     }
-
     while (query.next())
     {
         int id = query.value(0).toInt();
@@ -76,7 +78,10 @@ QVector<Transaction> TransactionRepository::getAll() const
              
         TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
 
-        Transaction transaction(id, name, date, description, amount, type, categoryId,financialAccountId, associatedProfileId);
+        CategoryRepository categoryRepository;
+        QString categoryName = categoryRepository.getCategoryNameById(categoryId);
+
+        Transaction transaction(id, name, date, description, amount, type, categoryId,financialAccountId, associatedProfileId, categoryName);
         result.append(transaction);
     }
 
@@ -195,9 +200,12 @@ Transaction TransactionRepository::getTransactionById(int id) const
         int financialAccountId = query.value(8).toInt();
         TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
 
-        return Transaction(tId, name, date, desc, amount, type, catId, financialAccountId, profId);
+        CategoryRepository categoryRepository;
+        QString categoryName = categoryRepository.getCategoryNameById(catId);
+
+        return Transaction(tId, name, date, desc, amount, type, catId, financialAccountId, profId, categoryName);
     }
-    return Transaction(-1, "", QDate(), "", 0, EXPENSE, 1, -1, 1);
+    return Transaction(-1, "", QDate(), "", 0, EXPENSE, 1, -1, 1, "");
 }
 
 double TransactionRepository::getMonthlyExpenses(int profileId, int month, int year) const

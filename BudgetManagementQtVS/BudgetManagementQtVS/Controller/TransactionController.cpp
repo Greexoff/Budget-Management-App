@@ -106,7 +106,8 @@ void TransactionController::refreshTransactionsView()
             << QString::number(transaction.getTransactionAmount(), 'f', 2);
         QString typeString = (transaction.getTransactionAmount() > 0.0) ? "Expense" : "Income";
         rowData << typeString;
-        rowData << categoryRepository.getCategoryNameById(transaction.getCategoryId());
+        rowData << transaction.getTransactionCategoryName();
+       // rowData << categoryRepository.getCategoryNameById(transaction.getCategoryId());
         rowData << financialAccountRepository.getFinancialAccountNameById(transaction.getFinancialAccountId());
         tableRows.append(rowData);
     }

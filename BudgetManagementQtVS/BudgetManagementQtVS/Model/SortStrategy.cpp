@@ -50,9 +50,9 @@ bool SortByType::compare(const Transaction& transactionA, const Transaction& tra
 	return transactionA.getTransactionType() < transactionB.getTransactionType();
 }
 
-bool SortByCategory::compare(const Transaction& transactionA, const Transaction& transactionB)//IN FUTURE: SWITCH TO SORT BY CATEGORY NAME, NOT ITS ID
+bool SortByCategory::compare(const Transaction& transactionA, const Transaction& transactionB)
 {
-	return transactionA.getCategoryId() < transactionB.getCategoryId();
+	return transactionA.getTransactionCategoryName() < transactionB.getTransactionCategoryName();
 }
 
 bool SortByFinancialAccount::compare(const Transaction& transactionA, const Transaction& transactionB)//IN FUTURE: SWITCH TO SORT BY FACCOUNT NAME, NOT ITS ID

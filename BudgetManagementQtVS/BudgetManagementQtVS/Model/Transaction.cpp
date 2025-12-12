@@ -11,7 +11,7 @@
  * @param categoryId ID of classification category
  * @param associatedProfileId ID of owning budget profile
  */
-Transaction::Transaction(int transactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId, int financialAccountId, int associatedProfileId)
+Transaction::Transaction(int transactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, TransactionType transactionType, int categoryId, int financialAccountId, int associatedProfileId, QString categoryName)
 {
 	this->transactionId = transactionId;
 	this->transactionName = transactionName;
@@ -22,6 +22,7 @@ Transaction::Transaction(int transactionId, QString transactionName, QDate trans
 	this->categoryId = categoryId;
 	this->financialAccountId = financialAccountId;
 	this->associatedProfileId = associatedProfileId;
+	this->categoryName = categoryName;
 }
 
 /**
@@ -104,7 +105,10 @@ int Transaction::getAssociatedProfileId() const
 {
 	return associatedProfileId;
 }
-
+QString Transaction::getTransactionCategoryName() const
+{
+	return categoryName;
+}
 //Setter implementations
 
 /**
