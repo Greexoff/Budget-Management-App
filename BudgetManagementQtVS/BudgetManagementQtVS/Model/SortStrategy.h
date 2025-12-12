@@ -75,6 +75,8 @@ public:
 	SortByCategory(SortOrder order) : SortStrategy(order) {}
 protected:
 	bool compare(const Transaction& transactionA, const Transaction& transactionB) override;
+private:
+	CategoryRepository categoryRepository;
 };
 
 class SortByFinancialAccount : public SortStrategy
@@ -83,5 +85,7 @@ public:
 	SortByFinancialAccount(SortOrder order) : SortStrategy(order) {}
 protected:
 	bool compare(const Transaction& transactionA, const Transaction& transactionB) override;
+private:
+	FinancialAccountRepository fAccountRepository;
 };
 

@@ -27,7 +27,9 @@ void SortContext::executeStrategy(QVector<Transaction>& allTransactions)
 
 bool SortByName::compare(const Transaction& transactionA, const Transaction& transactionB)
 {
-	return transactionA.getTransactionName() < transactionB.getTransactionName();
+	QString nameA = transactionA.getTransactionName().trimmed().toLower();
+	QString nameB = transactionB.getTransactionName().trimmed().toLower();
+	return nameA < nameB;
 }
 
 bool SortByDate::compare(const Transaction& transactionA, const Transaction& transactionB)
@@ -37,7 +39,9 @@ bool SortByDate::compare(const Transaction& transactionA, const Transaction& tra
 
 bool SortByDescription::compare(const Transaction& transactionA, const Transaction& transactionB)
 {
-	return transactionA.getTransactionDescription() < transactionB.getTransactionDescription();
+	QString nameA = transactionA.getTransactionDescription().trimmed().toLower();
+	QString nameB = transactionB.getTransactionDescription().trimmed().toLower();
+	return nameA < nameB;
 }
 
 bool SortByAmount::compare(const Transaction& transactionA, const Transaction& transactionB)
@@ -45,20 +49,23 @@ bool SortByAmount::compare(const Transaction& transactionA, const Transaction& t
 	return transactionA.getTransactionAmount() < transactionB.getTransactionAmount();
 }
 
-bool SortByType::compare(const Transaction& transactionA, const Transaction& transactionB)
+bool SortByType::compare(const Transaction& transactionA, const Transaction& transactionB)//IN PROGRESS: CHANGE LOGIC TO SORT BY NAME NOT VALUE OF ENUM
 {
 	return transactionA.getTransactionType() < transactionB.getTransactionType();
 }
 
 bool SortByCategory::compare(const Transaction& transactionA, const Transaction& transactionB)
 {
-	CategoryRepository categoryRepository;
-	return categoryRepository.getCategoryNameById(transactionA.getCategoryId()) < categoryRepository.getCategoryNameById(transactionB.getCategoryId());
+	QString nameA = categoryRepository.getCategoryNameById(transactionA.getCategoryId()).trimmed().toLower();
+	QString nameB = categoryRepository.getCategoryNameById(transactionB.getCategoryId()).trimmed().toLower();
+	return nameA < nameB;
 }
 
 bool SortByFinancialAccount::compare(const Transaction& transactionA, const Transaction& transactionB)
 {
-	FinancialAccountRepository fAccountRepository;
-	return fAccountRepository.getFinancialAccountNameById(transactionA.getFinancialAccountId()) < fAccountRepository.getFinancialAccountNameById(transactionB.getFinancialAccountId());
+	QString nameA = fAccountRepository.getFinancialAccountNameById(transactionA.getFinancialAccountId()).trimmed().toLower();
+	QString nameB = fAccountRepository.getFinancialAccountNameById(transactionB.getFinancialAccountId()).trimmed().toLower();
+	return nameA < nameB;
+	
 }
 

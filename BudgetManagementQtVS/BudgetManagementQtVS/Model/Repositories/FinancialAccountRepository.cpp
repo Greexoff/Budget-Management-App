@@ -116,7 +116,7 @@ QString FinancialAccountRepository::getFinancialAccountNameById(int financialAcc
 
 	if (!query.exec())
 	{
-		qDebug() << "CategoryRepository:: error: Couldn't find category in database" << query.lastError().text();
+		qDebug() << "FinancialAccountRepository:: error: Couldn't find valid financial account in database" << query.lastError().text();
 		return financialAccountName;
 	}
 
