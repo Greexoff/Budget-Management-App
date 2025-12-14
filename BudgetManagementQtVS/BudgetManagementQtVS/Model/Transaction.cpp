@@ -1,5 +1,7 @@
 ﻿#include "Model/Transaction.h"
 
+
+
 /**
  * @brief Constructs a Transaction with all specified properties
  * @param transactionId Unique database identifier
@@ -77,6 +79,11 @@ double Transaction::getTransactionAmount() const
 	return transactionAmount;
 }
 
+TransactionType Transaction::getTransactionType() const
+{
+	return transactionType;
+}
+
 /**
  * @brief Returns the ID of the associated category
  * @return int Category ID
@@ -99,7 +106,6 @@ int Transaction::getAssociatedProfileId() const
 {
 	return associatedProfileId;
 }
-
 //Setter implementations
 
 /**

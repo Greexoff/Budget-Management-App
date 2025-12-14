@@ -18,6 +18,7 @@ void FinancialAccountSelectionView::connectMethodToButton() {
 	connect(ui->addFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::addFinancialAccountButtonClicked);
 	connect(ui->deleteFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::deleteFinancialAccountButtonClicked);
 	connect(ui->cancelFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::cancelFinancialAccountButtonClicked);
+	connect(ui->editFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::editFinancialAccountButtonClicked);
 }
 
 void FinancialAccountSelectionView::setupTable() {
@@ -65,23 +66,41 @@ void FinancialAccountSelectionView::selectFinancialAccountButtonClicked() {
 }
 
 void FinancialAccountSelectionView::addFinancialAccountButtonClicked() {
-	bool ok = false;
-	QString name = QInputDialog::getText(this, tr("New financial account"), tr("Financial account name:"), QLineEdit::Normal, "", &ok);
-	if (!ok || name.trimmed().isEmpty())
-	{
-		return;
+	QDialog dlg(this);
+	dlg.setWindowTitle(tr("New Financial Account"));
+
+	QFormLayout* layout = new QFormLayout(&dlg);
+
+	QLineEdit* nameEdit = new QLineEdit(&dlg);
+	nameEdit->setPlaceholderText("e.g. mBank, Wallet");
+
+	QComboBox* typeCombo = new QComboBox(&dlg);
+	typeCombo->addItems({ "Cash", "Bank Account", "Savings", "Credit Card" });
+
+	QDoubleSpinBox* balanceSpin = new QDoubleSpinBox(&dlg);
+	balanceSpin->setRange(-10000000.0, 10000000.0); 
+	balanceSpin->setDecimals(2);
+	balanceSpin->setSuffix(" PLN");
+
+	layout->addRow(tr("Account Name:"), nameEdit);
+	layout->addRow(tr("Account Type:"), typeCombo);
+	layout->addRow(tr("Initial Balance:"), balanceSpin);
+
+	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel, &dlg);
+	layout->addRow(buttonBox);
+
+	connect(buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+	connect(buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
+
+	if (dlg.exec() == QDialog::Accepted) {
+		QString name = nameEdit->text();
+
+		if (name.trimmed().isEmpty()) {
+			return;
+		}
+
+		emit addRequestedFinancialAccount(name, typeCombo->currentText(), balanceSpin->value());
 	}
-	QString type = QInputDialog::getText(this, tr("New financial account"), tr("Financial account type:"), QLineEdit::Normal, "", &ok);
-	if (!ok || type.trimmed().isEmpty())
-	{
-		return;
-	}
-	double balance = QInputDialog::getDouble(this, tr("New financial account"), tr("Financial account balance:"), 0.0, -1e9, 1e9, 2, &ok);
-	if (!ok )
-	{
-		return;
-	}
-	emit addRequestedFinancialAccount(name,type,balance);
 }
 
 void FinancialAccountSelectionView::deleteFinancialAccountButtonClicked() {
@@ -112,5 +131,61 @@ void FinancialAccountSelectionView::showFinancialAccountMessage(QString header, 
 	else
 	{
 		QMessageBox::information(this, header, message);
+	}
+}
+
+void FinancialAccountSelectionView::editFinancialAccountButtonClicked() {
+	int row = ui->financialAccountsTable->currentRow();
+
+	// Sprawdzenie, czy coś jest zaznaczone
+	if (row < 0 || row >= financialAccountId.size()) {
+		return;
+	}
+	FinancialAccount currentFinancialAccount = financialAccountId[0]; 
+
+	QString currentNameInTable = ui->financialAccountsTable->item(row, 0)->text();
+	for (const auto& acc : financialAccountId) {
+		if (acc.getFinancialAccountName() == currentNameInTable) {
+			currentFinancialAccount = acc;
+			break;
+		}
+	}
+
+	if (currentFinancialAccount.getFinancialAccountId() == 1) {
+		showFinancialAccountMessage(tr("Error"), tr("Cannot edit default account."), "error");
+		return;
+	}
+
+	QDialog dlg(this);
+	dlg.setWindowTitle(tr("Edit Financial Account"));
+	QFormLayout* layout = new QFormLayout(&dlg);
+
+	QLineEdit* nameEdit = new QLineEdit(&dlg);
+	nameEdit->setText(currentFinancialAccount.getFinancialAccountName()); 
+
+	QComboBox* typeCombo = new QComboBox(&dlg);
+	typeCombo->addItems({ "Cash", "Bank Account", "Savings", "Credit Card" });
+	typeCombo->setCurrentText(currentFinancialAccount.getFinancialAccountType()); 
+
+	QDoubleSpinBox* balanceSpin = new QDoubleSpinBox(&dlg);
+	balanceSpin->setRange(-10000000.0, 10000000.0);
+	balanceSpin->setSuffix(" PLN");
+	balanceSpin->setValue(currentFinancialAccount.getFinancialAccountBalance()); 
+
+	layout->addRow(tr("Name:"), nameEdit);
+	layout->addRow(tr("Type:"), typeCombo);
+	layout->addRow(tr("Balance:"), balanceSpin);
+
+	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel, &dlg);
+	layout->addRow(buttonBox);
+
+	connect(buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+	connect(buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
+
+	if (dlg.exec() == QDialog::Accepted) {
+		QString newName = nameEdit->text();
+		if (newName.trimmed().isEmpty()) return;
+
+		emit editRequestedFinancialAccount(currentFinancialAccount.getFinancialAccountId(), newName, typeCombo->currentText(), balanceSpin->value());
 	}
 }

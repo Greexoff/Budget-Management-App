@@ -1,5 +1,6 @@
 #pragma once
 #include <Model/Repositories/BaseRepository.h>
+#include <Model/Repositories/CategoryRepository.h>
 /**
  * @class TransactionRepository
  * @brief Handles database operations for financial transaction management
@@ -39,4 +40,6 @@ public:
     //edycja transakcji
     bool updateTransaction(const Transaction& transaction);
     Transaction getTransactionById(int id) const;
+
+    double getMonthlyExpenses(int profileId, int month, int year) const;
 };

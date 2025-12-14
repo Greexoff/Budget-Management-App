@@ -1,17 +1,15 @@
 ﻿#pragma once
 #include <QString>
 #include <QDate>
-
 /**
  * @enum TransactionType
  * @brief Defines the type of financial transaction
  */
 enum TransactionType
 {
-	INCOME,		///< Money received 
-	EXPENSE		///< Money spent
+	EXPENSE,	///< Money spent
+	INCOME		///< Money received 
 };
-
 /**
  * @class Transaction
  * @brief Represents a financial transaction in the budgeting system
@@ -64,6 +62,8 @@ public:
 	int getFinancialAccountId() const;
 	int getAssociatedProfileId() const;
 
+	TransactionType getTransactionType() const;
+
 	// Setters	
 	void setTransactionId(int id);
 	void setTransactionName(const QString& name);
@@ -86,5 +86,4 @@ public:
 	 * @param associatedProfileId Updated profile ID
 	 */
 	void editTransaction(const QString& name, const QDate& date, const QString& description, double amount, TransactionType type, int categoryId,int financialAccountId, int associatedProfileId);
-
 };

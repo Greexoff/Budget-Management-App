@@ -1,5 +1,10 @@
 ﻿#pragma once
 
+#include <QFormLayout>
+#include <QDialogButtonBox>
+#include <QDoubleSpinBox>
+#include <QComboBox>
+#include <QLineEdit>
 #include <QDialog>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -30,10 +35,13 @@ signals:
 
 	void deleteRequestedFinancialAccount(int financialAccountId);
 
+	void editRequestedFinancialAccount(int financialAccountId, const QString& name, const QString& type, double balance);
+
 private slots:
 	void selectFinancialAccountButtonClicked();
 	void addFinancialAccountButtonClicked();
 	void deleteFinancialAccountButtonClicked();
+	void editFinancialAccountButtonClicked();
 	void cancelFinancialAccountButtonClicked();
 
 private:

@@ -88,6 +88,24 @@ bool FinancialAccountRepository::removeFinancialAccount(int financialAccountId) 
 	return true;
 }
 
+bool FinancialAccountRepository::updateFinancialAccount(int financialAccountId, const QString& newName, const QString& newType, double newBalance)
+{
+	if (financialAccountId == 1) return false;
+
+	QSqlQuery query(database);
+	query.prepare("UPDATE financialAccount SET financialAccount_name = :name, financialAccount_type = :type, financialAccount_balance = :balance WHERE id = :id");
+	query.bindValue(":name", newName);
+	query.bindValue(":type", newType);
+	query.bindValue(":balance", newBalance);
+	query.bindValue(":id", financialAccountId);
+
+	if (!query.exec()) {
+		qDebug() << "FinancialAccountRepo::update error:" << query.lastError().text();
+		return false;
+	}
+	return true;
+}
+
 QString FinancialAccountRepository::getFinancialAccountNameById(int financialAccountId) {
 
 	QSqlQuery query(database);
@@ -98,7 +116,7 @@ QString FinancialAccountRepository::getFinancialAccountNameById(int financialAcc
 
 	if (!query.exec())
 	{
-		qDebug() << "CategoryRepository:: error: Couldn't find category in database" << query.lastError().text();
+		qDebug() << "FinancialAccountRepository:: error: Couldn't find valid financial account in database" << query.lastError().text();
 		return financialAccountName;
 	}
 

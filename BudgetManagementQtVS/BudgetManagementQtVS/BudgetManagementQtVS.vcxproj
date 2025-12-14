@@ -109,6 +109,7 @@
     <ClCompile Include="Model\Repositories\ProfileRepository.cpp" />
     <ClCompile Include="Model\Repositories\TransactionRepository.cpp" />
     <ClCompile Include="Model\Repositories\UserRepository.cpp" />
+    <ClCompile Include="Model\SortStrategy.cpp" />
     <ClCompile Include="Model\Transaction.cpp" />
     <ClCompile Include="Model\TransactionBuilder.cpp" />
     <ClCompile Include="Model\User.cpp" />
@@ -134,6 +135,7 @@
     <ClInclude Include="Model\Repositories\ProfileRepository.h" />
     <ClInclude Include="Model\Repositories\TransactionRepository.h" />
     <ClInclude Include="Model\Repositories\UserRepository.h" />
+    <ClInclude Include="Model\SortStrategy.h" />
     <ClInclude Include="Model\User.h" />
     <QtMoc Include="Controller\CategorySelectionController.h" />
     <QtMoc Include="Controller\BaseController.h" />

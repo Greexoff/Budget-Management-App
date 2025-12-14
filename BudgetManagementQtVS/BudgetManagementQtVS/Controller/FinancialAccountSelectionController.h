@@ -29,6 +29,7 @@ public slots:
 	void handleFinancialAccountSelectionFromTransactionWindow(bool selectButtonVisibility);
 	void handleFinancialAccountAddRequest(const QString& financialAccountName, const QString& financialAccountType, double financialAccountBalance);
 	void handleFinancialAccountDeleteRequest(int financialAccountId);
+	void handleFinancialAccountEditRequest(int id, const QString& name, const QString& type, double balance);
 
 private:
 	FinancialAccountSelectionView& financialAccountDialog;

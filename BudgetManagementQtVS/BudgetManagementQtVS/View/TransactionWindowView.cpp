@@ -32,7 +32,7 @@ TransactionWindow::~TransactionWindow()
 void TransactionWindow::initializeTransactionTable()
 {
     // Define table columns
-    TableModel->setColumnCount(7);
+    TableModel->setColumnCount(8);
     TableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
     TableModel->setHeaderData(1, Qt::Horizontal, tr("Name"));
     TableModel->setHeaderData(2, Qt::Horizontal, tr("Date"));
@@ -68,6 +68,11 @@ void TransactionWindow::setupConnections()
     connect(ui->buttonEdit, &QPushButton::clicked, this, &TransactionWindow::onButtonEditTransactionClicked);
     connect(ui->changeProfileButton, &QPushButton::clicked, this, &TransactionWindow::onButtonChangeProfileClicked);
     connect(ui->browseFinancialAccountsButton, &QPushButton::clicked, this, &TransactionWindow::onButtonManageFinancialAccountsClicked);
+    connect(ui->editBudgetButton, &QPushButton::clicked, this, &TransactionWindow::onButtonEditBudgetClicked);
+    connect(ui->searchEdit, &QLineEdit::textChanged, this, &TransactionWindow::searchTextChanged);
+
+    QHeaderView* header = ui->TransactionTabelView->horizontalHeader();
+    connect(header, &QHeaderView::sectionClicked, this, &TransactionWindow::onColumnHeaderClicked);
 }
 
 /**
@@ -98,7 +103,10 @@ void TransactionWindow::onButtonManageFinancialAccountsClicked()
 {
     emit showFinancialAccountsRequest();
 }
-
+void TransactionWindow::searchTextChanged(QString searchText)
+{
+    emit searchTextRequest(searchText);
+}
 /**
  * @brief Updates the transaction table with new data
  * @param rows Vector of transaction data rows
@@ -176,4 +184,40 @@ QString TransactionWindow::getTransactionDescriptionFromInput(bool& correctData,
 void TransactionWindow::onButtonChangeProfileClicked()
 {
     emit backToProfileRequested();
+}
+
+void TransactionWindow::onButtonEditBudgetClicked()
+{
+    emit editBudgetRequest();
+}
+
+void TransactionWindow::updateBudgetDisplay(double limit, double spent)
+{
+    ui->budgetProgressBar->setRange(0, 100);
+
+    double percentage = (limit > 0) ? (spent / limit) * 100.0 : 0.0;
+
+    int visualValue = (percentage > 100.0) ? 100 : static_cast<int>(percentage);
+    ui->budgetProgressBar->setValue(visualValue);
+
+    if (spent > limit && limit > 0) {
+        ui->budgetProgressBar->setStyleSheet("QProgressBar::chunk { background-color: #ff4d4d; }");
+    }
+    else {
+        ui->budgetProgressBar->setStyleSheet("QProgressBar::chunk { background-color: #4CAF50; }"); 
+    }
+
+    double remaining = limit - spent;
+    ui->budgetLabel->setText(QString("Spent: %1 / Limit: %2 PLN (Remaining: %3 PLN)")
+        .arg(QString::number(spent, 'f', 2))
+        .arg(QString::number(limit, 'f', 2))
+        .arg(QString::number(remaining, 'f', 2)));
+}
+void TransactionWindow::onColumnHeaderClicked(int columnId)
+{
+    emit columnSortRequest(columnId);
+}
+void TransactionWindow::clearSearchEdit()
+{
+    ui->searchEdit->clear();
 }

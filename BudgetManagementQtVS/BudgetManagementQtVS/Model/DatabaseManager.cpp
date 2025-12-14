@@ -2,6 +2,8 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QDebug>
+#include <QCryptographicHash>
+#include <QUuid>
 
 /**
  * @brief Constructs the DatabaseManager and initializes the database schema
@@ -32,13 +34,15 @@ DatabaseManager::DatabaseManager() {
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS users"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "username TEXT UNIQUE NOT NULL CHECK (username != ''),"
-        "password TEXT NOT NULL CHECK (password != ''))");
+        "password_hash TEXT NOT NULL CHECK (password_hash != ''), "
+        "salt TEXT NOT NULL CHECK (salt != ''))");
 
     // Create profiles table with user association
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS profiles"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "profile_name TEXT NOT NULL CHECK (profile_name != ''), "
         "user_id INTEGER NOT NULL, "
+        "budget_limit REAL DEFAULT 0, " 
         "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)");
     // Create categories table with profile scoping
    tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS category"
@@ -83,14 +87,24 @@ DatabaseManager::DatabaseManager() {
 
     if (adminQuery.exec() && adminQuery.next()) {
         if (adminQuery.value(0).toInt() == 0) {
+
+            QString password = "admin"; 
+
+            QString salt = QUuid::createUuid().toString();
+
+            QByteArray dataToHash = (password + salt).toUtf8();
+            QString hashedPassword = QString(QCryptographicHash::hash(dataToHash, QCryptographicHash::Sha256).toHex());
+
             QSqlQuery insertAdmin(datebaseInstance);
             insertAdmin.prepare(
-                "INSERT INTO users (username, password) "
-                "VALUES ('admin', 'admin')"
+                "INSERT INTO users (username, password_hash, salt) "
+                "VALUES ('admin', :hash, :salt)"
             );
+            insertAdmin.bindValue(":hash", hashedPassword);
+            insertAdmin.bindValue(":salt", salt);
 
             if (insertAdmin.exec()) {
-                qDebug() << "Demo admin user has been added.";
+                qDebug() << "Demo admin user has been added (Pass: admin).";
             }
             else {
                 qDebug() << "Error adding admin user:" << insertAdmin.lastError();

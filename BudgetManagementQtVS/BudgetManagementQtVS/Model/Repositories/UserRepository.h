@@ -1,4 +1,6 @@
-#pragma once
+﻿#pragma once
+#include <QCryptographicHash>
+#include <QUuid>
 #include <Model/Repositories/BaseRepository.h>
 /**
  * @class UserRepository
@@ -33,4 +35,6 @@ public:
      * @return True if user deleted successfully, false otherwise
      */
     bool removeUserById(int userId);
+
+    bool checkIfUserExists(const QString& username);
 };

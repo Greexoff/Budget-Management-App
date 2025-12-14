@@ -92,3 +92,23 @@ bool ProfilesRepository::updateProfile(int profileId, const QString& newName)
     }
     return true;
 }
+
+double ProfilesRepository::getBudgetLimit(int profileId) const
+{
+    QSqlQuery query(database);
+    query.prepare("SELECT budget_limit FROM profiles WHERE id = :id");
+    query.bindValue(":id", profileId);
+    if (query.exec() && query.next()) {
+        return query.value(0).toDouble();
+    }
+    return 0.0;
+}
+
+bool ProfilesRepository::setBudgetLimit(int profileId, double limit)
+{
+    QSqlQuery query(database);
+    query.prepare("UPDATE profiles SET budget_limit = :limit WHERE id = :id");
+    query.bindValue(":limit", limit);
+    query.bindValue(":id", profileId);
+    return query.exec();
+}
