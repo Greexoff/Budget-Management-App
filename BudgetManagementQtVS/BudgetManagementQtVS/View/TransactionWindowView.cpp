@@ -69,6 +69,7 @@ void TransactionWindow::setupConnections()
     connect(ui->changeProfileButton, &QPushButton::clicked, this, &TransactionWindow::onButtonChangeProfileClicked);
     connect(ui->browseFinancialAccountsButton, &QPushButton::clicked, this, &TransactionWindow::onButtonManageFinancialAccountsClicked);
     connect(ui->editBudgetButton, &QPushButton::clicked, this, &TransactionWindow::onButtonEditBudgetClicked);
+    connect(ui->searchEdit, &QLineEdit::textChanged, this, &TransactionWindow::searchTextChanged);
 
     QHeaderView* header = ui->TransactionTabelView->horizontalHeader();
     connect(header, &QHeaderView::sectionClicked, this, &TransactionWindow::onColumnHeaderClicked);
@@ -102,7 +103,10 @@ void TransactionWindow::onButtonManageFinancialAccountsClicked()
 {
     emit showFinancialAccountsRequest();
 }
-
+void TransactionWindow::searchTextChanged(QString searchText)
+{
+    emit searchTextRequest(searchText);
+}
 /**
  * @brief Updates the transaction table with new data
  * @param rows Vector of transaction data rows
@@ -212,4 +216,8 @@ void TransactionWindow::updateBudgetDisplay(double limit, double spent)
 void TransactionWindow::onColumnHeaderClicked(int columnId)
 {
     emit columnSortRequest(columnId);
+}
+void TransactionWindow::clearSearchEdit()
+{
+    ui->searchEdit->clear();
 }

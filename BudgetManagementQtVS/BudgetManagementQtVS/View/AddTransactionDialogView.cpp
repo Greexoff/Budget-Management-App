@@ -28,6 +28,13 @@ void AddTransactionDialogView::setFinancialAccounts(const QVector<FinancialAccou
 		ui->accountCombo->addItem(label, acc.getFinancialAccountId());
 	}
 }
+void AddTransactionDialogView::setTransactionType(const QVector<TransactionType>& transactionType)
+{
+	ui->typeCombo->clear();
+	for (const auto& type : transactionType) {
+		//ui->typeCombo->addItem(getTransactionTypeName(type));
+	}
+}
 
 QString AddTransactionDialogView::getName() const { return ui->nameEdit->text(); }
 double AddTransactionDialogView::getAmount() const { return ui->amountSpin->value(); }

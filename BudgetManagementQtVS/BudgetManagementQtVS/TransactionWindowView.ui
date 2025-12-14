@@ -81,7 +81,7 @@
    <widget class="QProgressBar" name="budgetProgressBar">
     <property name="geometry">
      <rect>
-      <x>950</x>
+      <x>440</x>
       <y>10</y>
       <width>121</width>
       <height>31</height>
@@ -107,7 +107,7 @@
    <widget class="QPushButton" name="editBudgetButton">
     <property name="geometry">
      <rect>
-      <x>520</x>
+      <x>580</x>
       <y>10</y>
       <width>91</width>
       <height>31</height>
@@ -115,6 +115,32 @@
     </property>
     <property name="text">
      <string>Set budget</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="searchEdit">
+    <property name="geometry">
+     <rect>
+      <x>940</x>
+      <y>20</y>
+      <width>113</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>900</x>
+      <y>20</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Search</string>
     </property>
    </widget>
   </widget>

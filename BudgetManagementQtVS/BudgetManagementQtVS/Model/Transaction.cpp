@@ -1,5 +1,7 @@
 ﻿#include "Model/Transaction.h"
 
+
+
 /**
  * @brief Constructs a Transaction with all specified properties
  * @param transactionId Unique database identifier

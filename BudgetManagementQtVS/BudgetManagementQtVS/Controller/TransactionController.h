@@ -32,7 +32,7 @@ public slots:
     void handleCategoriesDataChangeRequest();
     void handleFinancialAccountsDataChangeRequest();
     void finalizeTransaction(TransactionBuilder& builder);
-
+    void handleFilteringTransactionRequest(QString searchText);
     void handleEditBudgetRequest();
 private:
 	TransactionWindow& transactionWindow;
@@ -44,6 +44,7 @@ private:
     std::unique_ptr<SortStrategy> sortingStrategy;
     SortOrder lastSortingOrder = SortOrder::DESCENDING;
     int lastSelectedColumn = -1;
+    QString filteringText = "";
 
     /**
     * @brief Handles request to delete a transaction
@@ -65,4 +66,6 @@ private:
     void handleSortingRequest(int columnId);
 
     void executeTransactionSorting(QVector<Transaction>& allTransactions);
+
+    QVector<Transaction> executeFilteringTransaction(const QVector<Transaction> allTransactions);
 };

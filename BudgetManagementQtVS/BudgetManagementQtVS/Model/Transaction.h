@@ -7,10 +7,9 @@
  */
 enum TransactionType
 {
-	INCOME,		///< Money received 
-	EXPENSE		///< Money spent
+	EXPENSE,	///< Money spent
+	INCOME		///< Money received 
 };
-
 /**
  * @class Transaction
  * @brief Represents a financial transaction in the budgeting system

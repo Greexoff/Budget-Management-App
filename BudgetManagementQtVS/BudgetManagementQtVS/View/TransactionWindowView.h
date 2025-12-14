@@ -33,9 +33,11 @@ public:
      * @brief Gets the ID of the currently selected transaction
      * @return int Transaction ID, or -1 if no transaction selected
      */
-    int getSelectedTransactionId() const; 
+    int getSelectedTransactionId() const;
 
     void updateBudgetDisplay(double limit, double spent);
+
+    void clearSearchEdit();
 public slots:
     void showTransactionMessage(QString header, QString message, QString messageType);
     QString getTransactionNameFromInput(bool& correctData, const QString& defaultValue = "");
@@ -68,6 +70,8 @@ signals:
 
     void columnSortRequest(int columnId);
 
+    void searchTextRequest(const QString& searchText);
+
 private slots:
     void onButtonAddTransactionClicked();
     void onButtonDeleteTransactionClicked();
@@ -76,6 +80,7 @@ private slots:
     void onButtonEditTransactionClicked();
     void onButtonEditBudgetClicked();
     void onColumnHeaderClicked(int columnId);
+    void searchTextChanged(QString searchText);
 
 private:
     Ui::MainWindow* ui;                         ///< Pointer to UI elements
