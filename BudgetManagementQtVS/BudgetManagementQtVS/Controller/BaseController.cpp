@@ -4,7 +4,7 @@ int BaseController::s_currentUserId = 0;
 int BaseController::s_currentProfileId = 0;
 bool BaseController::s_mainWindowInitialized = false;
 
-	
+
 void BaseController::setProfileId(int profileId)
 {
 	s_currentProfileId = profileId;
@@ -40,4 +40,39 @@ QString BaseController::getFilteringText()
 void BaseController::setFilteringText(const QString& searchText)
 {
 	filteringText = searchText;
+}
+
+void BaseController::setSelectedColumnId(int columnId)
+{
+	if (columnId == selectedColumnId)
+	{
+		setLastSortingOrder();
+	}
+	else
+	{
+		selectedColumnId = columnId;
+		lastSortingOrder = Qt::SortOrder::AscendingOrder;
+	}
+}
+
+int BaseController::getSelectedColumnId()
+{
+	return selectedColumnId;
+}
+
+Qt::SortOrder BaseController::getLastSortingOrder()
+{
+	return lastSortingOrder;
+}
+
+void BaseController::setLastSortingOrder()
+{
+	if (lastSortingOrder == Qt::SortOrder::AscendingOrder)
+	{
+		lastSortingOrder = Qt::SortOrder::DescendingOrder;
+	}
+	else
+	{
+		lastSortingOrder = Qt::SortOrder::AscendingOrder;
+	}
 }

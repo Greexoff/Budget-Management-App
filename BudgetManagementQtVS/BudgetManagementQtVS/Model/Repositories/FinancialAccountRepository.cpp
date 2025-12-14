@@ -106,7 +106,7 @@ bool FinancialAccountRepository::updateFinancialAccount(int financialAccountId, 
 	return true;
 }
 
-QString FinancialAccountRepository::getFinancialAccountNameById(int financialAccountId) {
+QString FinancialAccountRepository::getFinancialAccountNameById(int financialAccountId) const {
 
 	QSqlQuery query(database);
 	QString financialAccountName = "";

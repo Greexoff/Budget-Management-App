@@ -37,7 +37,7 @@ public:
      * @param categoryId ID of the category
      * @return Category name as QString, empty string if category not found
      */
-    QString getCategoryNameById(int categoryId);
+    QString getCategoryNameById(int categoryId) const;
 
     bool updateCategory(int categoryId, const QString& newName);
 };

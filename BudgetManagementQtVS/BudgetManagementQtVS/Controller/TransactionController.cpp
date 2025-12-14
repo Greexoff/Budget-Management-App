@@ -245,7 +245,6 @@ void TransactionController::handleEditTransactionRequest()
                 transactionWindow.showTransactionMessage("Error", "Failed to add category", "error");
             }
         });
-
     connect(&dialog, &AddTransactionDialogView::addFinancialAccountRequested, this,
         [&](const QString& name, const QString& type, double balance) {
             if (financialAccountRepository.addFinancialAccount(name, type, balance, getProfileId())) {
@@ -309,65 +308,53 @@ void TransactionController::handleEditBudgetRequest()
 }
 void TransactionController::handleSortingRequest(int columnId)
 {
-    int currentColumnId = columnId;
-    SortOrder newOrder;
-    
-    if (currentColumnId == lastSelectedColumn)
-    {
-        if (lastSortingOrder == SortOrder::ASCENDING)
-        {
-            newOrder = SortOrder::DESCENDING;
-        }
-        else
-        {
-            newOrder = SortOrder::ASCENDING;
-        }
-    }
-    else
-    {
-        newOrder = SortOrder::ASCENDING;
-    }
-
-    lastSelectedColumn = currentColumnId;
-    lastSortingOrder = newOrder;
-
-    switch (columnId) {
-    case 1://Name
-        sortingStrategy = std::make_unique<SortByName>(lastSortingOrder);
-        break;
-    case 2://Date
-        sortingStrategy = std::make_unique<SortByDate>(lastSortingOrder);
-        break;
-    case 3://Description
-        sortingStrategy = std::make_unique<SortByDescription>(lastSortingOrder);
-        break;
-    case 4://Amount
-        sortingStrategy = std::make_unique<SortByAmount>(lastSortingOrder);
-        break;
-    case 5://Type
-        sortingStrategy = std::make_unique<SortByType>(lastSortingOrder);
-        break;
-    case 6://Category
-        sortingStrategy = std::make_unique<SortByCategory>(lastSortingOrder);
-        break;
-    case 7://Financial Account
-        sortingStrategy = std::make_unique<SortByFinancialAccount>(lastSortingOrder);
-        break;
-    default:
-        qDebug() << "Unknown ID of column";
-        return;
-        break;
-    }
+    setSelectedColumnId(columnId);
     refreshTransactionsView();
 }
 void TransactionController::executeTransactionSorting(QVector<Transaction>& allTransactions)
 {
-    if (sortingStrategy != nullptr)
-    {
-        SortContext sortingContext;
-        sortingContext.setStrategy(std::move(sortingStrategy));
-        sortingContext.executeStrategy(allTransactions);
-    }
+    auto compareValues = [&](const auto& valA, const auto& valB) -> bool
+        {
+            if (getLastSortingOrder() == Qt::AscendingOrder)
+            {
+                return valA < valB;
+            }
+            else
+            {
+                return valA > valB;
+            }
+        };
+    auto comparator = [&](const Transaction& itemA, const Transaction& itemB) -> bool
+        {
+            switch (getSelectedColumnId())
+            {
+            case 1://Name
+                return compareValues(itemA.getTransactionName(), itemB.getTransactionName());
+                break;
+            case 2://Date
+                return compareValues(itemA.getTransactionDate(), itemB.getTransactionDate());
+                break;
+            case 3://Description
+                return compareValues(itemA.getTransactionDescription(), itemB.getTransactionDescription());
+                break;
+            case 4://Amount
+                return compareValues(itemA.getTransactionAmount(), itemB.getTransactionAmount());
+                break;
+            case 5://Type
+                return compareValues(itemA.getTransactionType(), itemB.getTransactionType());
+                break;
+            case 6://Category
+                return compareValues(categoryRepository.getCategoryNameById(itemA.getCategoryId()), categoryRepository.getCategoryNameById(itemB.getCategoryId()));
+                break;
+            case 7://fAccount
+                return compareValues(financialAccountRepository.getFinancialAccountNameById(itemA.getFinancialAccountId()), financialAccountRepository.getFinancialAccountNameById(itemB.getFinancialAccountId()));
+                break;
+            default:
+                return compareValues(itemA.getTransactionId(), itemB.getTransactionId());
+                break;
+            }
+        };
+    std::sort(allTransactions.begin(), allTransactions.end(), comparator);
 }
 void TransactionController::handleFilteringTransactionRequest(QString searchText)
 {

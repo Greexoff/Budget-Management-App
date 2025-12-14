@@ -6,7 +6,6 @@
 #include <Model/Repositories/FinancialAccountRepository.h>
 #include <Model/Repositories/ProfileRepository.h>
 #include <Model/TransactionBuilder.h>
-#include <Model/SortStrategy.h>
 
 #include "View/TransactionWindowView.h"
 #include "View/AddTransactionDialogView.h"
@@ -40,10 +39,6 @@ private:
     CategoryRepository& categoryRepository;
     FinancialAccountRepository& financialAccountRepository;
     ProfilesRepository& profileRepository;
-
-    std::unique_ptr<SortStrategy> sortingStrategy;
-    SortOrder lastSortingOrder = SortOrder::DESCENDING;
-    int lastSelectedColumn = -1;
 
     /**
     * @brief Handles request to delete a transaction

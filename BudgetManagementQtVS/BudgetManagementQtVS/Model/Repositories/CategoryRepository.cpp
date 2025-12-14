@@ -119,7 +119,7 @@ bool CategoryRepository::removeCategoryById(int categoryId)
  * @param categoryId ID of the category
  * @return Category name as QString, empty string if category not found
  */
-QString CategoryRepository::getCategoryNameById(int categoryId)
+QString CategoryRepository::getCategoryNameById(int categoryId) const
 {
     QSqlQuery query(database);
     QString categoryName = "";
