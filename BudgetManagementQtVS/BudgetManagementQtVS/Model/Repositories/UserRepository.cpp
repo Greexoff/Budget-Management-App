@@ -77,3 +77,15 @@ int UserRepository::getUserIdBasedOnUsername(QString username, QString password)
 
     return -1;
 }
+
+bool UserRepository::checkIfUserExists(const QString& username)
+{
+    QSqlQuery query(database);
+    query.prepare("SELECT id FROM users WHERE username = :username");
+    query.bindValue(":username", username);
+
+    if (query.exec() && query.next()) {
+        return true; 
+    }
+    return false;
+}

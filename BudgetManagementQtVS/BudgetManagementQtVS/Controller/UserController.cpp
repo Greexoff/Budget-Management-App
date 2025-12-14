@@ -1,4 +1,4 @@
-#include "Controller/UserController.h"
+﻿#include "Controller/UserController.h"
 #include <QDebug>
 UserController::UserController(LoginDialog& loginDialogRef, UserRepository& userRepositoryRef, QObject* parent) : BaseController(parent), loginDialog(loginDialogRef), userRepository(userRepositoryRef)
 {
@@ -44,13 +44,21 @@ void UserController::handleLoginRequest(const QString& username, const QString& 
  */
 void UserController::handleRegisterRequest(const QString& username, const QString& password)
 {
-    if (!userRepository.addUser(username, password)) {
-        const QString header = tr("Registration");
-        const QString message = tr("Failed to create user.");
-        loginDialog.showLoginMessage(header, message, "error");
+    if (username.isEmpty() || password.isEmpty()) {
+        loginDialog.showLoginMessage("Register", "Username and password cannot be empty.", "error");
         return;
     }
-    const QString header = tr("Registration");
-    const QString message = tr("Account created successfully.");
-    loginDialog.showLoginMessage(header, message, "message");
+
+    if (userRepository.checkIfUserExists(username)) {
+        loginDialog.showLoginMessage("Register", "User with this name already exists.", "error");
+        return;
+    }
+
+
+    if (userRepository.addUser(username, password)) {
+        loginDialog.showLoginMessage("Register", "User created successfully!", "info");
+    }
+    else {
+        loginDialog.showLoginMessage("Register", "Failed to create user in database.", "error");
+    }
 }

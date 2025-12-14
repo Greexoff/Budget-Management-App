@@ -35,4 +35,6 @@ public:
      * @return True if user deleted successfully, false otherwise
      */
     bool removeUserById(int userId);
+
+    bool checkIfUserExists(const QString& username);
 };
