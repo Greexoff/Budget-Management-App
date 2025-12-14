@@ -1,5 +1,10 @@
 ﻿#pragma once
 
+#include <QFormLayout>
+#include <QDialogButtonBox>
+#include <QDoubleSpinBox>
+#include <QComboBox>
+#include <QLineEdit>
 #include <QDialog>
 #include <QInputDialog>
 #include <QMessageBox>

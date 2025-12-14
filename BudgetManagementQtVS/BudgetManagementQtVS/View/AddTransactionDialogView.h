@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <QDialog>
+#include <QInputDialog>
 #include <ui_AddTransactionDialogView.h>
 #include <Model/Category.h>
 #include <Model/FinancialAccount.h>
@@ -31,6 +32,20 @@ public:
 	void setSelectedCategoryId(int categoryId);
 	void setSelectedFinancialAccountId(int financialAccountId);
 
+	void refreshCategories(const QVector<Category>& categories, int selectedId = -1);
+	void refreshFinancialAccounts(const QVector<FinancialAccount>& accounts, int selectedId = -1);
+
+signals:
+	void addCategoryRequested(const QString& name);
+	void addFinancialAccountRequested(const QString& name, const QString& type, double balance);
+
+private slots:
+	void onCategoryIndexChanged(int index);
+	void onFinancialAccountIndexChanged(int index);
+
 private:
 	Ui::AddTransactionDialogView* ui;
+
+	int previousCategoryIndex = -1;
+	int previousFinancialAccountIndex = -1;
 };

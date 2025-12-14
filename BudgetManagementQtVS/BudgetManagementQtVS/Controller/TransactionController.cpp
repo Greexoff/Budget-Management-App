@@ -24,6 +24,38 @@ void TransactionController::startAddingTransactionRequest()
     dialog.setCategories(categories);
     dialog.setFinancialAccounts(accounts);
 
+    connect(&dialog, &AddTransactionDialogView::addCategoryRequested, this,
+        [&](const QString& name) {
+            if (categoryRepository.addCategory(name, getProfileId())) {
+
+                QVector<Category> newCats = categoryRepository.getAllProfileCategories(getProfileId());
+
+                int newId = -1;
+                for (const auto& c : newCats) if (c.getCategoryName() == name) newId = c.getCategoryId();
+
+                dialog.refreshCategories(newCats, newId);
+            }
+            else {
+                transactionWindow.showTransactionMessage("Error", "Failed to add category", "error");
+            }
+        });
+
+    connect(&dialog, &AddTransactionDialogView::addFinancialAccountRequested, this,
+        [&](const QString& name, const QString& type, double balance) {
+            if (financialAccountRepository.addFinancialAccount(name, type, balance, getProfileId())) {
+                QVector<FinancialAccount> newAccs = financialAccountRepository.getAllProfileFinancialAccounts(getProfileId());
+
+   
+                int newId = -1;
+                for (const auto& a : newAccs) if (a.getFinancialAccountName() == name) newId = a.getFinancialAccountId();
+
+                dialog.refreshFinancialAccounts(newAccs, newId);
+            }
+            else {
+                transactionWindow.showTransactionMessage("Error", "Failed to add account", "error");
+            }
+        });
+
     if (dialog.exec() == QDialog::Accepted) {
         QString name = dialog.getName();
         if (name.trimmed().isEmpty()) {
@@ -198,6 +230,36 @@ void TransactionController::handleEditTransactionRequest()
     dialog.setDescription(currentTrans.getTransactionDescription());
     dialog.setSelectedCategoryId(currentTrans.getCategoryId());
     dialog.setSelectedFinancialAccountId(currentTrans.getFinancialAccountId());
+
+    connect(&dialog, &AddTransactionDialogView::addCategoryRequested, this,
+        [&](const QString& name) {
+            if (categoryRepository.addCategory(name, getProfileId())) {
+                QVector<Category> newCats = categoryRepository.getAllProfileCategories(getProfileId());
+
+                int newId = -1;
+                for (const auto& c : newCats) if (c.getCategoryName() == name) newId = c.getCategoryId();
+
+                dialog.refreshCategories(newCats, newId);
+            }
+            else {
+                transactionWindow.showTransactionMessage("Error", "Failed to add category", "error");
+            }
+        });
+
+    connect(&dialog, &AddTransactionDialogView::addFinancialAccountRequested, this,
+        [&](const QString& name, const QString& type, double balance) {
+            if (financialAccountRepository.addFinancialAccount(name, type, balance, getProfileId())) {
+                QVector<FinancialAccount> newAccs = financialAccountRepository.getAllProfileFinancialAccounts(getProfileId());
+
+                int newId = -1;
+                for (const auto& a : newAccs) if (a.getFinancialAccountName() == name) newId = a.getFinancialAccountId();
+
+                dialog.refreshFinancialAccounts(newAccs, newId);
+            }
+            else {
+                transactionWindow.showTransactionMessage("Error", "Failed to add account", "error");
+            }
+        });
 
     if (dialog.exec() == QDialog::Accepted) {
         QString name = dialog.getName();
