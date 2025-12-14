@@ -44,7 +44,6 @@ private:
     std::unique_ptr<SortStrategy> sortingStrategy;
     SortOrder lastSortingOrder = SortOrder::DESCENDING;
     int lastSelectedColumn = -1;
-    QString filteringText = "";
 
     /**
     * @brief Handles request to delete a transaction

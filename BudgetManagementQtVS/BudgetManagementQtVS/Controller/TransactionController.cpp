@@ -177,7 +177,7 @@ void TransactionController::initializeMainWindow()
     }
 
     refreshTransactionsView();
-    filteringText = "";
+    setFilteringText("");
     transactionWindow.clearSearchEdit();
     transactionWindow.show();
 }
@@ -371,29 +371,23 @@ void TransactionController::executeTransactionSorting(QVector<Transaction>& allT
 }
 void TransactionController::handleFilteringTransactionRequest(QString searchText)
 {
-    filteringText = searchText;
+    setFilteringText(searchText);
     refreshTransactionsView();
 }
 QVector<Transaction> TransactionController::executeFilteringTransaction(const QVector<Transaction> allTransactions)
 {
-    
-    if (filteringText.isEmpty())
-    {
-        return allTransactions;
-    }
-    QVector<Transaction> filteredTransactions;
-
-    for (const auto& trans : allTransactions)
-    {
-        bool nameMatches = trans.getTransactionName().contains(filteringText, Qt::CaseInsensitive);
-        bool descriptionMatches = trans.getTransactionDescription().contains(filteringText, Qt::CaseInsensitive);
-        bool categoryMatches = categoryRepository.getCategoryNameById(trans.getCategoryId()).contains(filteringText, Qt::CaseInsensitive);
-        bool financialAccountMatches = financialAccountRepository.getFinancialAccountNameById(trans.getFinancialAccountId()).contains(filteringText, Qt::CaseInsensitive);
-        //In future: possibly add typeMatches to check if type name match filter
-        if (nameMatches || descriptionMatches || categoryMatches || financialAccountMatches)
+    auto matchFound = [&](const Transaction& trans) -> bool
         {
-            filteredTransactions.append(trans);
-        }
-    }
-    return filteredTransactions;
+            bool nameMatches = trans.getTransactionName().contains(getFilteringText(), Qt::CaseInsensitive);
+            bool descriptionMatches = trans.getTransactionDescription().contains(getFilteringText(), Qt::CaseInsensitive);
+            bool categoryMatches = categoryRepository.getCategoryNameById(trans.getCategoryId()).contains(getFilteringText(), Qt::CaseInsensitive);
+            bool financialAccountMatches = financialAccountRepository.getFinancialAccountNameById(trans.getFinancialAccountId()).contains(getFilteringText(), Qt::CaseInsensitive);
+            //In future: possibly add typeMatches to check if type name match filter
+            if (nameMatches || descriptionMatches || categoryMatches || financialAccountMatches)
+            {
+                return true;
+            }
+            return false;
+        };
+    return executeFiltering(allTransactions, matchFound);
 }

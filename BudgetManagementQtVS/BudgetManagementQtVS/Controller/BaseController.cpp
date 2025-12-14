@@ -31,3 +31,13 @@ bool BaseController::getMainWindowInitializedAttribute()
 {
 	return s_mainWindowInitialized;
 }
+
+QString BaseController::getFilteringText()
+{
+	return filteringText;
+}
+
+void BaseController::setFilteringText(const QString& searchText)
+{
+	filteringText = searchText;
+}

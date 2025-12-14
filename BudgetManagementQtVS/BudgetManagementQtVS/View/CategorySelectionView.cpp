@@ -30,6 +30,7 @@ void CategorySelectionView::connectMethodToButton()
 	connect(ui->deleteCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::deleteCategoryButtonClicked);
 	connect(ui->cancelButton, &QPushButton::clicked, this, &CategorySelectionView::cancelButtonClicked);
     connect(ui->editCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::editCategoryButtonClicked);
+    connect(ui->searchLineEdit, &QLineEdit::textChanged, this, &CategorySelectionView::searchTextChanged);
 }
 
 /**
@@ -90,7 +91,10 @@ void CategorySelectionView::deleteCategoryButtonClicked()
 
     emit deleteRequestedCategory(categoryId[row].getCategoryId());
 }
-
+void CategorySelectionView::searchTextChanged(const QString& searchText)
+{
+    emit searchTextRequest(searchText);
+}
 /**
  * @brief Handles click on the "Cancel" button
  */
@@ -150,4 +154,8 @@ void CategorySelectionView::editCategoryButtonClicked()
     if (ok && !newName.trimmed().isEmpty()) {
         emit editRequestedCategory(currentCat.getCategoryId(), newName);
     }
+}
+void CategorySelectionView::clearSearchLineEdit()
+{
+    ui->searchLineEdit->clear();
 }

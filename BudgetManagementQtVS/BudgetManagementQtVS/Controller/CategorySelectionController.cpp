@@ -15,6 +15,8 @@ CategoryController::CategoryController(
         this, &CategoryController::handleDeleteCategoryRequest);
     connect(&categoryDialog, &CategorySelectionView::editRequestedCategory,
         this, &CategoryController::handleEditCategoryRequest);
+    connect(&categoryDialog, &CategorySelectionView::searchTextRequest,
+        this, &CategoryController::handleFilteringCategoryRequest);
 }
 
 void CategoryController::showCategoryDialog(bool withSelectButton)
@@ -22,6 +24,8 @@ void CategoryController::showCategoryDialog(bool withSelectButton)
     QVector<Category> categories = categoryRepository.getAllProfileCategories(getProfileId());
     categoryDialog.setCategories(categories);
     categoryDialog.setSelectCategoryButtonVisible(withSelectButton);
+    setFilteringText("");
+    categoryDialog.clearSearchLineEdit();
     categoryDialog.exec();
 }
 
@@ -63,6 +67,7 @@ void CategoryController::handleDeleteCategoryRequest(int categoryId)
 void CategoryController::refreshCategoryDialogList()
 {
     QVector<Category> categories = categoryRepository.getAllProfileCategories(getProfileId());
+    categories = executeFilteringCategory(categories);
     categoryDialog.setCategories(categories);
 }
 
@@ -90,4 +95,19 @@ void CategoryController::handleEditCategoryRequest(int categoryId, const QString
     refreshCategoryDialogList();
 
     emit categoriesDataChanged();
+}
+void CategoryController::handleFilteringCategoryRequest(const QString& searchText)
+{
+    setFilteringText(searchText);
+    refreshCategoryDialogList();
+}
+
+QVector<Category> CategoryController::executeFilteringCategory(const QVector<Category> allCategories)
+{
+    auto matchFound = [&](const Category& category) -> bool
+        {
+            bool categoryMatches = category.getCategoryName().contains(getFilteringText(), Qt::CaseInsensitive);
+            return categoryMatches;
+        };
+    return executeFiltering(allCategories, matchFound);
 }

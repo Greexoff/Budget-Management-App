@@ -10,6 +10,7 @@ FinancialAccountController::FinancialAccountController(FinancialAccountSelection
 	connect(&financialAccountDialog, &FinancialAccountSelectionView::addRequestedFinancialAccount, this, &FinancialAccountController::handleFinancialAccountAddRequest);
 	connect(&financialAccountDialog, &FinancialAccountSelectionView::deleteRequestedFinancialAccount, this, &FinancialAccountController::handleFinancialAccountDeleteRequest);
 	connect(&financialAccountDialog, &FinancialAccountSelectionView::editRequestedFinancialAccount,this, &FinancialAccountController::handleFinancialAccountEditRequest);
+	connect(&financialAccountDialog, &FinancialAccountSelectionView::searchTextRequest, this, &FinancialAccountController::handleFinancialAccountFilteringRequest);
 
 }
 
@@ -18,6 +19,8 @@ void FinancialAccountController::showFinancialAccountDialog(bool withSelectButto
 	QVector<FinancialAccount> financialAccounts = financialAccountRepository.getAllProfileFinancialAccounts(getProfileId());
 	financialAccountDialog.setFinancialAccounts(financialAccounts);
 	financialAccountDialog.setSelectFinancialAccountButtonVisible(withSelectButton);
+	setFilteringText("");
+	financialAccountDialog.clearSearchLineEdit();
 	financialAccountDialog.exec();
 }
 
@@ -33,7 +36,7 @@ void FinancialAccountController::handleFinancialAccountAddRequest(const QString&
 		financialAccountDialog.showFinancialAccountMessage(header, message, "error");
 	}
 
-	refresFinancialAccountDialogList();
+	refreshFinancialAccountDialogList();
 }
 
 void FinancialAccountController::handleFinancialAccountDeleteRequest(int financialAccountId) {
@@ -43,13 +46,14 @@ void FinancialAccountController::handleFinancialAccountDeleteRequest(int financi
 		financialAccountDialog.showFinancialAccountMessage(header, message, "error");
 	}
 
-	refresFinancialAccountDialogList();
+	refreshFinancialAccountDialogList();
 
 	emit financialAccountDataChanged();
 }
 
-void FinancialAccountController::refresFinancialAccountDialogList() {
+void FinancialAccountController::refreshFinancialAccountDialogList() {
 	QVector<FinancialAccount> financialAccounts = financialAccountRepository.getAllProfileFinancialAccounts(getProfileId());
+	financialAccounts = executeFilteringFinancialAccount(financialAccounts);
 	financialAccountDialog.setFinancialAccounts(financialAccounts);
 }
 
@@ -66,7 +70,7 @@ void FinancialAccountController::handleFinancialAccountSelectionFromTransactionW
 void FinancialAccountController::handleFinancialAccountEditRequest(int id, const QString& name, const QString& type, double balance)
 {
 	if (financialAccountRepository.updateFinancialAccount(id, name, type, balance)) {
-		refresFinancialAccountDialogList();
+		refreshFinancialAccountDialogList();
 
 		emit financialAccountDataChanged();
 	}
@@ -74,3 +78,19 @@ void FinancialAccountController::handleFinancialAccountEditRequest(int id, const
 		financialAccountDialog.showFinancialAccountMessage(tr("Edit Account"), tr("Failed to update account."), "error");
 	}
 }
+void FinancialAccountController::handleFinancialAccountFilteringRequest(const QString& searchText)
+{
+	setFilteringText(searchText);
+	refreshFinancialAccountDialogList();
+}
+
+QVector<FinancialAccount> FinancialAccountController::executeFilteringFinancialAccount(const QVector<FinancialAccount> allFinancialAccounts)
+{
+	auto matchFound = [&](const FinancialAccount& financialAccount) -> bool
+		{
+			bool finAccountMatches = financialAccount.getFinancialAccountName().contains(getFilteringText(), Qt::CaseInsensitive);
+			return finAccountMatches;
+		};
+	return executeFiltering(allFinancialAccounts, matchFound);
+}
+

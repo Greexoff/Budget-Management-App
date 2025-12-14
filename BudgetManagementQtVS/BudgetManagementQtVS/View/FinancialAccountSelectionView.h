@@ -24,6 +24,8 @@ public:
 
 	int getSelectedFinancialAccountId() const { return selectedFinancialAccountId; }
 
+	void clearSearchLineEdit();
+
 public slots:
 	void showFinancialAccountMessage(QString header, QString message, QString messageType);
 
@@ -37,12 +39,15 @@ signals:
 
 	void editRequestedFinancialAccount(int financialAccountId, const QString& name, const QString& type, double balance);
 
+	void searchTextRequest(const QString& searchText);
+
 private slots:
 	void selectFinancialAccountButtonClicked();
 	void addFinancialAccountButtonClicked();
 	void deleteFinancialAccountButtonClicked();
 	void editFinancialAccountButtonClicked();
 	void cancelFinancialAccountButtonClicked();
+	void searchTextChanged(const QString& searchText);
 
 private:
 	Ui::FinancialAccountSelectionView* ui;

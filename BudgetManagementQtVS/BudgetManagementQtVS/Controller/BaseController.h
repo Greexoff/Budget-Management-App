@@ -19,8 +19,31 @@ protected:
 	void setMainWindowInitializedAttribute(bool value);
 	bool getMainWindowInitializedAttribute();
 
+	QString getFilteringText();
+	void setFilteringText(const QString& searchText);
+
+	template<typename T, typename matchFound>
+	QVector<T> executeFiltering(const QVector<T>& allItems, matchFound match)
+	{
+		if (filteringText.isEmpty())
+		{
+			return allItems;
+		}
+		QVector<T> filteredItems;
+
+		for (const auto& item : allItems)
+		{
+			if (match(item))
+			{
+				filteredItems.append(item);
+			}
+		}
+		return filteredItems;
+	}
+
 private:
 	static int s_currentProfileId;
 	static int s_currentUserId;
 	static bool s_mainWindowInitialized;
+	QString filteringText = "";
 };

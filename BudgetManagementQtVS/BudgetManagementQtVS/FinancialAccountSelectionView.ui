@@ -64,9 +64,32 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>10</y>
+     <y>80</y>
      <width>731</width>
-     <height>351</height>
+     <height>311</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>610</x>
+     <y>30</y>
+     <width>41</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Search</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="searchEdit">
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>30</y>
+     <width>113</width>
+     <height>24</height>
     </rect>
    </property>
   </widget>

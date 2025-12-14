@@ -19,6 +19,7 @@ void FinancialAccountSelectionView::connectMethodToButton() {
 	connect(ui->deleteFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::deleteFinancialAccountButtonClicked);
 	connect(ui->cancelFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::cancelFinancialAccountButtonClicked);
 	connect(ui->editFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::editFinancialAccountButtonClicked);
+	connect(ui->searchEdit, &QLineEdit::textChanged, this, &FinancialAccountSelectionView::searchTextChanged);
 }
 
 void FinancialAccountSelectionView::setupTable() {
@@ -137,7 +138,6 @@ void FinancialAccountSelectionView::showFinancialAccountMessage(QString header, 
 void FinancialAccountSelectionView::editFinancialAccountButtonClicked() {
 	int row = ui->financialAccountsTable->currentRow();
 
-	// Sprawdzenie, czy coś jest zaznaczone
 	if (row < 0 || row >= financialAccountId.size()) {
 		return;
 	}
@@ -188,4 +188,13 @@ void FinancialAccountSelectionView::editFinancialAccountButtonClicked() {
 
 		emit editRequestedFinancialAccount(currentFinancialAccount.getFinancialAccountId(), newName, typeCombo->currentText(), balanceSpin->value());
 	}
+}
+void FinancialAccountSelectionView::searchTextChanged(const QString& searchText)
+{
+	emit searchTextRequest(searchText);
+}
+
+void FinancialAccountSelectionView::clearSearchLineEdit()
+{
+	ui->searchEdit->clear();
 }

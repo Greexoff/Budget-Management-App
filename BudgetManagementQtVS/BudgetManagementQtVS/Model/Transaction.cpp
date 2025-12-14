@@ -106,6 +106,7 @@ int Transaction::getAssociatedProfileId() const
 {
 	return associatedProfileId;
 }
+
 //Setter implementations
 
 /**

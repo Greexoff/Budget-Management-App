@@ -30,6 +30,7 @@ public slots:
     void handleAddCategoryRequest(const QString& categoryName);
     void handleDeleteCategoryRequest(int categoryId);
     void handleEditCategoryRequest(int categoryId, const QString& newName);
+    void handleFilteringCategoryRequest(const QString& searchText);
 
 private:
     CategorySelectionView& categoryDialog;      ///< Reference to the category selection dialog
@@ -39,5 +40,6 @@ private:
  
     void refreshCategoryDialogList();
     void showCategoryDialog(bool withSelectButton);
+    QVector<Category> executeFilteringCategory(const QVector<Category> allCategories);
 
 };

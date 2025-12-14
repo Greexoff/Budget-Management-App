@@ -30,6 +30,7 @@ public slots:
 	void handleFinancialAccountAddRequest(const QString& financialAccountName, const QString& financialAccountType, double financialAccountBalance);
 	void handleFinancialAccountDeleteRequest(int financialAccountId);
 	void handleFinancialAccountEditRequest(int id, const QString& name, const QString& type, double balance);
+	void handleFinancialAccountFilteringRequest(const QString& searchText);
 
 private:
 	FinancialAccountSelectionView& financialAccountDialog;
@@ -37,7 +38,8 @@ private:
 
 	int selectedFinancialAccountIdForTransaction = 1;
 
-	void refresFinancialAccountDialogList();
+	void refreshFinancialAccountDialogList();
 	void showFinancialAccountDialog(bool withSelectButton);
+	QVector<FinancialAccount> executeFilteringFinancialAccount(const QVector<FinancialAccount> allFinancialAccounts);
 
 };
