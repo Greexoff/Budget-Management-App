@@ -156,15 +156,36 @@ void FinancialAccountSelectionView::editFinancialAccountButtonClicked() {
 		return;
 	}
 
-	bool ok = false;
-	QString newName = QInputDialog::getText(this, tr("Edit Account"), tr("Name:"), QLineEdit::Normal, currentFinancialAccount.getFinancialAccountName(), &ok);
-	if (!ok || newName.trimmed().isEmpty()) return;
+	QDialog dlg(this);
+	dlg.setWindowTitle(tr("Edit Financial Account"));
+	QFormLayout* layout = new QFormLayout(&dlg);
 
-	QString newType = QInputDialog::getText(this, tr("Edit Account"), tr("Type:"), QLineEdit::Normal, currentFinancialAccount.getFinancialAccountType(), &ok);
-	if (!ok || newType.trimmed().isEmpty()) return;
+	QLineEdit* nameEdit = new QLineEdit(&dlg);
+	nameEdit->setText(currentFinancialAccount.getFinancialAccountName()); 
 
-	double newBalance = QInputDialog::getDouble(this, tr("Edit Account"), tr("Balance:"), currentFinancialAccount.getFinancialAccountBalance(), -1e9, 1e9, 2, &ok);
-	if (!ok) return;
+	QComboBox* typeCombo = new QComboBox(&dlg);
+	typeCombo->addItems({ "Cash", "Bank Account", "Savings", "Credit Card" });
+	typeCombo->setCurrentText(currentFinancialAccount.getFinancialAccountType()); 
 
-	emit editRequestedFinancialAccount(currentFinancialAccount.getFinancialAccountId(), newName, newType, newBalance);
+	QDoubleSpinBox* balanceSpin = new QDoubleSpinBox(&dlg);
+	balanceSpin->setRange(-10000000.0, 10000000.0);
+	balanceSpin->setSuffix(" PLN");
+	balanceSpin->setValue(currentFinancialAccount.getFinancialAccountBalance()); 
+
+	layout->addRow(tr("Name:"), nameEdit);
+	layout->addRow(tr("Type:"), typeCombo);
+	layout->addRow(tr("Balance:"), balanceSpin);
+
+	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel, &dlg);
+	layout->addRow(buttonBox);
+
+	connect(buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+	connect(buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
+
+	if (dlg.exec() == QDialog::Accepted) {
+		QString newName = nameEdit->text();
+		if (newName.trimmed().isEmpty()) return;
+
+		emit editRequestedFinancialAccount(currentFinancialAccount.getFinancialAccountId(), newName, typeCombo->currentText(), balanceSpin->value());
+	}
 }
