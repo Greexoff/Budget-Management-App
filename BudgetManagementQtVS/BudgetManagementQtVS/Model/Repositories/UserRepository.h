@@ -1,4 +1,6 @@
-#pragma once
+﻿#pragma once
+#include <QCryptographicHash>
+#include <QUuid>
 #include <Model/Repositories/BaseRepository.h>
 /**
  * @class UserRepository
