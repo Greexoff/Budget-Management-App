@@ -41,6 +41,8 @@ signals:
 
 	void searchTextRequest(const QString& searchText);
 
+	void columnSortRequest(int columnId);
+
 private slots:
 	void selectFinancialAccountButtonClicked();
 	void addFinancialAccountButtonClicked();
@@ -48,6 +50,7 @@ private slots:
 	void editFinancialAccountButtonClicked();
 	void cancelFinancialAccountButtonClicked();
 	void searchTextChanged(const QString& searchText);
+	void onColumnHeaderClicked(int columnId);
 
 private:
 	Ui::FinancialAccountSelectionView* ui;

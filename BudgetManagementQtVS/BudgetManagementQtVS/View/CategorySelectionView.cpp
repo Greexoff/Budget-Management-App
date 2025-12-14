@@ -9,6 +9,7 @@ CategorySelectionView::CategorySelectionView(QWidget *parent)
 {
 	ui->setupUi(this);
     setWindowTitle("Browse category");
+    setUpTable();
 	connectMethodToButton();
 }
 
@@ -19,7 +20,16 @@ CategorySelectionView::~CategorySelectionView()
 {
     delete ui;
 }
+void CategorySelectionView::setUpTable()
+{
+    ui->categoryTable->setColumnCount(1);
+    ui->categoryTable->setHorizontalHeaderLabels({ "Name" });
+    ui->categoryTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
+    ui->categoryTable->verticalHeader()->setVisible(false);
+    ui->categoryTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->categoryTable->setSelectionMode(QAbstractItemView::SingleSelection);
+}
 /**
  * @brief Sets up signal-slot connections for UI buttons
  */
@@ -31,6 +41,9 @@ void CategorySelectionView::connectMethodToButton()
 	connect(ui->cancelButton, &QPushButton::clicked, this, &CategorySelectionView::cancelButtonClicked);
     connect(ui->editCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::editCategoryButtonClicked);
     connect(ui->searchLineEdit, &QLineEdit::textChanged, this, &CategorySelectionView::searchTextChanged);
+
+    QHeaderView* header = ui->categoryTable->horizontalHeader();
+    connect(header, &QHeaderView::sectionClicked, this, &CategorySelectionView::onColumnHeaderClicked);
 }
 
 /**
@@ -40,10 +53,12 @@ void CategorySelectionView::connectMethodToButton()
 void CategorySelectionView::setCategories(const QVector<Category>& categories)
 {
     categoryId = categories;
-    ui->categoriesList->clear();
+    ui->categoryTable->setRowCount(0);
     for (const auto& category : categoryId) 
     {
-        ui->categoriesList->addItem(category.getCategoryName());
+        int row = ui->categoryTable->rowCount();
+        ui->categoryTable->insertRow(row);
+        ui->categoryTable->setItem(row, 0, new QTableWidgetItem(category.getCategoryName()));
     }
 }
 
@@ -52,7 +67,7 @@ void CategorySelectionView::setCategories(const QVector<Category>& categories)
  */
 void CategorySelectionView::selectCategoryButtonClicked()
 {
-    int row = ui->categoriesList->currentRow();
+    int row = ui->categoryTable->currentRow();
     if (row < 0 || row >= categoryId.size())
     {
         return;
@@ -83,7 +98,7 @@ void CategorySelectionView::addCategoryButtonClicked()
  */
 void CategorySelectionView::deleteCategoryButtonClicked()
 {
-    int row = ui->categoriesList->currentRow();
+    int row = ui->categoryTable->currentRow();
     if (row < 0 || row >= categoryId.size())
     {
         return;
@@ -127,7 +142,7 @@ void CategorySelectionView::showCategoryMessage(QString header, QString message,
 
 void CategorySelectionView::editCategoryButtonClicked()
 {
-    int row = ui->categoriesList->currentRow();
+    int row = ui->categoryTable->currentRow();
 
     if (row < 0 || row >= categoryId.size()) {
         return;
@@ -158,4 +173,9 @@ void CategorySelectionView::editCategoryButtonClicked()
 void CategorySelectionView::clearSearchLineEdit()
 {
     ui->searchLineEdit->clear();
+}
+
+void CategorySelectionView::onColumnHeaderClicked(int columnId)
+{
+    emit columnSortRequest(columnId);
 }

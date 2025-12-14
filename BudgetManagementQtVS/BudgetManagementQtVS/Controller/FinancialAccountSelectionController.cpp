@@ -11,6 +11,7 @@ FinancialAccountController::FinancialAccountController(FinancialAccountSelection
 	connect(&financialAccountDialog, &FinancialAccountSelectionView::deleteRequestedFinancialAccount, this, &FinancialAccountController::handleFinancialAccountDeleteRequest);
 	connect(&financialAccountDialog, &FinancialAccountSelectionView::editRequestedFinancialAccount,this, &FinancialAccountController::handleFinancialAccountEditRequest);
 	connect(&financialAccountDialog, &FinancialAccountSelectionView::searchTextRequest, this, &FinancialAccountController::handleFinancialAccountFilteringRequest);
+	connect(&financialAccountDialog, &FinancialAccountSelectionView::columnSortRequest, this, &FinancialAccountController::handleSortingRequest);
 
 }
 
@@ -54,6 +55,7 @@ void FinancialAccountController::handleFinancialAccountDeleteRequest(int financi
 void FinancialAccountController::refreshFinancialAccountDialogList() {
 	QVector<FinancialAccount> financialAccounts = financialAccountRepository.getAllProfileFinancialAccounts(getProfileId());
 	financialAccounts = executeFilteringFinancialAccount(financialAccounts);
+	executeSortingFinancialAccount(financialAccounts);
 	financialAccountDialog.setFinancialAccounts(financialAccounts);
 }
 
@@ -88,9 +90,18 @@ QVector<FinancialAccount> FinancialAccountController::executeFilteringFinancialA
 {
 	auto matchFound = [&](const FinancialAccount& financialAccount) -> bool
 		{
-			bool finAccountMatches = financialAccount.getFinancialAccountName().contains(getFilteringText(), Qt::CaseInsensitive);
-			return finAccountMatches;
+			bool finAccountNameMatches = financialAccount.getFinancialAccountName().contains(getFilteringText(), Qt::CaseInsensitive);
+			bool finAccountTypeMatches = financialAccount.getFinancialAccountType().contains(getFilteringText(), Qt::CaseInsensitive);
+			return finAccountNameMatches || finAccountTypeMatches;
 		};
 	return executeFiltering(allFinancialAccounts, matchFound);
 }
-
+void FinancialAccountController::handleSortingRequest(int columnId)
+{
+	setSelectedColumnId(columnId);
+	refreshFinancialAccountDialogList();
+}
+void FinancialAccountController::executeSortingFinancialAccount(QVector<FinancialAccount>& allFinancialAccounts)
+{
+	executeSorting(allFinancialAccounts, getSelectedColumnId(), getLastSortingOrder());
+}

@@ -20,6 +20,9 @@ void FinancialAccountSelectionView::connectMethodToButton() {
 	connect(ui->cancelFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::cancelFinancialAccountButtonClicked);
 	connect(ui->editFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::editFinancialAccountButtonClicked);
 	connect(ui->searchEdit, &QLineEdit::textChanged, this, &FinancialAccountSelectionView::searchTextChanged);
+
+	QHeaderView* header = ui->financialAccountsTable->horizontalHeader();
+	connect(header, &QHeaderView::sectionClicked, this, &FinancialAccountSelectionView::onColumnHeaderClicked);
 }
 
 void FinancialAccountSelectionView::setupTable() {
@@ -197,4 +200,9 @@ void FinancialAccountSelectionView::searchTextChanged(const QString& searchText)
 void FinancialAccountSelectionView::clearSearchLineEdit()
 {
 	ui->searchEdit->clear();
+}
+
+void FinancialAccountSelectionView::onColumnHeaderClicked(int columnId)
+{
+	emit columnSortRequest(columnId);
 }

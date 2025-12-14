@@ -31,6 +31,7 @@ public slots:
     void handleDeleteCategoryRequest(int categoryId);
     void handleEditCategoryRequest(int categoryId, const QString& newName);
     void handleFilteringCategoryRequest(const QString& searchText);
+    void handleSortRequest(int columnId);
 
 private:
     CategorySelectionView& categoryDialog;      ///< Reference to the category selection dialog
@@ -41,5 +42,6 @@ private:
     void refreshCategoryDialogList();
     void showCategoryDialog(bool withSelectButton);
     QVector<Category> executeFilteringCategory(const QVector<Category> allCategories);
+    void executeSortingCategory(QVector<Category>& allCategories);
 
 };

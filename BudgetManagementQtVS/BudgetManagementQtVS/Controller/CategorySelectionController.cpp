@@ -17,6 +17,8 @@ CategoryController::CategoryController(
         this, &CategoryController::handleEditCategoryRequest);
     connect(&categoryDialog, &CategorySelectionView::searchTextRequest,
         this, &CategoryController::handleFilteringCategoryRequest);
+    connect(&categoryDialog, &CategorySelectionView::columnSortRequest,
+        this, &CategoryController::handleSortRequest);
 }
 
 void CategoryController::showCategoryDialog(bool withSelectButton)
@@ -68,6 +70,7 @@ void CategoryController::refreshCategoryDialogList()
 {
     QVector<Category> categories = categoryRepository.getAllProfileCategories(getProfileId());
     categories = executeFilteringCategory(categories);
+    executeSortingCategory(categories);
     categoryDialog.setCategories(categories);
 }
 
@@ -110,4 +113,14 @@ QVector<Category> CategoryController::executeFilteringCategory(const QVector<Cat
             return categoryMatches;
         };
     return executeFiltering(allCategories, matchFound);
+}
+
+void CategoryController::handleSortRequest(int columnId)
+{
+    setSelectedColumnId(columnId);
+    refreshCategoryDialogList();
+}
+void CategoryController::executeSortingCategory(QVector<Category>& allCategories)
+{
+    executeSorting(allCategories, getSelectedColumnId(), getLastSortingOrder());
 }

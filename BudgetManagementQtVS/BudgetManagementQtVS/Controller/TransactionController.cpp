@@ -329,13 +329,13 @@ void TransactionController::executeTransactionSorting(QVector<Transaction>& allT
             switch (getSelectedColumnId())
             {
             case 1://Name
-                return compareValues(itemA.getTransactionName(), itemB.getTransactionName());
+                return compareValues(itemA.getTransactionName().trimmed().toLower(), itemB.getTransactionName().trimmed().toLower());
                 break;
             case 2://Date
                 return compareValues(itemA.getTransactionDate(), itemB.getTransactionDate());
                 break;
             case 3://Description
-                return compareValues(itemA.getTransactionDescription(), itemB.getTransactionDescription());
+                return compareValues(itemA.getTransactionDescription().trimmed().toLower(), itemB.getTransactionDescription().trimmed().toLower());
                 break;
             case 4://Amount
                 return compareValues(itemA.getTransactionAmount(), itemB.getTransactionAmount());
@@ -344,10 +344,10 @@ void TransactionController::executeTransactionSorting(QVector<Transaction>& allT
                 return compareValues(itemA.getTransactionType(), itemB.getTransactionType());
                 break;
             case 6://Category
-                return compareValues(categoryRepository.getCategoryNameById(itemA.getCategoryId()), categoryRepository.getCategoryNameById(itemB.getCategoryId()));
+                return compareValues(categoryRepository.getCategoryNameById(itemA.getCategoryId()).trimmed().toLower(), categoryRepository.getCategoryNameById(itemB.getCategoryId()).trimmed().toLower());
                 break;
             case 7://fAccount
-                return compareValues(financialAccountRepository.getFinancialAccountNameById(itemA.getFinancialAccountId()), financialAccountRepository.getFinancialAccountNameById(itemB.getFinancialAccountId()));
+                return compareValues(financialAccountRepository.getFinancialAccountNameById(itemA.getFinancialAccountId()).trimmed().toLower(), financialAccountRepository.getFinancialAccountNameById(itemB.getFinancialAccountId()).trimmed().toLower());
                 break;
             default:
                 return compareValues(itemA.getTransactionId(), itemB.getTransactionId());
