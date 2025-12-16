@@ -23,9 +23,7 @@ signals:
     void showFinancialAccounts(bool selectButtonVisibility);
     void returnToProfileView();
 public slots:
-    /**
-   * @brief Handles request to add a new transaction
-   */
+
     void startAddingTransactionRequest();
     void initializeMainWindow();
     void handleCategoriesDataChangeRequest();
@@ -40,17 +38,12 @@ private:
     FinancialAccountRepository& financialAccountRepository;
     ProfilesRepository& profileRepository;
 
-    /**
-    * @brief Handles request to delete a transaction
-    */
     void handleDeleteTransactionRequest();
 
     void handleShowCategoriesRequestFromView();
 
     void handleShowFinancialAccountsRequestFromView();
-    /**
-    * @brief Refreshes the transaction display in the main window
-    */
+
     void refreshTransactionsView();
 
     void handleEditTransactionRequest();

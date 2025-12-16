@@ -1,11 +1,6 @@
 ﻿#include <Model/Repositories/TransactionRepository.h>
 
 
-/**
- * @brief Retrieves all transactions for a specific profile
- * @param profileId ID of the profile
- * @return Vector of Transaction objects belonging to the profile
- */
 QVector<Transaction> TransactionRepository::getAllProfileTransaction(int profileId) const
 {
     QVector<Transaction> result;
@@ -29,13 +24,12 @@ QVector<Transaction> TransactionRepository::getAllProfileTransaction(int profile
         QString dateStr = query.value(2).toString();
         QString description = query.value(3).toString();
         double amount = query.value(4).toDouble();
-        QString typeStr = query.value(5).toString();
+        QString type = query.value(5).toString();
         int categoryId = query.value(6).toInt();
         int financialAccountId = query.value(7).toInt();
         int profileId = query.value(8).toInt();
 
         QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
-        TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
 
         Transaction transaction(id, name, date, description, amount, type, categoryId, financialAccountId, profileId);
         result.append(transaction);
@@ -44,10 +38,6 @@ QVector<Transaction> TransactionRepository::getAllProfileTransaction(int profile
     return result;
 }
 
-/**
- * @brief Retrieves all transactions from the database
- * @return Vector of all Transaction objects
- */
 QVector<Transaction> TransactionRepository::getAll() const
 {
     QVector<Transaction> result;
@@ -66,15 +56,12 @@ QVector<Transaction> TransactionRepository::getAll() const
         QString dateStr = query.value(2).toString();
         QString description = query.value(3).toString();
         double amount = query.value(4).toDouble();
-        QString typeStr = query.value(5).toString();
+        QString type = query.value(5).toString();
         int associatedProfileId = query.value(6).toInt();
         int categoryId = query.value(7).toInt();
         int financialAccountId = query.value(8).toInt();
         QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
         
-             
-        TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
-
         Transaction transaction(id, name, date, description, amount, type, categoryId,financialAccountId, associatedProfileId);
         result.append(transaction);
     }
@@ -82,16 +69,6 @@ QVector<Transaction> TransactionRepository::getAll() const
     return result;
 }
 
-/**
- * @brief Adds a new transaction to the database
- *
- * Determines transaction type based on amount sign:
- * Positive amount: EXPENSE
- * Negative amount: INCOME
- *
- * @param transaction Transaction object to add
- * @return True if transaction added successfully, false otherwise
- */
 bool TransactionRepository::addTransaction(const Transaction& transaction)
 {
     QSqlQuery query(database);
@@ -101,10 +78,7 @@ bool TransactionRepository::addTransaction(const Transaction& transaction)
     );
 
     query.bindValue(":name", transaction.getTransactionName());
-
-    QString typeStr = (transaction.getTransactionType() == INCOME) ? "INCOME" : "EXPENSE";
-    query.bindValue(":type", typeStr);
-
+    query.bindValue(":type", transaction.getTransactionType());
     query.bindValue(":date", transaction.getTransactionDate().toString("yyyy-MM-dd"));
     query.bindValue(":description", transaction.getTransactionDescription());
     query.bindValue(":amount", transaction.getTransactionAmount());
@@ -119,11 +93,6 @@ bool TransactionRepository::addTransaction(const Transaction& transaction)
     return true;
 }
 
-/**
- * @brief Deletes a transaction by ID
- * @param id ID of transaction to delete
- * @return True if transaction deleted successfully, false otherwise
- */
 bool TransactionRepository::removeTransactionById(int id)
 {
     QSqlQuery query(database);
@@ -157,15 +126,10 @@ bool TransactionRepository::updateTransaction(const Transaction& transaction)
 
     query.bindValue(":name", transaction.getTransactionName());
     query.bindValue(":desc", transaction.getTransactionDescription());
-
     query.bindValue(":date", transaction.getTransactionDate().toString("yyyy-MM-dd")); 
-
     query.bindValue(":amount", transaction.getTransactionAmount());
     query.bindValue(":catId", transaction.getCategoryId());
-
-    QString typeStr = (transaction.getTransactionType() == INCOME) ? "INCOME" : "EXPENSE";
-    query.bindValue(":type", typeStr);
-
+    query.bindValue(":type", transaction.getTransactionType());
     query.bindValue(":id", transaction.getTransactionId());
     query.bindValue(":financialAccountId", transaction.getFinancialAccountId());
 
@@ -188,15 +152,14 @@ Transaction TransactionRepository::getTransactionById(int id) const
         QDate date = QDate::fromString(query.value(2).toString(), "yyyy-MM-dd");
         QString desc = query.value(3).toString();
         double amount = query.value(4).toDouble();
-        QString typeStr = query.value(5).toString();
+        QString type = query.value(5).toString();
         int catId = query.value(6).toInt();
         int profId = query.value(7).toInt();
         int financialAccountId = query.value(8).toInt();
-        TransactionType type = (typeStr == "INCOME") ? INCOME : EXPENSE;
 
         return Transaction(tId, name, date, desc, amount, type, catId, financialAccountId, profId);
     }
-    return Transaction(-1, "", QDate(), "", 0, EXPENSE, 1, -1, 1);
+    return Transaction(-1, "", QDate(), "", 0, "Expense", 1, -1, 1);
 }
 
 double TransactionRepository::getMonthlyExpenses(int profileId, int month, int year) const
@@ -206,6 +169,7 @@ double TransactionRepository::getMonthlyExpenses(int profileId, int month, int y
         "SELECT SUM(amount) "
         "FROM transactions "
         "WHERE profile_id = :id "
+        "AND type = 'Expense'"
         "AND strftime('%m', date) = :month AND strftime('%Y', date) = :year"
     );
 

@@ -16,12 +16,13 @@ public:
 
 	void setCategories(const QVector<Category>& categories);
 	void setFinancialAccounts(const QVector<FinancialAccount>& financialAccounts);
-	void setTransactionType(const QVector<TransactionType>& transactionType);
+	void setTransactionTypes();
 
 	QString getName() const;
 	double getAmount() const;
 	QDate getDate() const;
 	QString getDescription() const;
+	QString getType() const;
 	int getSelectedCategoryId() const;
 	int getSelectedFinancialAccountId() const;
 
@@ -29,6 +30,7 @@ public:
 	void setAmount(double amount);
 	void setDate(const QDate& date);
 	void setDescription(const QString& description);
+	void setType(const QString& type);
 	void setSelectedCategoryId(int categoryId);
 	void setSelectedFinancialAccountId(int financialAccountId);
 
@@ -42,10 +44,12 @@ signals:
 private slots:
 	void onCategoryIndexChanged(int index);
 	void onFinancialAccountIndexChanged(int index);
+	void onTransactionTypeChanged(int index);
 
 private:
 	Ui::AddTransactionDialogView* ui;
 
 	int previousCategoryIndex = -1;
 	int previousFinancialAccountIndex = -1;
+	int previousTypeIndex = -1;
 };

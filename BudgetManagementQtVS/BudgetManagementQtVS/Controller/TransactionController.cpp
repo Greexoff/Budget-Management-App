@@ -23,6 +23,7 @@ void TransactionController::startAddingTransactionRequest()
     AddTransactionDialogView dialog(&transactionWindow);
     dialog.setCategories(categories);
     dialog.setFinancialAccounts(accounts);
+    dialog.setTransactionTypes();
 
     connect(&dialog, &AddTransactionDialogView::addCategoryRequested, this,
         [&](const QString& name) {
@@ -70,6 +71,7 @@ void TransactionController::startAddingTransactionRequest()
             .withDate(dialog.getDate())
             .withDescription(dialog.getDescription())
             .withCategoryId(dialog.getSelectedCategoryId())
+            .withType(dialog.getType())
             .withFinancialAccountId(dialog.getSelectedFinancialAccountId());
 
         Transaction newTransaction = builder.build();
@@ -136,11 +138,10 @@ void TransactionController::refreshTransactionsView()
             << transaction.getTransactionName()
             << transaction.getTransactionDate().toString("yyyy-MM-dd")
             << transaction.getTransactionDescription()
-            << QString::number(transaction.getTransactionAmount(), 'f', 2);
-        QString typeString = (transaction.getTransactionAmount() > 0.0) ? "Expense" : "Income";
-        rowData << typeString;
-        rowData << categoryRepository.getCategoryNameById(transaction.getCategoryId());
-        rowData << financialAccountRepository.getFinancialAccountNameById(transaction.getFinancialAccountId());
+            << QString::number(transaction.getTransactionAmount(), 'f', 2)
+            << transaction.getTransactionType()
+            << categoryRepository.getCategoryNameById(transaction.getCategoryId())
+            << financialAccountRepository.getFinancialAccountNameById(transaction.getFinancialAccountId());
         tableRows.append(rowData);
     }
     transactionWindow.setTransactionRows(tableRows);
@@ -223,10 +224,12 @@ void TransactionController::handleEditTransactionRequest()
 
     dialog.setCategories(categories);
     dialog.setFinancialAccounts(accounts);
+    dialog.setTransactionTypes();
 
     dialog.setName(currentTrans.getTransactionName());
     dialog.setAmount(currentTrans.getTransactionAmount());
     dialog.setDate(currentTrans.getTransactionDate());
+    dialog.setType(currentTrans.getTransactionType());
     dialog.setDescription(currentTrans.getTransactionDescription());
     dialog.setSelectedCategoryId(currentTrans.getCategoryId());
     dialog.setSelectedFinancialAccountId(currentTrans.getFinancialAccountId());
@@ -272,6 +275,7 @@ void TransactionController::handleEditTransactionRequest()
             .withProfileId(getProfileId())
             .withName(name)
             .withAmount(dialog.getAmount())
+            .withType(dialog.getType())
             .withDate(dialog.getDate())
             .withDescription(dialog.getDescription())
             .withCategoryId(dialog.getSelectedCategoryId())
@@ -365,12 +369,13 @@ QVector<Transaction> TransactionController::executeFilteringTransaction(const QV
 {
     auto matchFound = [&](const Transaction& trans) -> bool
         {
-            bool nameMatches = trans.getTransactionName().contains(getFilteringText(), Qt::CaseInsensitive);
-            bool descriptionMatches = trans.getTransactionDescription().contains(getFilteringText(), Qt::CaseInsensitive);
-            bool categoryMatches = categoryRepository.getCategoryNameById(trans.getCategoryId()).contains(getFilteringText(), Qt::CaseInsensitive);
-            bool financialAccountMatches = financialAccountRepository.getFinancialAccountNameById(trans.getFinancialAccountId()).contains(getFilteringText(), Qt::CaseInsensitive);
-            //In future: possibly add typeMatches to check if type name match filter
-            if (nameMatches || descriptionMatches || categoryMatches || financialAccountMatches)
+            QString filter = getFilteringText();
+            bool nameMatches = trans.getTransactionName().contains(filter, Qt::CaseInsensitive);
+            bool descriptionMatches = trans.getTransactionDescription().contains(filter, Qt::CaseInsensitive);
+            bool categoryMatches = categoryRepository.getCategoryNameById(trans.getCategoryId()).contains(filter, Qt::CaseInsensitive);
+            bool financialAccountMatches = financialAccountRepository.getFinancialAccountNameById(trans.getFinancialAccountId()).contains(filter, Qt::CaseInsensitive);
+            bool typeMatches = trans.getTransactionType().contains(filter, Qt::CaseInsensitive);
+            if (nameMatches || descriptionMatches || categoryMatches || financialAccountMatches || typeMatches)
             {
                 return true;
             }

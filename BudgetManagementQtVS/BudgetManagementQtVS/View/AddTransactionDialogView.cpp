@@ -9,6 +9,7 @@ AddTransactionDialogView::AddTransactionDialogView(QWidget* parent)
 
 	connect(ui->categoryCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &AddTransactionDialogView::onCategoryIndexChanged);
 	connect(ui->accountCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &AddTransactionDialogView::onFinancialAccountIndexChanged);
+	connect(ui->typeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &AddTransactionDialogView::onTransactionTypeChanged);
 }
 
 AddTransactionDialogView::~AddTransactionDialogView() {
@@ -53,6 +54,12 @@ void AddTransactionDialogView::onCategoryIndexChanged(int index) {
 	}
 }
 
+void AddTransactionDialogView::onTransactionTypeChanged(int index)
+{
+	int idx = ui->typeCombo->itemData(index).toInt();
+
+	previousTypeIndex = idx;
+}
 void AddTransactionDialogView::refreshCategories(const QVector<Category>& categories, int selectedId)
 {
 	setCategories(categories);
@@ -75,12 +82,17 @@ void AddTransactionDialogView::setFinancialAccounts(const QVector<FinancialAccou
 	previousFinancialAccountIndex = -1;
 	ui->accountCombo->blockSignals(false);
 }
-void AddTransactionDialogView::setTransactionType(const QVector<TransactionType>& transactionType)
+void AddTransactionDialogView::setTransactionTypes()
 {
+	ui->typeCombo->blockSignals(true);
 	ui->typeCombo->clear();
-	for (const auto& type : transactionType) {
-		//ui->typeCombo->addItem(getTransactionTypeName(type));
-	}
+
+	ui->typeCombo->addItem("Income", "Income");
+	ui->typeCombo->addItem("Expense", "Expense");
+
+	ui->typeCombo->setCurrentIndex(-1);
+	previousTypeIndex = -1;
+	ui->typeCombo->blockSignals(false);
 }
 
 void AddTransactionDialogView::onFinancialAccountIndexChanged(int index)
@@ -142,6 +154,11 @@ int AddTransactionDialogView::getSelectedCategoryId() const {
 	return ui->categoryCombo->currentData().toInt();
 }
 
+QString AddTransactionDialogView::getType() const
+{
+	return ui->typeCombo->currentData().toString();
+}
+
 int AddTransactionDialogView::getSelectedFinancialAccountId() const {
 	return ui->accountCombo->currentData().toInt();
 }
@@ -167,6 +184,16 @@ void AddTransactionDialogView::setSelectedCategoryId(int categoryId) {
 	if (index != -1) {
 		ui->categoryCombo->setCurrentIndex(index);
 		previousCategoryIndex = index;
+	}
+}
+
+void AddTransactionDialogView::setType(const QString& typeName)
+{
+	int index = ui->typeCombo->findData(typeName);
+	if (index != -1)
+	{
+		ui->typeCombo->setCurrentIndex(index);
+		previousTypeIndex = index;
 	}
 }
 
