@@ -2,17 +2,17 @@
 
 #include <QDialog>
 #include <QInputDialog>
-#include <ui_AddTransactionDialogView.h>
+#include <ui_TransactionEditorDialogView.h>
 #include <Model/Category.h>
 #include <Model/FinancialAccount.h>
 #include <Model/Transaction.h>
 
-class AddTransactionDialogView : public QDialog {
+class TransactionEditorDialogView : public QDialog {
 	Q_OBJECT
 
 public:
-	explicit AddTransactionDialogView(QWidget* parent = nullptr);
-	~AddTransactionDialogView();
+	explicit TransactionEditorDialogView(QWidget* parent = nullptr);
+	~TransactionEditorDialogView();
 
 	void setCategories(const QVector<Category>& categories);
 	void setFinancialAccounts(const QVector<FinancialAccount>& financialAccounts);

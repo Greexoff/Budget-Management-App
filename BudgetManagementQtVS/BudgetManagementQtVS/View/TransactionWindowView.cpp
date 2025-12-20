@@ -5,10 +5,6 @@
 #include <QAbstractItemView>
 #include <QHeaderView>  
 
-/**
- * @brief Constructs the main window and initializes UI components
- * @param parent Parent widget
- */
 TransactionWindow::TransactionWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow), TableModel(new QStandardItemModel(this))
 {
 	ui->setupUi(this);
@@ -18,20 +14,35 @@ TransactionWindow::TransactionWindow(QWidget* parent) : QMainWindow(parent), ui(
 	setupConnections();
 }
 
-/**
- * @brief Destructor - cleans up UI resources
- */
 TransactionWindow::~TransactionWindow()
 {
 	delete ui;
 }
 
-/**
- * @brief Initializes the transaction table with columns and display settings
- */
+
+//----------------Setting connection (button-method)-------------------------------------------------
+
+void TransactionWindow::setupConnections()
+{
+    connect(ui->buttonAddTransaction, &QPushButton::clicked, this, &TransactionWindow::onButtonAddTransactionClicked);
+    connect(ui->buttonDeleteTransaction, &QPushButton::clicked, this, &TransactionWindow::onButtonDeleteTransactionClicked);
+    connect(ui->browseCategoriesButton, &QPushButton::clicked, this, &TransactionWindow::onButtonShowCategoriesClicked);
+    connect(ui->buttonEdit, &QPushButton::clicked, this, &TransactionWindow::onButtonEditTransactionClicked);
+    connect(ui->changeProfileButton, &QPushButton::clicked, this, &TransactionWindow::onButtonChangeProfileClicked);
+    connect(ui->browseFinancialAccountsButton, &QPushButton::clicked, this, &TransactionWindow::onButtonShowFinancialAccountsClicked);
+    connect(ui->editBudgetButton, &QPushButton::clicked, this, &TransactionWindow::onButtonEditBudgetClicked);
+    connect(ui->searchEdit, &QLineEdit::textChanged, this, &TransactionWindow::searchTextChanged);
+
+    QHeaderView* header = ui->TransactionTabelView->horizontalHeader();
+    connect(header, &QHeaderView::sectionClicked, this, &TransactionWindow::onColumnHeaderClicked);
+}
+
+
+//----------------Setting up view-------------------------------------------------
+
+
 void TransactionWindow::initializeTransactionTable()
 {
-    // Define table columns
     TableModel->setColumnCount(8);
     TableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
     TableModel->setHeaderData(1, Qt::Horizontal, tr("Name"));
@@ -42,83 +53,24 @@ void TransactionWindow::initializeTransactionTable()
     TableModel->setHeaderData(6, Qt::Horizontal, tr("Category"));
     TableModel->setHeaderData(7, Qt::Horizontal, tr("Financial Account"));
 
-    // Apply model to table view
     ui->TransactionTabelView->setModel(TableModel);
 
-    // Configure selection behavior
     ui->TransactionTabelView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->TransactionTabelView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->TransactionTabelView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    // Configure column sizing
     ui->TransactionTabelView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-    // Hide ID column 
     ui->TransactionTabelView->setColumnHidden(0, true);
 }
 
-/**
- * @brief Connects UI buttons to their handler methods
- */
-void TransactionWindow::setupConnections() 
-{
-	connect(ui->buttonAddTransaction, &QPushButton::clicked, this, &TransactionWindow::onButtonAddTransactionClicked);
-	connect(ui->buttonDeleteTransaction, &QPushButton::clicked, this, &TransactionWindow::onButtonDeleteTransactionClicked);
-    connect(ui->browseCategoriesButton, &QPushButton::clicked, this, &TransactionWindow::onButtonManageCategoriesClicked);
-    connect(ui->buttonEdit, &QPushButton::clicked, this, &TransactionWindow::onButtonEditTransactionClicked);
-    connect(ui->changeProfileButton, &QPushButton::clicked, this, &TransactionWindow::onButtonChangeProfileClicked);
-    connect(ui->browseFinancialAccountsButton, &QPushButton::clicked, this, &TransactionWindow::onButtonManageFinancialAccountsClicked);
-    connect(ui->editBudgetButton, &QPushButton::clicked, this, &TransactionWindow::onButtonEditBudgetClicked);
-    connect(ui->searchEdit, &QLineEdit::textChanged, this, &TransactionWindow::searchTextChanged);
 
-    QHeaderView* header = ui->TransactionTabelView->horizontalHeader();
-    connect(header, &QHeaderView::sectionClicked, this, &TransactionWindow::onColumnHeaderClicked);
-}
-
-/**
- * @brief Handles click on Add Transaction button
- */
-void TransactionWindow::onButtonAddTransactionClicked()
-{
-	emit addTransactionRequest();
-}
-
-/**
- * @brief Handles click on Delete Transaction button
- */
-void TransactionWindow::onButtonDeleteTransactionClicked()
-{
-	emit deleteTransactionRequest();
-}
-
-/**
- * @brief Handles click on Manage Categories button
- */
-void TransactionWindow::onButtonManageCategoriesClicked()
-{
-    emit showCategoriesRequest();
-}
-
-void TransactionWindow::onButtonManageFinancialAccountsClicked()
-{
-    emit showFinancialAccountsRequest();
-}
-void TransactionWindow::searchTextChanged(QString searchText)
-{
-    emit searchTextRequest(searchText);
-}
-/**
- * @brief Updates the transaction table with new data
- * @param rows Vector of transaction data rows
- */
-void TransactionWindow::setTransactionRows(const QVector<QStringList>& rows)
+void TransactionWindow::setTransactionTabHeaders(const QVector<QStringList>& rows)
 {
     TableModel->clear();
 
-    // Set column headers
-    TableModel->setHorizontalHeaderLabels({ "ID", "Name", "Date", "Description", "Amount", "Type", "Category","Financial account"});
+    TableModel->setHorizontalHeaderLabels({ "ID", "Name", "Date", "Description", "Amount", "Type", "Category","Financial account" });
 
-    // Add transaction rows
     for (const QStringList& row : rows) {
         QList<QStandardItem*> items;
         for (const QString& value : row)
@@ -126,16 +78,75 @@ void TransactionWindow::setTransactionRows(const QVector<QStringList>& rows)
         TableModel->appendRow(items);
     }
 
-    // Configure column display
     auto header = ui->TransactionTabelView->horizontalHeader();
     header->setSectionResizeMode(QHeaderView::Stretch);
     ui->TransactionTabelView->setColumnHidden(0, true);
 }
 
-/**
- * @brief Collect the ID of the currently selected transaction
- * @return int Transaction ID, or -1 if no valid selection
- */
+
+//----------------Pressing buttons actions-------------------------------------------------
+
+//Method that notices clicking on add button
+void TransactionWindow::onButtonAddTransactionClicked()
+{
+	emit addTransactionRequest();
+}
+
+//Method that notices clicking on edit button
+void TransactionWindow::onButtonEditTransactionClicked()
+{
+    emit editTransactionRequest();
+}
+
+//Method that notices clicking on delete button
+void TransactionWindow::onButtonDeleteTransactionClicked()
+{
+	emit deleteTransactionRequest();
+}
+
+//Method that notices clicking on browse category button
+void TransactionWindow::onButtonShowCategoriesClicked()
+{
+    emit showCategoriesRequest();
+}
+
+//Method that notices clicking on browse financial accounts button
+void TransactionWindow::onButtonShowFinancialAccountsClicked()
+{
+    emit showFinancialAccountsRequest();
+}
+
+//Method that notices clicking on return to profile window button
+void TransactionWindow::onButtonChangeProfileClicked()
+{
+    emit backToProfileRequested();
+}
+
+//Method that notices clicking on edit budget button
+void TransactionWindow::onButtonEditBudgetClicked()
+{
+    emit editBudgetRequest();
+}
+
+//Method that clears search bar while reentering view
+void TransactionWindow::clearSearchEdit()
+{
+    ui->searchEdit->clear();
+}
+
+//Method that passes text inserted in search bar
+void TransactionWindow::searchTextChanged(QString searchText)
+{
+    emit searchTextRequest(searchText);
+}
+
+//Method that notices clicking on column header
+void TransactionWindow::onColumnHeaderClicked(int columnId)
+{
+    emit columnSortRequest(columnId);
+}
+
+//Method that passes id of currently selected transaction
 int TransactionWindow::getSelectedTransactionId() const
 {
     QModelIndex index = ui->TransactionTabelView->currentIndex();
@@ -146,51 +157,8 @@ int TransactionWindow::getSelectedTransactionId() const
     int id = TableModel->data(TableModel->index(index.row(), 0)).toInt(&ok);
     return ok ? id : -1;
 }
-void TransactionWindow::showTransactionMessage(QString header, QString message, QString messageType)
-{
-    if (messageType == "error")
-    {
-        QMessageBox::warning(this, header, message);
-    }
-    else
-    {
-        QMessageBox::information(this, header, message);
-    }
-}
 
-void TransactionWindow::onButtonEditTransactionClicked()
-{
-    emit editTransactionRequest();
-}
-
-QString TransactionWindow::getTransactionNameFromInput(bool& correctData, const QString& defaultValue)
-{
-    return QInputDialog::getText(this, tr("Transaction"), tr("Name:"),
-        QLineEdit::Normal, defaultValue, &correctData);
-}
-
-double TransactionWindow::getTransactionAmountFromInput(bool& correctData, double defaultValue)
-{
-    return QInputDialog::getDouble(this, tr("Transaction"), tr("Amount:"),
-        defaultValue, -1e9, 1e9, 2, &correctData);
-}
-
-QString TransactionWindow::getTransactionDescriptionFromInput(bool& correctData, const QString& defaultValue)
-{
-    return QInputDialog::getText(this, tr("Transaction"), tr("Description:"),
-        QLineEdit::Normal, defaultValue, &correctData);
-}
-
-void TransactionWindow::onButtonChangeProfileClicked()
-{
-    emit backToProfileRequested();
-}
-
-void TransactionWindow::onButtonEditBudgetClicked()
-{
-    emit editBudgetRequest();
-}
-
+//Method that updates progress bar of monthly budget
 void TransactionWindow::updateBudgetDisplay(double limit, double spent)
 {
     ui->budgetProgressBar->setRange(0, 100);
@@ -213,11 +181,16 @@ void TransactionWindow::updateBudgetDisplay(double limit, double spent)
         .arg(QString::number(limit, 'f', 2))
         .arg(QString::number(remaining, 'f', 2)));
 }
-void TransactionWindow::onColumnHeaderClicked(int columnId)
+
+//Method responsible for displaying error if inserted data is incorrect/is lacking 
+void TransactionWindow::showTransactionMessage(QString header, QString message, QString messageType)
 {
-    emit columnSortRequest(columnId);
-}
-void TransactionWindow::clearSearchEdit()
-{
-    ui->searchEdit->clear();
+    if (messageType == "error")
+    {
+        QMessageBox::warning(this, header, message);
+    }
+    else
+    {
+        QMessageBox::information(this, header, message);
+    }
 }

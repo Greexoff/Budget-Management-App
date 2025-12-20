@@ -3,7 +3,6 @@
 
 ProfileController::ProfileController(ProfileDialog& profileDialogRef, ProfilesRepository& profileRepositoryRef, QObject* parent) : BaseController(parent), profileDialog(profileDialogRef), profileRepository(profileRepositoryRef)
 {
-    // Connect profile dialog signals
     connect(&profileDialog, &ProfileDialog::profileSelected,
         this, &ProfileController::handleProfileSelection);
     connect(&profileDialog, &ProfileDialog::addProfileRequested,
@@ -15,10 +14,14 @@ ProfileController::ProfileController(ProfileDialog& profileDialogRef, ProfilesRe
     connect(&profileDialog, &ProfileDialog::logoutRequested,
         this, &ProfileController::handleLogoutRequest);
 }
-/**
- * @brief Displays profiles associated with the current user
- */
-void ProfileController::showProfilesForCurrentUser()
+
+//TODO: ADD FILTERING AND SORTING OF PROFILES
+
+
+//----------------------Setting up view---------------------------------------
+
+//Method responsible for refreshing/setting up profiles in window, used every time a change in list occurs
+void ProfileController::refreshProfilesForCurrentUser()
 {
     QVector<Profile> profiles = profileRepository.getProfilesByUserId(getUserId());
     profileDialog.setProfiles(profiles);
@@ -27,26 +30,10 @@ void ProfileController::showProfilesForCurrentUser()
     }
 }
 
-/**
- * @brief Handles selection of a profile
- *
- * Sets the current profile and initializes the main window
- * with the profile's transaction data.
- *
- * @param profileId ID of the selected profile
- */
-void ProfileController::handleProfileSelection(int profileId)
-{
-    setProfileId(profileId);
-    profileDialog.accept();
 
-    emit profileSelected();
-}
+//----------------Handling actions performed on profiles----------------------
 
-/**
- * @brief Handles creation of a new profile
- * @param name Name for the new profile
- */
+//Method responsible for adding profile based on entered data
 void ProfileController::handleAddProfileRequest(const QString& name)
 {
     if (!profileRepository.addProfile(getUserId(), name)) {
@@ -55,24 +42,10 @@ void ProfileController::handleAddProfileRequest(const QString& name)
         profileDialog.showProfileMessage(header, message, "error");
         return;
     }
-    showProfilesForCurrentUser();
+    refreshProfilesForCurrentUser();
 }
 
-/**
- * @brief Handles deletion of a profile
- * @param profileId ID of the profile to delete
- */
-void ProfileController::handleRemoveProfileRequest(int profileId)
-{
-    if (!profileRepository.removeProfileById(profileId)) {
-        const QString header = tr("Delete profile");
-        const QString message = tr("Failed to delete a profile.");
-        profileDialog.showProfileMessage(header, message, "error");
-        return;
-    }
-    showProfilesForCurrentUser();
-}
-
+//Method responsible for handling editing of profile
 void ProfileController::handleEditProfileRequest(int profileId, const QString& newName)
 {
     if (!profileRepository.updateProfile(profileId, newName)) {
@@ -81,9 +54,31 @@ void ProfileController::handleEditProfileRequest(int profileId, const QString& n
         profileDialog.showProfileMessage(header, message, "error");
         return;
     }
-    showProfilesForCurrentUser();
+    refreshProfilesForCurrentUser();
 }
 
+//Method responsible for handling deletion of profile
+void ProfileController::handleRemoveProfileRequest(int profileId)
+{
+    if (!profileRepository.removeProfileById(profileId)) {
+        const QString header = tr("Delete profile");
+        const QString message = tr("Failed to delete a profile.");
+        profileDialog.showProfileMessage(header, message, "error");
+        return;
+    }
+    refreshProfilesForCurrentUser();
+}
+
+//Method responsible for handling profile selection and transition to the transaction window
+void ProfileController::handleProfileSelection(int profileId)
+{
+    setProfileId(profileId);
+    profileDialog.accept();
+
+    emit profileSelected();
+}
+
+//Method responsible for handling logging out of profile
 void ProfileController::handleLogoutRequest()
 {
     setUserId(-1);

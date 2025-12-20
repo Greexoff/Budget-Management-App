@@ -20,9 +20,6 @@ protected:
 	void setUserId(int userId);
 	int getUserId();
 
-	void setMainWindowInitializedAttribute(bool value);
-	bool getMainWindowInitializedAttribute();
-
 	QString getFilteringText();
 	void setFilteringText(const QString& searchText);
 

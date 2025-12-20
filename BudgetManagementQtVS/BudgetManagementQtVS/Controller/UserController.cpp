@@ -7,15 +7,20 @@ UserController::UserController(LoginDialog& loginDialogRef, UserRepository& user
     connect(&loginDialog, &LoginDialog::registerRequested,
         this, &UserController::handleRegisterRequest);
 }
+
+
+//----------------Setting up view-------------------------------------------------
+
+
 void UserController::run()
 {
     loginDialog.show();
 }
-/**
- * @brief Handles user login attempt
- * @param username User's login name
- * @param password User's password
- */
+
+
+//----------------Handling actions performed on categories-----------------------
+
+//Method responsible for checking if data user inserted exists in database and is correct
 void UserController::handleLoginRequest(const QString& username, const QString& password)
 {
     if (username.trimmed().isEmpty() || password.isEmpty()) {
@@ -37,11 +42,7 @@ void UserController::handleLoginRequest(const QString& username, const QString& 
     emit userLoggedIn();
 }
 
-/**
- * @brief Handles new user registration
- * @param username Desired username
- * @param password Desired password
- */
+//Method responsible for register request and adding correct data to database
 void UserController::handleRegisterRequest(const QString& username, const QString& password)
 {
     if (username.isEmpty() || password.isEmpty()) {

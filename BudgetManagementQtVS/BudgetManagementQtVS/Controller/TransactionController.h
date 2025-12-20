@@ -8,7 +8,7 @@
 #include <Model/TransactionBuilder.h>
 
 #include "View/TransactionWindowView.h"
-#include "View/AddTransactionDialogView.h"
+#include "View/TransactionEditorDialogView.h"
 
 #include <memory>
 class TransactionController : public BaseController
@@ -18,17 +18,15 @@ public:
 	TransactionController(TransactionWindow& transactionWindowRef, TransactionRepository& transactionRepositoryRef, CategoryRepository& categoryRepositoryRef, FinancialAccountRepository& financialAccountRepositoryRef, ProfilesRepository& profileRepositoryRef, QObject* parent = nullptr);
 signals: 
     void categorySelectionRequest(TransactionBuilder& builder);
-    void showCategories(bool selectButtonVisibility);
+    void showCategories();
     void financialAccountSelectionRequest(TransactionBuilder& builder);
-    void showFinancialAccounts(bool selectButtonVisibility);
+    void showFinancialAccounts();
     void returnToProfileView();
 public slots:
 
-    void startAddingTransactionRequest();
-    void initializeMainWindow();
-    void handleCategoriesDataChangeRequest();
-    void handleFinancialAccountsDataChangeRequest();
-    void finalizeTransaction(TransactionBuilder& builder);
+    void handleAddTransactionRequest();
+    void setupTransactionWindow();
+    void handleDataChangeRequest();
     void handleFilteringTransactionRequest(QString searchText);
     void handleEditBudgetRequest();
 private:
@@ -52,7 +50,7 @@ private:
 
     void handleSortingRequest(int columnId);
 
-    void executeTransactionSorting(QVector<Transaction>& allTransactions);
+    void executeSortingTransaction(QVector<Transaction>& allTransactions);
 
     QVector<Transaction> executeFilteringTransaction(const QVector<Transaction> allTransactions);
 };

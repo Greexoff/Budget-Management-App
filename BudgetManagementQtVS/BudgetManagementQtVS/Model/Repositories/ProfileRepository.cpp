@@ -1,10 +1,5 @@
 #include <Model/Repositories/ProfileRepository.h>
 
-/**
- * @brief Retrieves all profiles belonging to a specific user
- * @param userId ID of the user
- * @return Vector of Profile objects for the user
- */
 QVector<Profile> ProfilesRepository::getProfilesByUserId(int userId) const
 {
     QVector<Profile> foundProfiles;
@@ -32,17 +27,6 @@ QVector<Profile> ProfilesRepository::getProfilesByUserId(int userId) const
     return foundProfiles;
 }
 
-/**
- * @brief Creates a new profile for a user
- *
- * Profile names must be unique across all users. The database trigger
- * `insertDefaultCategory` will automatically create a default "None" category
- * for the new profile.
- *
- * @param userId ID of the owning user
- * @param profileName Name for the new profile
- * @return True if profile created successfully, false otherwise
- */
 bool ProfilesRepository::addProfile(int userId, QString profileName)
 {
     QSqlQuery query(database);
@@ -59,11 +43,6 @@ bool ProfilesRepository::addProfile(int userId, QString profileName)
     return true;
 }
 
-/**
- * @brief Deletes a profile by ID
- * @param profileId ID of profile to delete
- * @return True if profile deleted successfully, false otherwise
- */
 bool ProfilesRepository::removeProfileById(int profileId)
 {
     QSqlQuery query(database);
@@ -78,7 +57,6 @@ bool ProfilesRepository::removeProfileById(int profileId)
     return true;
 }
 
-//edycja profilu
 bool ProfilesRepository::updateProfile(int profileId, const QString& newName)
 {
     QSqlQuery query(database);

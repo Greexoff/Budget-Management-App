@@ -117,7 +117,7 @@
     <ClCompile Include="Controller\ControllerManager.cpp">
       <Filter>Source Files\Controller</Filter>
     </ClCompile>
-    <ClCompile Include="View\AddTransactionDialogView.cpp">
+    <ClCompile Include="View\TransactionEditorDialogView.cpp">
       <Filter>Source Files\View</Filter>
     </ClCompile>
     <ClCompile Include="Model\FinancialAccount.cpp">
@@ -131,9 +131,6 @@
     </ClCompile>
     <ClCompile Include="View\FinancialAccountSelectionView.cpp">
       <Filter>Source Files\View</Filter>
-    </ClCompile>
-    <ClCompile Include="Model\SortStrategy.cpp">
-      <Filter>Source Files\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -176,9 +173,6 @@
     <ClInclude Include="Model\FinancialAccount.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\SortStrategy.h">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="ProfileDialogView.ui">
@@ -187,7 +181,7 @@
     <QtUic Include="LoginDialogView.ui">
       <Filter>Ui Files</Filter>
     </QtUic>
-    <QtUic Include="AddTransactionDialogView.ui">
+    <QtUic Include="TransactionEditorDialogView.ui">
       <Filter>Ui Files</Filter>
     </QtUic>
     <QtUic Include="CategorySelectionView.ui">
@@ -231,7 +225,7 @@
     <QtMoc Include="Controller\UserController.h">
       <Filter>Header Files\Controller</Filter>
     </QtMoc>
-    <QtMoc Include="View\AddTransactionDialogView.h">
+    <QtMoc Include="View\TransactionEditorDialogView.h">
       <Filter>Header Files\View</Filter>
     </QtMoc>
     <QtMoc Include="View\FinancialAccountSelectionView.h">

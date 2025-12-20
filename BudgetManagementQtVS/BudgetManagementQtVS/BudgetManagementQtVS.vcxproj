@@ -112,7 +112,7 @@
     <ClCompile Include="Model\Transaction.cpp" />
     <ClCompile Include="Model\TransactionBuilder.cpp" />
     <ClCompile Include="Model\User.cpp" />
-    <ClCompile Include="View\AddTransactionDialogView.cpp" />
+    <ClCompile Include="View\TransactionEditorDialogView.cpp" />
     <ClCompile Include="View\CategorySelectionView.cpp" />
     <ClCompile Include="View\FinancialAccountSelectionView.cpp" />
     <ClCompile Include="View\LoginDialogView.cpp" />
@@ -122,7 +122,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="View\AddTransactionDialogView.h" />
+    <QtMoc Include="View\TransactionEditorDialogView.h" />
     <QtMoc Include="View\FinancialAccountSelectionView.h" />
     <QtMoc Include="Controller\ControllerManager.h" />
     <QtMoc Include="Controller\FinancialAccountSelectionController.h" />
@@ -150,7 +150,7 @@
     <QtMoc Include="View\CategorySelectionView.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="AddTransactionDialogView.ui" />
+    <QtUic Include="TransactionEditorDialogView.ui" />
     <QtUic Include="CategorySelectionView.ui" />
     <QtUic Include="FinancialAccountSelectionView.ui" />
     <QtUic Include="LoginDialogView.ui" />

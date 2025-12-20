@@ -1,10 +1,5 @@
 #include <Model/Repositories/CategoryRepository.h>
 
-/**
- * @brief Retrieves all categories for a specific profile
- * @param profileId ID of the profile
- * @return Vector of Category objects belonging to the profile
- */
 QVector<Category> CategoryRepository::getAllProfileCategories(int profileId) const
 {
     QVector<Category> categoriesForProfile;
@@ -33,12 +28,6 @@ QVector<Category> CategoryRepository::getAllProfileCategories(int profileId) con
     return categoriesForProfile;
 }
 
-/**
- * @brief Creates a new category for a profile
- * @param categoryName Name of the category to create
- * @param profileId ID of the profile that will own the category
- * @return True if category created successfully, false otherwise
- */
 bool CategoryRepository::addCategory(const QString& categoryName, int profileId)
 {
     QSqlQuery query(database);
@@ -56,33 +45,16 @@ bool CategoryRepository::addCategory(const QString& categoryName, int profileId)
     return true;
 }
 
-/**
- * @brief Deletes a category by ID using a database transaction
- *
- * This method ensures data integrity by:
- * 1. Starting a database transaction
- * 2. Updating all transactions using the category to use the default category (ID 1)
- * 3. Deleting the category
- * 4. Committing the transaction if both operations succeed
- *
- * The default category (ID 1, "None") cannot be deleted.
- *
- * @param categoryId ID of category to delete
- * @return True if category deleted successfully, false otherwise
- */
 bool CategoryRepository::removeCategoryById(int categoryId)
 {
-    //If user tries to remove 'None' category, not allow them
     if (categoryId == 1)//Can adjust magic numbers in some type of namespace
     {
         return false;
     }
     QSqlQuery query(database);
 
-    // Begin transaction to ensure data consistency
     database.transaction();
 
-    // Update all transactions using this category to use default category 
     query.prepare("UPDATE transactions SET category_id = :defaultId WHERE category_id = :catId");
     query.bindValue(":defaultId", 1);
     query.bindValue(":catId", categoryId);
@@ -93,7 +65,6 @@ bool CategoryRepository::removeCategoryById(int categoryId)
         return false;
     }
 
-    // Delete the category
     query.prepare("DELETE FROM category WHERE id = :id");
     query.bindValue(":id", categoryId);
 
@@ -104,7 +75,6 @@ bool CategoryRepository::removeCategoryById(int categoryId)
         return false;
     }
 
-    // Commit the transaction
     if (!database.commit()) {
         qDebug() << "CategoryRepo::removeCategory commit failed:" << database.lastError().text();
         database.rollback();
@@ -114,11 +84,6 @@ bool CategoryRepository::removeCategoryById(int categoryId)
     return true;
 }
 
-/**
- * @brief Retrieves category name by ID
- * @param categoryId ID of the category
- * @return Category name as QString, empty string if category not found
- */
 QString CategoryRepository::getCategoryNameById(int categoryId) const
 {
     QSqlQuery query(database);

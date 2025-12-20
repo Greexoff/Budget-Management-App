@@ -22,11 +22,8 @@ public:
     CategoryController(CategorySelectionView& categorySelectionViewRef, CategoryRepository& categoryRepositoryRef, QObject* parent = nullptr);
 signals:
     void categoriesDataChanged();
-    void categorySelected(TransactionBuilder& builder);
 public slots:
-    void handleCategorySelectionWhileAddingTransactionRequest(TransactionBuilder& builder);
-    void handleCategorySelection(int categoryId);
-    void handleCategorySelectionFromTransactionWindow(bool selectButtonVisibility);
+    void setupCategoryView();
     void handleAddCategoryRequest(const QString& categoryName);
     void handleDeleteCategoryRequest(int categoryId);
     void handleEditCategoryRequest(int categoryId, const QString& newName);
@@ -34,13 +31,12 @@ public slots:
     void handleSortRequest(int columnId);
 
 private:
-    CategorySelectionView& categoryDialog;      ///< Reference to the category selection dialog
-    CategoryRepository& categoryRepository;         ///< Reference to the category repository
+    CategorySelectionView& categoryDialog;      
+    CategoryRepository& categoryRepository; 
 
     int selectedCategoryIdForTransaction = 1;//REPLACE MAGIC NUMBER WITH SOME SORT OF NAMESPACE (ID OF 'NONE' CATEGORY)
  
     void refreshCategoryDialogList();
-    void showCategoryDialog(bool withSelectButton);
     QVector<Category> executeFilteringCategory(const QVector<Category> allCategories);
     void executeSortingCategory(QVector<Category>& allCategories);
 

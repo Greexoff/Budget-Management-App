@@ -21,12 +21,9 @@ public:
 
 signals:
 	void financialAccountDataChanged();
-	void financialAccountSelected(TransactionBuilder& builder);
 
 public slots:
-	void handleFinancialAccountSelectionWhileAddingTransactionRequest(TransactionBuilder& builder);
-	void handleFinancialAccountSelection(int financialAccountId);
-	void handleFinancialAccountSelectionFromTransactionWindow(bool selectButtonVisibility);
+	void setupFinancialAccountWindow();
 	void handleFinancialAccountAddRequest(const QString& financialAccountName, const QString& financialAccountType, double financialAccountBalance);
 	void handleFinancialAccountDeleteRequest(int financialAccountId);
 	void handleFinancialAccountEditRequest(int id, const QString& name, const QString& type, double balance);
@@ -40,7 +37,6 @@ private:
 	int selectedFinancialAccountIdForTransaction = 1;
 
 	void refreshFinancialAccountDialogList();
-	void showFinancialAccountDialog(bool withSelectButton);
 	QVector<FinancialAccount> executeFilteringFinancialAccount(const QVector<FinancialAccount> allFinancialAccounts);
 	void executeSortingFinancialAccount(QVector<FinancialAccount>& allFinancialAccounts);
 

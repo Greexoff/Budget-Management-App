@@ -20,8 +20,6 @@ public:
 
 	void setFinancialAccounts(const QVector<FinancialAccount>& financialAccounts);
 
-	void setSelectFinancialAccountButtonVisible(bool visible);
-
 	int getSelectedFinancialAccountId() const { return selectedFinancialAccountId; }
 
 	void clearSearchLineEdit();
@@ -44,7 +42,6 @@ signals:
 	void columnSortRequest(int columnId);
 
 private slots:
-	void selectFinancialAccountButtonClicked();
 	void addFinancialAccountButtonClicked();
 	void deleteFinancialAccountButtonClicked();
 	void editFinancialAccountButtonClicked();

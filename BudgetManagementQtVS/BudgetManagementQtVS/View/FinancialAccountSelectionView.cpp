@@ -13,8 +13,11 @@ FinancialAccountSelectionView::~FinancialAccountSelectionView() {
 	delete ui;
 }
 
+
+//----------------Setting connection (button-method)-------------------------------------------------
+
+
 void FinancialAccountSelectionView::connectMethodToButton() {
-	connect(ui->selectFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::selectFinancialAccountButtonClicked);
 	connect(ui->addFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::addFinancialAccountButtonClicked);
 	connect(ui->deleteFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::deleteFinancialAccountButtonClicked);
 	connect(ui->cancelFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::cancelFinancialAccountButtonClicked);
@@ -24,6 +27,10 @@ void FinancialAccountSelectionView::connectMethodToButton() {
 	QHeaderView* header = ui->financialAccountsTable->horizontalHeader();
 	connect(header, &QHeaderView::sectionClicked, this, &FinancialAccountSelectionView::onColumnHeaderClicked);
 }
+
+
+//----------------Setting up view-------------------------------------------------
+
 
 void FinancialAccountSelectionView::setupTable() {
 	ui->financialAccountsTable->setColumnCount(3);
@@ -57,18 +64,10 @@ void FinancialAccountSelectionView::setFinancialAccounts(const QVector<Financial
 	}
 }
 
-void FinancialAccountSelectionView::selectFinancialAccountButtonClicked() {
 
-	int row = ui->financialAccountsTable->currentRow();
-	if (row < 0 || row >= financialAccountId.size()) {
-		return;
-	}
+//----------------Pressing buttons actions-------------------------------------------------
 
-	selectedFinancialAccountId = financialAccountId[row].getFinancialAccountId();
-	emit selectRequestedFinancialAccount(financialAccountId[row].getFinancialAccountId());
-	accept();
-}
-
+//Method that notices clicking on add button
 void FinancialAccountSelectionView::addFinancialAccountButtonClicked() {
 	QDialog dlg(this);
 	dlg.setWindowTitle(tr("New Financial Account"));
@@ -107,44 +106,14 @@ void FinancialAccountSelectionView::addFinancialAccountButtonClicked() {
 	}
 }
 
-void FinancialAccountSelectionView::deleteFinancialAccountButtonClicked() {
-	
-	int row = ui->financialAccountsTable->currentRow();
-	if (row < 0 || row >= financialAccountId.size()) {
-		return;
-	}
-
-	emit deleteRequestedFinancialAccount(financialAccountId[row].getFinancialAccountId());
-}
-
-void FinancialAccountSelectionView::cancelFinancialAccountButtonClicked() {
-	reject();
-}
-
-void FinancialAccountSelectionView::setSelectFinancialAccountButtonVisible(bool visible) {
-	if (ui->selectFinancialAccountButton) {
-		ui->selectFinancialAccountButton->setVisible(visible);
-	}
-}
-
-void FinancialAccountSelectionView::showFinancialAccountMessage(QString header, QString message, QString messageType) {
-	if (messageType == "error")
-	{
-		QMessageBox::warning(this, header, message);
-	}
-	else
-	{
-		QMessageBox::information(this, header, message);
-	}
-}
-
+//Method that notices clicking on edit button
 void FinancialAccountSelectionView::editFinancialAccountButtonClicked() {
 	int row = ui->financialAccountsTable->currentRow();
 
 	if (row < 0 || row >= financialAccountId.size()) {
 		return;
 	}
-	FinancialAccount currentFinancialAccount = financialAccountId[0]; 
+	FinancialAccount currentFinancialAccount = financialAccountId[0];
 
 	QString currentNameInTable = ui->financialAccountsTable->item(row, 0)->text();
 	for (const auto& acc : financialAccountId) {
@@ -164,16 +133,16 @@ void FinancialAccountSelectionView::editFinancialAccountButtonClicked() {
 	QFormLayout* layout = new QFormLayout(&dlg);
 
 	QLineEdit* nameEdit = new QLineEdit(&dlg);
-	nameEdit->setText(currentFinancialAccount.getFinancialAccountName()); 
+	nameEdit->setText(currentFinancialAccount.getFinancialAccountName());
 
 	QComboBox* typeCombo = new QComboBox(&dlg);
 	typeCombo->addItems({ "Cash", "Bank Account", "Savings", "Credit Card" });
-	typeCombo->setCurrentText(currentFinancialAccount.getFinancialAccountType()); 
+	typeCombo->setCurrentText(currentFinancialAccount.getFinancialAccountType());
 
 	QDoubleSpinBox* balanceSpin = new QDoubleSpinBox(&dlg);
 	balanceSpin->setRange(-10000000.0, 10000000.0);
 	balanceSpin->setSuffix(" PLN");
-	balanceSpin->setValue(currentFinancialAccount.getFinancialAccountBalance()); 
+	balanceSpin->setValue(currentFinancialAccount.getFinancialAccountBalance());
 
 	layout->addRow(tr("Name:"), nameEdit);
 	layout->addRow(tr("Type:"), typeCombo);
@@ -192,17 +161,49 @@ void FinancialAccountSelectionView::editFinancialAccountButtonClicked() {
 		emit editRequestedFinancialAccount(currentFinancialAccount.getFinancialAccountId(), newName, typeCombo->currentText(), balanceSpin->value());
 	}
 }
-void FinancialAccountSelectionView::searchTextChanged(const QString& searchText)
-{
-	emit searchTextRequest(searchText);
+
+//Method that notices clicking on delete button
+void FinancialAccountSelectionView::deleteFinancialAccountButtonClicked() {
+	
+	int row = ui->financialAccountsTable->currentRow();
+	if (row < 0 || row >= financialAccountId.size()) {
+		return;
+	}
+
+	emit deleteRequestedFinancialAccount(financialAccountId[row].getFinancialAccountId());
 }
 
+//Method that notices clicking on cancel button
+void FinancialAccountSelectionView::cancelFinancialAccountButtonClicked() {
+	reject();
+}
+
+//Method that clears search bar while reentering view
 void FinancialAccountSelectionView::clearSearchLineEdit()
 {
 	ui->searchEdit->clear();
 }
 
+//Method that passes text inserted in search bar
+void FinancialAccountSelectionView::searchTextChanged(const QString& searchText)
+{
+	emit searchTextRequest(searchText);
+}
+
+//Method that notices clicking on column header
 void FinancialAccountSelectionView::onColumnHeaderClicked(int columnId)
 {
 	emit columnSortRequest(columnId);
+}
+
+//Method responsible for displaying error if inserted data is incorrect/is lacking 
+void FinancialAccountSelectionView::showFinancialAccountMessage(QString header, QString message, QString messageType) {
+	if (messageType == "error")
+	{
+		QMessageBox::warning(this, header, message);
+	}
+	else
+	{
+		QMessageBox::information(this, header, message);
+	}
 }

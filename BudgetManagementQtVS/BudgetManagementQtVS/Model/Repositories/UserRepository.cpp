@@ -1,11 +1,5 @@
 ﻿#include <Model/Repositories/UserRepository.h>
 
-/**
- * @brief Creates a new user account
- * @param username Desired username
- * @param password Desired password
- * @return True if user created successfully, false otherwise
- */
 bool UserRepository::addUser(QString username, QString password)
 {
     QString salt = QUuid::createUuid().toString();
@@ -27,11 +21,6 @@ bool UserRepository::addUser(QString username, QString password)
     return true;
 }
 
-/**
- * @brief Deletes a user account by ID
- * @param userId ID of user to delete
- * @return True if user deleted successfully, false otherwise
- */
 bool UserRepository::removeUserById(int userId)
 {
     QSqlQuery query(database);
@@ -47,15 +36,7 @@ bool UserRepository::removeUserById(int userId)
     return true;
 }
 
-/**
- * @brief Authenticates user credentials against the database
- *
- * Performs a simple username/password comparison.
- *
- * @param username User's login name
- * @param password User's password
- * @return User ID if authentication successful, -1 otherwise
- */
+
 int UserRepository::getUserIdBasedOnUsername(QString username, QString password) const
 {
     QSqlQuery query(database);
