@@ -3,10 +3,6 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-/**
- * @brief Constructs the profile selection dialog
- * @param parent Parent widget
- */
 ProfileDialog::ProfileDialog(QWidget* parent)
     : QDialog(parent),
     ui(new Ui::ProfileDialog)
@@ -16,17 +12,11 @@ ProfileDialog::ProfileDialog(QWidget* parent)
     setupConnections();
 }
 
-/**
- * @brief Destructor - cleans up UI resources
- */
 ProfileDialog::~ProfileDialog()
 {
     delete ui;
 }
 
-/**
- * @brief Connects UI buttons to their handler methods
- */
 void ProfileDialog::setupConnections()
 {
     connect(ui->buttonSelect, &QPushButton::clicked, this, &ProfileDialog::onButtonSelectClicked);
@@ -37,10 +27,6 @@ void ProfileDialog::setupConnections()
     connect(ui->logoutButton, &QPushButton::clicked, this, &ProfileDialog::onButtonLogoutClicked);
 }
 
-/**
- * @brief Loads profiles into the list widget
- * @param profiles List of Profile objects to display
- */
 void ProfileDialog::setProfiles(const QVector<Profile>& profiles)
 {
     profilesId = profiles;
@@ -50,9 +36,6 @@ void ProfileDialog::setProfiles(const QVector<Profile>& profiles)
     }
 }
 
-/**
- * @brief Handles click on the Select button
- */
 void ProfileDialog::onButtonSelectClicked()
 {
     int row = ui->listProfiles->currentRow();
@@ -62,9 +45,6 @@ void ProfileDialog::onButtonSelectClicked()
     emit profileSelected(profilesId[row].getProfileId());
 }
 
-/**
- * @brief Handles click on the Add button
- */
 void ProfileDialog::onButtonAddClicked()
 {
     bool ok = false;
@@ -76,9 +56,6 @@ void ProfileDialog::onButtonAddClicked()
     emit addProfileRequested(name);
 }
 
-/**
- * @brief Handles click on the Remove button
- */
 void ProfileDialog::onButtonRemoveClicked()
 {
     int row = ui->listProfiles->currentRow();
@@ -88,9 +65,6 @@ void ProfileDialog::onButtonRemoveClicked()
     emit removeProfileRequested(profilesId[row].getProfileId());
 }
 
-/**
- * @brief Handles click on the Cancel button
- */
 void ProfileDialog::onButtonCancelClicked()
 {
     reject();

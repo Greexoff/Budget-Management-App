@@ -15,34 +15,21 @@ signals:
     void profileSelected();
     void logout();
 public slots:
-    /**
-    brief Displays profiles associated with the current user
-    */
-    void showProfilesForCurrentUser();
+
+    void refreshProfilesForCurrentUser();
 private:
     ProfileDialog& profileDialog;
 
     ProfilesRepository& profileRepository;
 
-    /**
-     * @brief Handles profile selection
-     * @param profileId ID of the selected profile
-     */
     void handleProfileSelection(int profileId);
 
-    /**
-     * @brief Handles request to add a new profile
-     * @param name Name for the new profile
-     */
     void handleAddProfileRequest(const QString& name);
 
-    /**
-     * @brief Handles request to remove a profile
-     * @param profileId ID of the profile to delete
-     */
     void handleRemoveProfileRequest(int profileId);
 
     void handleEditProfileRequest(int profileId, const QString& newName);
 
     void handleLogoutRequest();
 };
+

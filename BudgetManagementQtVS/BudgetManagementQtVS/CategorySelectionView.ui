@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>912</width>
+    <width>914</width>
     <height>502</height>
    </rect>
   </property>
@@ -16,20 +16,13 @@
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>320</y>
-     <width>551</width>
-     <height>80</height>
+     <x>100</x>
+     <y>380</y>
+     <width>711</width>
+     <height>61</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <widget class="QPushButton" name="selectCategoryButton">
-      <property name="text">
-       <string>Select Category</string>
-      </property>
-     </widget>
-    </item>
     <item>
      <widget class="QPushButton" name="addCategoryButton">
       <property name="text">
@@ -45,28 +38,51 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="deleteCategoryButton">
-      <property name="text">
-       <string>Delete Category</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QPushButton" name="cancelButton">
       <property name="text">
        <string>Cancel</string>
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QPushButton" name="deleteCategoryButton">
+      <property name="text">
+       <string>Delete Category</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
-  <widget class="QListWidget" name="categoriesList">
+  <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>40</y>
-     <width>551</width>
-     <height>231</height>
+     <x>660</x>
+     <y>20</y>
+     <width>41</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Search</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="searchLineEdit">
+   <property name="geometry">
+    <rect>
+     <x>700</x>
+     <y>20</y>
+     <width>113</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="categoryTable">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>70</y>
+     <width>711</width>
+     <height>281</height>
     </rect>
    </property>
   </widget>

@@ -6,10 +6,9 @@
 #include <Model/Repositories/FinancialAccountRepository.h>
 #include <Model/Repositories/ProfileRepository.h>
 #include <Model/TransactionBuilder.h>
-#include <Model/SortStrategy.h>
 
 #include "View/TransactionWindowView.h"
-#include "View/AddTransactionDialogView.h"
+#include "View/TransactionEditorDialogView.h"
 
 #include <memory>
 class TransactionController : public BaseController
@@ -19,19 +18,15 @@ public:
 	TransactionController(TransactionWindow& transactionWindowRef, TransactionRepository& transactionRepositoryRef, CategoryRepository& categoryRepositoryRef, FinancialAccountRepository& financialAccountRepositoryRef, ProfilesRepository& profileRepositoryRef, QObject* parent = nullptr);
 signals: 
     void categorySelectionRequest(TransactionBuilder& builder);
-    void showCategories(bool selectButtonVisibility);
+    void showCategories();
     void financialAccountSelectionRequest(TransactionBuilder& builder);
-    void showFinancialAccounts(bool selectButtonVisibility);
+    void showFinancialAccounts();
     void returnToProfileView();
 public slots:
-    /**
-   * @brief Handles request to add a new transaction
-   */
-    void startAddingTransactionRequest();
-    void initializeMainWindow();
-    void handleCategoriesDataChangeRequest();
-    void handleFinancialAccountsDataChangeRequest();
-    void finalizeTransaction(TransactionBuilder& builder);
+
+    void handleAddTransactionRequest();
+    void setupTransactionWindow();
+    void handleDataChangeRequest();
     void handleFilteringTransactionRequest(QString searchText);
     void handleEditBudgetRequest();
 private:
@@ -41,22 +36,12 @@ private:
     FinancialAccountRepository& financialAccountRepository;
     ProfilesRepository& profileRepository;
 
-    std::unique_ptr<SortStrategy> sortingStrategy;
-    SortOrder lastSortingOrder = SortOrder::DESCENDING;
-    int lastSelectedColumn = -1;
-    QString filteringText = "";
-
-    /**
-    * @brief Handles request to delete a transaction
-    */
     void handleDeleteTransactionRequest();
 
     void handleShowCategoriesRequestFromView();
 
     void handleShowFinancialAccountsRequestFromView();
-    /**
-    * @brief Refreshes the transaction display in the main window
-    */
+
     void refreshTransactionsView();
 
     void handleEditTransactionRequest();
@@ -65,7 +50,7 @@ private:
 
     void handleSortingRequest(int columnId);
 
-    void executeTransactionSorting(QVector<Transaction>& allTransactions);
+    void executeSortingTransaction(QVector<Transaction>& allTransactions);
 
     QVector<Transaction> executeFilteringTransaction(const QVector<Transaction> allTransactions);
 };

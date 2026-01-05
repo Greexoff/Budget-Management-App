@@ -20,9 +20,9 @@ public:
 
 	void setFinancialAccounts(const QVector<FinancialAccount>& financialAccounts);
 
-	void setSelectFinancialAccountButtonVisible(bool visible);
-
 	int getSelectedFinancialAccountId() const { return selectedFinancialAccountId; }
+
+	void clearSearchLineEdit();
 
 public slots:
 	void showFinancialAccountMessage(QString header, QString message, QString messageType);
@@ -37,12 +37,17 @@ signals:
 
 	void editRequestedFinancialAccount(int financialAccountId, const QString& name, const QString& type, double balance);
 
+	void searchTextRequest(const QString& searchText);
+
+	void columnSortRequest(int columnId);
+
 private slots:
-	void selectFinancialAccountButtonClicked();
 	void addFinancialAccountButtonClicked();
 	void deleteFinancialAccountButtonClicked();
 	void editFinancialAccountButtonClicked();
 	void cancelFinancialAccountButtonClicked();
+	void searchTextChanged(const QString& searchText);
+	void onColumnHeaderClicked(int columnId);
 
 private:
 	Ui::FinancialAccountSelectionView* ui;

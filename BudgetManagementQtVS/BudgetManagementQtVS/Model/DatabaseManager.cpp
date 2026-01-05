@@ -5,15 +5,7 @@
 #include <QCryptographicHash>
 #include <QUuid>
 
-/**
- * @brief Constructs the DatabaseManager and initializes the database schema
- *
- * This constructor performs the following initialization tasks:
- * 1. Establishes SQLite database connection
- * 2. Creates all required tables if they don't exist
- * 3. Sets up database triggers for automatic default category creation
- * 4. Creates a demo admin user for development purposes
- */
+
 DatabaseManager::DatabaseManager() {
     datebaseInstance = QSqlDatabase::addDatabase("QSQLITE");
     datebaseInstance.setDatabaseName("BudgetDatabase.db");
@@ -116,19 +108,11 @@ DatabaseManager::DatabaseManager() {
     }
 }
 
-/**
- * @brief Returns the singleton instance of DatabaseManager
- * @return DatabaseManager& Reference to the singleton instance
- */
 DatabaseManager& DatabaseManager::instance() {
     static DatabaseManager instance;
     return instance;
 }
 
-/**
- * @brief Provides access to the application's database connection
- * @return QSqlDatabase& Reference to the QSqlDatabase instance
- */
 QSqlDatabase& DatabaseManager::database() {
     return datebaseInstance;
 }
