@@ -57,8 +57,7 @@ int main(int argc, char* argv[])
 
     CategoryController categoryController(categoryDialog, categoryRepository, nullptr);
     FinancialAccountController financialAccountController(financialAccountDialog, financialAccountRepository, nullptr);
-
-	ChartsController chartsController(transactionRepository,categoryRepository,chartsDialogView, nullptr); // CHARTS!!
+	ChartsController chartsController(transactionRepository, categoryRepository, chartsDialogView, nullptr);
 
     ControllerManager controllerManager(userController, profileController, transactionController, categoryController, financialAccountController, chartsController);
 

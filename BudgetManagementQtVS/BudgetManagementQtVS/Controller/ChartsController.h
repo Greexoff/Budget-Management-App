@@ -1,3 +1,4 @@
+#pragma once
 #include <Controller/BaseController.h>
 
 #include <Model/Repositories/TransactionRepository.h>
@@ -11,12 +12,13 @@ class ChartsController : public BaseController {
 
 public:
 	ChartsController(TransactionRepository& transactionRepoRef, CategoryRepository& categoryRepoRef, ChartsDialogView& chartsDialogViewRef, QObject* parent = nullptr);
-	
+
+
 	// Plotting methods
 	void plotPieChart();
 	void plotBarChart();
 public slots:
-	void setupChartsView();
+	void setupChartsWindow();
 
 
 

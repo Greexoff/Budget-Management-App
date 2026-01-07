@@ -19,6 +19,7 @@ public:
 signals: 
     void categorySelectionRequest(TransactionBuilder& builder);
     void showCategories();
+	void showCharts(); //CHARTS!!
     void financialAccountSelectionRequest(TransactionBuilder& builder);
     void showFinancialAccounts();
     void returnToProfileView();
@@ -30,6 +31,7 @@ public slots:
     void handleDataChangeRequest();
     void handleFilteringTransactionRequest(QString searchText);
     void handleEditBudgetRequest();
+
 private:
 	TransactionWindow& transactionWindow;
 	TransactionRepository& transactionRepository;
@@ -42,6 +44,8 @@ private:
     void handleShowCategoriesRequestFromView();
 
     void handleShowFinancialAccountsRequestFromView();
+
+    void handleShowChartsRequestFromView(); //CHARTS!!
 
     void refreshTransactionsView();
 

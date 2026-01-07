@@ -13,6 +13,9 @@ ControllerManager::ControllerManager(UserController& userControllerRef, ProfileC
     connect(&transactionController, &TransactionController::showCategories,
         &categoryController, &CategoryController::setupCategoryView);
 
+	connect(&transactionController, &TransactionController::showCharts,
+		&chartsController, &ChartsController::setupChartsWindow);
+
 
     connect(&transactionController, &TransactionController::showFinancialAccounts,
         &financialAccountController, &FinancialAccountController::setupFinancialAccountWindow);
