@@ -1,11 +1,14 @@
-#include "ChartsDialogView.h"
+#include "View/ChartsDialogView.h"
 
 ChartsDialogView::ChartsDialogView(QWidget *parent)
-	: QMainWindow(parent)
+	: QDialog(parent)
+	, ui(new Ui::ChartsDialogViewClass())
 {
-	ui.setupUi(this);
+	ui->setupUi(this);
 }
 
 ChartsDialogView::~ChartsDialogView()
-{}
+{
+	delete ui;
+}
 

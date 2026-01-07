@@ -1,9 +1,13 @@
 #pragma once
 
-#include <QMainWindow>
+#include <QDialog>
 #include "ui_ChartsDialogView.h"
 
-class ChartsDialogView : public QMainWindow
+QT_BEGIN_NAMESPACE
+namespace Ui { class ChartsDialogViewClass; };
+QT_END_NAMESPACE
+
+class ChartsDialogView : public QDialog
 {
 	Q_OBJECT
 
@@ -12,6 +16,6 @@ public:
 	~ChartsDialogView();
 
 private:
-	Ui::ChartsDialogViewClass ui;
+	Ui::ChartsDialogViewClass *ui;
 };
 

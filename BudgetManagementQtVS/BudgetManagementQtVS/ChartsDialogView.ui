@@ -1,6 +1,6 @@
 <UI version="4.0" >
  <class>ChartsDialogViewClass</class>
- <widget class="QMainWindow" name="ChartsDialogViewClass" >
+ <widget class="QDialog" name="ChartsDialogViewClass" >
   <property name="objectName" >
    <string notr="true">ChartsDialogViewClass</string>
   </property>
@@ -14,7 +14,7 @@
   </property>
   <property name="windowTitle" >
    <string>ChartsDialogView</string>
-  </property>  <widget class="QMenuBar" name="menuBar" />  <widget class="QToolBar" name="mainToolBar" />  <widget class="QWidget" name="centralWidget" />  <widget class="QStatusBar" name="statusBar" />
+  </property>$centralwidget$
  </widget>
  <layoutDefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>

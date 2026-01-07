@@ -132,11 +132,11 @@
     <ClCompile Include="View\FinancialAccountSelectionView.cpp">
       <Filter>Source Files\View</Filter>
     </ClCompile>
-    <ClCompile Include="View\ChartsDialogView.cpp">
-      <Filter>Source Files\View</Filter>
-    </ClCompile>
     <ClCompile Include="Controller\ChartsController.cpp">
       <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="View\ChartsDialogView.cpp">
+      <Filter>Source Files\View</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +200,9 @@
       <Filter>Ui Files</Filter>
     </QtUic>
     <QtUic Include="TransactionWindowView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
+    <QtUic Include="QtWidgetsClass.ui">
       <Filter>Ui Files</Filter>
     </QtUic>
     <QtUic Include="ChartsDialogView.ui">

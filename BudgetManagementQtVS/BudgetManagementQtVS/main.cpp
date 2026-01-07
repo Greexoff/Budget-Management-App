@@ -10,6 +10,7 @@
 #include "View/LoginDialogView.h"
 #include "View/ProfileDialogView.h"
 #include "View/FinancialAccountSelectionView.h"
+#include "View/ChartsDialogView.h"
 
 #include <Model/Repositories/CategoryRepository.h>
 #include <Model/Repositories/UserRepository.h>
@@ -39,6 +40,7 @@ int main(int argc, char* argv[])
     TransactionWindow transactionWindow;
     CategorySelectionView categoryDialog;
     FinancialAccountSelectionView financialAccountDialog;
+    ChartsDialogView chartsDialogView;
 
     UserController userController(loginDialog, userRepository, nullptr);
     ProfileController profileController(profileDialog, profileRepository, nullptr);
