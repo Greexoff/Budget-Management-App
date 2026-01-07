@@ -52,6 +52,7 @@ private slots:
     void onButtonShowFinancialAccountsClicked();
     void onButtonEditTransactionClicked();
     void onButtonEditBudgetClicked();
+
     void onColumnHeaderClicked(int columnId);
     void searchTextChanged(QString searchText);
 

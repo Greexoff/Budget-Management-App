@@ -1,5 +1,5 @@
 ﻿#include <Controller/ControllerManager.h>
-ControllerManager::ControllerManager(UserController& userControllerRef, ProfileController& profileControllerRef, TransactionController& transactionControllerRef, CategoryController& categoryControllerRef, FinancialAccountController& financialAccountControllerRef, QObject* parent) : QObject(parent), userController(userControllerRef), profileController(profileControllerRef), transactionController(transactionControllerRef), categoryController(categoryControllerRef), financialAccountController(financialAccountControllerRef)
+ControllerManager::ControllerManager(UserController& userControllerRef, ProfileController& profileControllerRef, TransactionController& transactionControllerRef, CategoryController& categoryControllerRef, FinancialAccountController& financialAccountControllerRef, ChartsController& chartsControllerRef, QObject* parent) : QObject(parent), userController(userControllerRef), profileController(profileControllerRef), transactionController(transactionControllerRef), categoryController(categoryControllerRef), financialAccountController(financialAccountControllerRef), chartsController(chartsControllerRef)
 {
     
     connect(&userController, &UserController::userLoggedIn,

@@ -143,6 +143,19 @@
      <string>Search</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="buttonCharts">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>530</y>
+      <width>80</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Charts</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

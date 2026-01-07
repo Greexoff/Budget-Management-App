@@ -22,6 +22,7 @@ signals:
     void financialAccountSelectionRequest(TransactionBuilder& builder);
     void showFinancialAccounts();
     void returnToProfileView();
+
 public slots:
 
     void handleAddTransactionRequest();

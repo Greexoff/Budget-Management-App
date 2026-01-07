@@ -5,6 +5,7 @@
 #include <Controller/TransactionController.h>
 #include <Controller/CategorySelectionController.h>
 #include <Controller/FinancialAccountSelectionController.h>
+#include "Controller/ChartsController.h"
 
 #include <Model/TransactionBuilder.h>
 
@@ -18,6 +19,7 @@ public:
         TransactionController& transactionControllerRef,
         CategoryController& categoryControllerRef,
         FinancialAccountController& financialAccountControllerRef,
+		ChartsController& chartsControllerRef,
         QObject* parent = nullptr);
 
 private:
@@ -26,4 +28,5 @@ private:
     TransactionController& transactionController;
     CategoryController& categoryController;
     FinancialAccountController& financialAccountController;
+	ChartsController& chartsController;
 };
