@@ -12,11 +12,11 @@ class ChartsController : public BaseController {
 
 public:
 	ChartsController(TransactionRepository& transactionRepoRef, CategoryRepository& categoryRepoRef, ChartsDialogView& chartsDialogViewRef, QObject* parent = nullptr);
+	// Setting up plots
+	void setUpPieChart();
+	void setUptBarChart();
 
 
-	// Plotting methods
-	void plotPieChart();
-	void plotBarChart();
 public slots:
 	void setupChartsWindow();
 
