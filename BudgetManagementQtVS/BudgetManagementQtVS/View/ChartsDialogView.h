@@ -14,7 +14,10 @@ class ChartsDialogView : public QDialog
 public:
 	ChartsDialogView(QWidget *parent = nullptr);
 	~ChartsDialogView();
-	void displayCharts(const std::map<int, double>& categorySums, const std::map<int, QString>& categoryNames);
+	void displayPieChart(const std::map<int, double>& categorySums, const std::map<int, QString>& categoryNames);
+	void displayBarChart(const std::map<int, double>& incomeSums, const std::map<int, double>& expenseSums);
+
+	void clearLayout(QLayout* layout);
 
 private:
 	Ui::ChartsDialogViewClass *ui;

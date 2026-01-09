@@ -15,6 +15,8 @@ public:
 	// Setting up plots
 	void setUpPieChart();
 	void setUptBarChart();
+	QVector<int> getCurrentMonthAndYear();
+	void getSumsforBarChartByDate(std::map<int, double>& incomeSums, std::map<int, double>& expenseSums, const int currentMonth, const int currentYear);
 
 
 public slots:

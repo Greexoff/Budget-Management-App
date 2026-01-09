@@ -1,9 +1,6 @@
 #include "View/ChartsDialogView.h"
 
-#include <QtCharts/QChart>
-#include <QtCharts/QChartView>
-#include <QtCharts/QPieSlice>
-#include <QtCharts/QPieSeries>
+#include <QtCharts>
 
 ChartsDialogView::ChartsDialogView(QWidget *parent)
 	: QDialog(parent)
@@ -17,7 +14,8 @@ ChartsDialogView::~ChartsDialogView()
 	delete ui;
 }
 
-void ChartsDialogView::displayCharts(const std::map<int, double>& categorySums, const std::map<int, QString>& categoryNames)
+
+void ChartsDialogView::displayPieChart(const std::map<int, double>& categorySums, const std::map<int, QString>& categoryNames)
 {	
     QPieSeries* pieSeries = new QPieSeries();
 
@@ -40,18 +38,93 @@ void ChartsDialogView::displayCharts(const std::map<int, double>& categorySums, 
     pieChart->setTitle("Expense Distribution by Category");
     pieChart->legend()->setAlignment(Qt::AlignRight); // Better visual layout
 
-    // Pass 'this' as the parent to prevent memory leaks
     QChartView* pieChartView = new QChartView(pieChart, this);
     pieChartView->setRenderHint(QPainter::Antialiasing);
 	//pieChartView->setMinimumSize(800, 600);
 
-    // Assuming your Dialog has a layout (e.g., QVBoxLayout* mainLayout)
-    // You need to add the view to the UI to actually see it!
-    /*if (this->layout()) {
-        this->layout()->addWidget(pieChartView);
-    }*/
 	ui->verticalLayout->addWidget(pieChartView);
+}
+
+void ChartsDialogView::displayBarChart(const std::map<int, double>& incomeSums, const std::map<int, double>& expenseSums) {
+    const std::map<int, QString> monthMap = {
+        {{1}, {"January"}},
+        {{2}, {"February"}},
+        {{3}, {"March"}},
+        {{4}, {"April"}},
+        {{5}, {"May"}},
+        {{6}, {"June"}},
+        {{7}, {"July"}},
+        {{8}, {"August"}},
+        {{9}, {"September"}},
+        {{10}, {"October"}},
+        {{11}, {"November"}},
+        {{12}, {"December"} },
+    };
+
+    QStringList months;
+    
+    double min = 0.0;
+    double max = 0.0;
+
+    QBarSet *incomeValue = new QBarSet("Income value");
+    QBarSet *expenseValue = new QBarSet("Expense value");
+
+    for (const auto& pair : incomeSums) {
+        int month = pair.first;
+        months.append(monthMap.at(month));
+        incomeValue->append(pair.second);
+        max = (pair.second > max) ? pair.second : max;
+    }
+    for (const auto& pair : expenseSums) {
+        expenseValue->append(pair.second);
+        min = (pair.second > min) ? pair.second : min;
+    }
+
+    QStackedBarSeries *series = new QStackedBarSeries();
+    series->append(incomeValue);
+    series->append(expenseValue);
+
+    QChart* barChart = new QChart();
+    barChart->addSeries(series);
+    barChart->setTitle("Monthly incomes & expenses");
+    barChart->setAnimationOptions(QChart::SeriesAnimations);
+
+    QBarCategoryAxis* axisX = new QBarCategoryAxis();
+    axisX->append(months);
+    axisX->setTitleText("Month");
+
+    QValueAxis* axisY = new QValueAxis();
+    axisY->setRange(min, max);
+    axisY->setTitleText("Value");
+    
+
+    barChart->addAxis(axisX, Qt::AlignBottom);
+    barChart->addAxis(axisY, Qt::AlignLeft);
+
+
+    QChartView* barChartView = new QChartView(barChart);
+    barChartView->setRenderHint(QPainter::Antialiasing);
+
+    ui->verticalLayout_2->addWidget(barChartView);
 
     this->show();
+
+    connect(this, &QDialog::finished, this, [this]() {
+        clearLayout(ui->verticalLayout);
+        clearLayout(ui->verticalLayout_2);
+        });
+}
+
+void ChartsDialogView::clearLayout(QLayout* layout)
+{
+    while (QLayoutItem* item = layout->takeAt(0)) {
+        if (QWidget* widget = item->widget()) {
+            widget->deleteLater();   // delete the widget
+        }
+        if (QLayout* childLayout = item->layout()) {
+            clearLayout(childLayout); // recursive cleanup
+        }
+        delete item; // delete the layout item itself
+    }
 }
 
