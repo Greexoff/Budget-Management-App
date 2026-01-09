@@ -80,7 +80,7 @@ void ChartsDialogView::displayBarChart(const std::map<int, double>& incomeSums, 
         min = (pair.second > min) ? pair.second : min;
     }
 
-    QStackedBarSeries *series = new QStackedBarSeries();
+    QBarSeries *series = new QBarSeries();
     series->append(incomeValue);
     series->append(expenseValue);
 
