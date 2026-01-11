@@ -28,6 +28,8 @@ signals:
 
     void logoutRequested();
 
+    void exportDataRequested();
+
 private slots:
     void onButtonSelectClicked();
     void onButtonAddClicked();
@@ -35,6 +37,7 @@ private slots:
     void onButtonCancelClicked();
     void onButtonEditClicked();
     void onButtonLogoutClicked();
+    void onButtonExportClicked();
 private:
     Ui::ProfileDialog* ui;          
     QVector<Profile> profilesId;    

@@ -88,6 +88,19 @@
     <string>Edit</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="buttonExport">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>270</y>
+     <width>581</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Export Data to CSV</string>
+   </property>
+  </widget>
   <widget class="QPushButton" name="logoutButton">
    <property name="geometry">
     <rect>

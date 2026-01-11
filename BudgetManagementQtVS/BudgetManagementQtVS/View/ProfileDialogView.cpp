@@ -25,6 +25,7 @@ void ProfileDialog::setupConnections()
     connect(ui->buttonCancel, &QPushButton::clicked, this, &ProfileDialog::onButtonCancelClicked);
     connect(ui->buttonEdit, &QPushButton::clicked, this, &ProfileDialog::onButtonEditClicked);
     connect(ui->logoutButton, &QPushButton::clicked, this, &ProfileDialog::onButtonLogoutClicked);
+    connect(ui->buttonExport, &QPushButton::clicked, this, &ProfileDialog::onButtonExportClicked);
 }
 
 void ProfileDialog::setProfiles(const QVector<Profile>& profiles)
@@ -101,4 +102,9 @@ void ProfileDialog::onButtonEditClicked()
 void ProfileDialog::onButtonLogoutClicked()
 {
     emit logoutRequested();
+}
+
+void ProfileDialog::onButtonExportClicked()
+{
+    emit exportDataRequested();
 }
