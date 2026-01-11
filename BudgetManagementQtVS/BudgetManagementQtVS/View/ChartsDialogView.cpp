@@ -45,7 +45,7 @@ void ChartsDialogView::displayPieChart(const std::map<int, double>& categorySums
 	ui->verticalLayout->addWidget(pieChartView);
 }
 
-void ChartsDialogView::displayBarChart(const std::map<int, double>& incomeSums, const std::map<int, double>& expenseSums) {
+void ChartsDialogView::displayBarChart(const std::map<int, double>& incomeSums, const std::map<int, double>& expenseSums, int currentMonth) {
     const std::map<int, QString> monthMap = {
         {{1}, {"January"}},
         {{2}, {"February"}},
@@ -69,16 +69,37 @@ void ChartsDialogView::displayBarChart(const std::map<int, double>& incomeSums, 
     QBarSet *incomeValue = new QBarSet("Income value");
     QBarSet *expenseValue = new QBarSet("Expense value");
 
-    for (const auto& pair : incomeSums) {
-        int month = pair.first;
+    incomeValue->setColor("RED");
+    expenseValue->setColor("GREEN");
+
+    int month = 1;
+    while (month <= currentMonth) {
         months.append(monthMap.at(month));
+        if (incomeSums.count(month) != 0) {
+			incomeValue->append(incomeSums.at(month));
+        }
+        else {
+            incomeValue->append(0);
+        }
+
+        if (expenseSums.count(month) != 0) {
+            expenseValue->append(expenseSums.at(month));
+        }
+        else {
+            expenseValue->append(0);
+        }
+        month++;
+    }
+
+    /*for (const auto& pair : incomeSums) {
+        int month = 1;
         incomeValue->append(pair.second);
         max = (pair.second > max) ? pair.second : max;
     }
     for (const auto& pair : expenseSums) {
         expenseValue->append(pair.second);
         min = (pair.second > min) ? pair.second : min;
-    }
+    }*/
 
     QBarSeries *series = new QBarSeries();
     series->append(incomeValue);
@@ -99,7 +120,9 @@ void ChartsDialogView::displayBarChart(const std::map<int, double>& incomeSums, 
     
 
     barChart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
     barChart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
 
 
     QChartView* barChartView = new QChartView(barChart);

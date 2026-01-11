@@ -52,34 +52,36 @@ void ChartsController::setUpPieChart() {
 }
 
 void ChartsController::setUptBarChart() {
-	// dane z ostatnich miesiecy - 3
+	// dane z aktualnego roku, do aktualnego miesi¹ca
 
-	int currentMonth = getCurrentMonthAndYear()[0];
+	//int currentMonth = getCurrentMonthAndYear()[0];
+	int currentMonth = 12; // test
 	int currentYear = getCurrentMonthAndYear()[1];
 
 	std::map<int, double> incomeSums = {};
 	std::map<int, double> expenseSums = {};
 
-	// getting sums from last 3 months
-	getSumsforBarChartByDate(incomeSums, expenseSums, currentMonth, currentYear);
+	//// getting sums from last 3 months
+	//getSumsforBarChartByDate(incomeSums, expenseSums, currentMonth, currentYear);
 
-	currentMonth -= 1;
-	if (currentMonth == 0) {
-		currentMonth = 12;
-		currentYear -= 1;
+	int monthForGetheringSums = currentMonth; // variable for gathering sums
+
+	while (monthForGetheringSums > 0) {
+		getSumsforBarChartByDate(incomeSums, expenseSums, monthForGetheringSums, currentYear);
+		monthForGetheringSums--;
 	}
-	getSumsforBarChartByDate(incomeSums, expenseSums, currentMonth, currentYear);
-	currentMonth -= 1;
-	if (currentMonth == 0) {
-		currentMonth = 12;
-		currentYear -= 1;
+
+	for (auto& pair : incomeSums) {
+		qDebug() << "Month:" << pair.first << "Sum of Income:" << pair.second;
 	}
-	getSumsforBarChartByDate(incomeSums, expenseSums, currentMonth, currentYear);
+	for (auto& pair : expenseSums) {
+		qDebug() << "Month:" << pair.first << "Sum of Expense:" << pair.second;
+	}
 
 
 
 
-	chartsDialogView.displayBarChart(incomeSums, expenseSums);
+	chartsDialogView.displayBarChart(incomeSums, expenseSums, currentMonth);
 
 }
 
@@ -113,7 +115,7 @@ void ChartsController::getSumsforBarChartByDate(std::map<int, double>& incomeSum
 		{
 			if (transaction.getTransactionType() == "Expense")
 			{
-				if (expenseSums.find(currentMonth) != expenseSums.end())
+				if (expenseSums.count(currentMonth) != 0)
 				{
 					expenseSums[currentMonth] += transaction.getTransactionAmount();
 				}
@@ -124,7 +126,7 @@ void ChartsController::getSumsforBarChartByDate(std::map<int, double>& incomeSum
 			}
 			else if (transaction.getTransactionType() == "Income")
 			{
-				if (incomeSums.find(currentMonth) != incomeSums.end())
+				if (incomeSums.count(currentMonth) != 0)
 				{
 					incomeSums[currentMonth] += transaction.getTransactionAmount();
 				}
@@ -136,39 +138,3 @@ void ChartsController::getSumsforBarChartByDate(std::map<int, double>& incomeSum
 		}
 	}
 }
-
-//for (int i = 0; i < 3; i++) {
-//	if (i == 0) {
-//		//current month
-//		for (auto transaction : transactions) {
-//			if (transaction.getTransactionDate().year() == date[1]
-//				&& transaction.getTransactionDate().month() == date[0])
-//			{
-//				if (transaction.getTransactionType() == "Expense") {
-//					if (expenseSums.find(date[0]) != expenseSums.end()) {
-//						expenseSums[date[0]] += transaction.getTransactionAmount();
-//					}
-//					else {
-//						expenseSums.insert({ {date[0]}, {transaction.getTransactionAmount()} });
-//					}
-//				}
-//				// incomes
-//				else if (transaction.getTransactionType() == "Income") {
-//					if (incomeSums.find(date[0]) != incomeSums.end()) {
-//						incomeSums[date[0]] += transaction.getTransactionAmount();
-//					}
-//					else {
-//						incomeSums.insert({ {date[0]}, {transaction.getTransactionAmount()} });
-//
-//					}
-//				}
-//			}
-//			else {
-//				date[0] -= i;
-//				if (date[0] == 0) {
-//					date[0] = 12;
-//				}
-//			}
-//		}
-//	}
-//}
