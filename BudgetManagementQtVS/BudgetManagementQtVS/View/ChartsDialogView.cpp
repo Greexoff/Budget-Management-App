@@ -34,8 +34,8 @@ void ChartsDialogView::displayPieChart(const std::map<int, double>& categorySums
 
     QChart* pieChart = new QChart();
     pieChart->addSeries(pieSeries);
-    pieChart->setTitle("Expense Distribution by Category");
-    pieChart->setAnimationOptions(QChart::SeriesAnimations);
+    pieChart->setTitle("Expense Distribution by Category for the current month");
+    pieChart->setAnimationOptions(QChart::SeriesAnimations); // Animations
     pieChart->legend()->setAlignment(Qt::AlignRight); // Better visual layout
 
     QChartView* pieChartView = new QChartView(pieChart, this);
