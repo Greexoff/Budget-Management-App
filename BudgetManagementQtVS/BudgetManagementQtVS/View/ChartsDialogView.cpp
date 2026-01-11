@@ -24,7 +24,6 @@ void ChartsDialogView::displayPieChart(const std::map<int, double>& categorySums
         double sum = pair.second;
 
         if (sum > 0.0) {
-            // Use .find() to avoid accidental insertions in categoryNames
             auto it = categoryNames.find(categoryId);
             QString categoryName = (it != categoryNames.end()) ? it->second : "Unknown";
 
@@ -36,11 +35,11 @@ void ChartsDialogView::displayPieChart(const std::map<int, double>& categorySums
     QChart* pieChart = new QChart();
     pieChart->addSeries(pieSeries);
     pieChart->setTitle("Expense Distribution by Category");
+    pieChart->setAnimationOptions(QChart::SeriesAnimations);
     pieChart->legend()->setAlignment(Qt::AlignRight); // Better visual layout
 
     QChartView* pieChartView = new QChartView(pieChart, this);
     pieChartView->setRenderHint(QPainter::Antialiasing);
-	//pieChartView->setMinimumSize(800, 600);
 
 	ui->verticalLayout->addWidget(pieChartView);
 }
@@ -69,12 +68,16 @@ void ChartsDialogView::displayBarChart(const std::map<int, double>& incomeSums, 
     QBarSet *incomeValue = new QBarSet("Income value");
     QBarSet *expenseValue = new QBarSet("Expense value");
 
-    incomeValue->setColor("RED");
-    expenseValue->setColor("GREEN");
+    incomeValue->setColor("GREEN");
+    expenseValue->setColor("RED");
 
     int month = 1;
     while (month <= currentMonth) {
+        // Appending category list for x axis - months
         months.append(monthMap.at(month));
+
+		// Logic for appending values to bar sets
+		// If the key is found in the map, append the value, else append 0
         if (incomeSums.count(month) != 0) {
 			incomeValue->append(incomeSums.at(month));
         }
@@ -82,6 +85,7 @@ void ChartsDialogView::displayBarChart(const std::map<int, double>& incomeSums, 
             incomeValue->append(0);
         }
 
+		// Same as above for expenses
         if (expenseSums.count(month) != 0) {
             expenseValue->append(expenseSums.at(month));
         }
@@ -90,16 +94,6 @@ void ChartsDialogView::displayBarChart(const std::map<int, double>& incomeSums, 
         }
         month++;
     }
-
-    /*for (const auto& pair : incomeSums) {
-        int month = 1;
-        incomeValue->append(pair.second);
-        max = (pair.second > max) ? pair.second : max;
-    }
-    for (const auto& pair : expenseSums) {
-        expenseValue->append(pair.second);
-        min = (pair.second > min) ? pair.second : min;
-    }*/
 
     QBarSeries *series = new QBarSeries();
     series->append(incomeValue);
@@ -138,6 +132,7 @@ void ChartsDialogView::displayBarChart(const std::map<int, double>& incomeSums, 
         });
 }
 
+// Recursive function to clear a layout and delete its widgets
 void ChartsDialogView::clearLayout(QLayout* layout)
 {
     while (QLayoutItem* item = layout->takeAt(0)) {

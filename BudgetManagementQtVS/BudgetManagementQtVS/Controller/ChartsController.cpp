@@ -52,17 +52,19 @@ void ChartsController::setUpPieChart() {
 }
 
 void ChartsController::setUptBarChart() {
-	// dane z aktualnego roku, do aktualnego miesi¹ca
+	// data from current year
+	
+	// current month set to 12 for displaying the whole year's worth of icomes and expenses
 
-	//int currentMonth = getCurrentMonthAndYear()[0];
-	int currentMonth = 12; // test
+	// uncomment line below for the bar chart's upper bound to be the current month
+	int currentMonth = getCurrentMonthAndYear()[0];
+	//int currentMonth = 12;
 	int currentYear = getCurrentMonthAndYear()[1];
 
 	std::map<int, double> incomeSums = {};
 	std::map<int, double> expenseSums = {};
 
-	//// getting sums from last 3 months
-	//getSumsforBarChartByDate(incomeSums, expenseSums, currentMonth, currentYear);
+	// getting sums from last 3 months
 
 	int monthForGetheringSums = currentMonth; // variable for gathering sums
 
@@ -106,7 +108,7 @@ QVector<int> ChartsController::getCurrentMonthAndYear() {
 }
 
 void ChartsController::getSumsforBarChartByDate(std::map<int, double>& incomeSums, std::map<int, double>& expenseSums, const int currentMonth, const int currentYear) {
-	QVector<Transaction> transactions = transactionRepository.getAllProfileTransaction(getProfileId()); // transactions
+	QVector<Transaction> transactions = transactionRepository.getAllProfileTransaction(getProfileId()); 
 
 	for (auto transaction : transactions)
 	{
