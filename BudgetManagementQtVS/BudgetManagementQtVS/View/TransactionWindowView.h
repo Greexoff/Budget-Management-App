@@ -41,6 +41,8 @@ signals:
 
     void editBudgetRequest();
 
+	void showChartsRequest(); //CHARTS!!
+
     void columnSortRequest(int columnId);
 
     void searchTextRequest(const QString& searchText);
@@ -52,6 +54,8 @@ private slots:
     void onButtonShowFinancialAccountsClicked();
     void onButtonEditTransactionClicked();
     void onButtonEditBudgetClicked();
+	void onButtonChartsClicked(); //CHARTS!!
+
     void onColumnHeaderClicked(int columnId);
     void searchTextChanged(QString searchText);
 

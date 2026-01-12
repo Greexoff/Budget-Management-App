@@ -37,7 +37,7 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>6.10.1_msvc2022_64</QtInstall>
-    <QtModules>core;gui;widgets; sql</QtModules>
+    <QtModules>core;gui;widgets; sql; charts</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
@@ -129,7 +129,7 @@
     <QtMoc Include="View\FinancialAccountSelectionView.h" />
     <QtMoc Include="Controller\ControllerManager.h" />
     <QtMoc Include="Controller\FinancialAccountSelectionController.h" />
-    <ClInclude Include="Controller\ChartsController.h" />
+    <QtMoc Include="Controller\ChartsController.h" />
     <ClInclude Include="Model\FinancialAccount.h" />
     <ClInclude Include="Model\Profile.h" />
     <ClInclude Include="Model\Repositories\BaseRepository.h" />

@@ -4,6 +4,7 @@
 #include "Controller/CategorySelectionController.h"
 #include "Controller/ControllerManager.h"
 #include "Controller/FinancialAccountSelectionController.h"
+#include "Controller/ChartsController.h"
 
 #include "View/TransactionWindowView.h"
 #include "View/CategorySelectionView.h"
@@ -56,8 +57,9 @@ int main(int argc, char* argv[])
 
     CategoryController categoryController(categoryDialog, categoryRepository, nullptr);
     FinancialAccountController financialAccountController(financialAccountDialog, financialAccountRepository, nullptr);
+	ChartsController chartsController(transactionRepository, categoryRepository, chartsDialogView, nullptr);
 
-    ControllerManager controllerManager(userController, profileController, transactionController, categoryController, financialAccountController);
+    ControllerManager controllerManager(userController, profileController, transactionController, categoryController, financialAccountController, chartsController);
 
     userController.run();
 

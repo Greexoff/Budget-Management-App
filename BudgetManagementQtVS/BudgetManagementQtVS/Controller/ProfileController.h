@@ -31,5 +31,7 @@ private:
     void handleEditProfileRequest(int profileId, const QString& newName);
 
     void handleLogoutRequest();
+
+    void handleExportDataRequest();
 };
 

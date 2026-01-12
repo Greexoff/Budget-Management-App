@@ -31,6 +31,7 @@ void TransactionWindow::setupConnections()
     connect(ui->changeProfileButton, &QPushButton::clicked, this, &TransactionWindow::onButtonChangeProfileClicked);
     connect(ui->browseFinancialAccountsButton, &QPushButton::clicked, this, &TransactionWindow::onButtonShowFinancialAccountsClicked);
     connect(ui->editBudgetButton, &QPushButton::clicked, this, &TransactionWindow::onButtonEditBudgetClicked);
+	connect(ui->buttonCharts, &QPushButton::clicked, this, &TransactionWindow::onButtonChartsClicked); //CHARTS!!
     connect(ui->searchEdit, &QLineEdit::textChanged, this, &TransactionWindow::searchTextChanged);
 
     QHeaderView* header = ui->TransactionTabelView->horizontalHeader();
@@ -126,6 +127,12 @@ void TransactionWindow::onButtonChangeProfileClicked()
 void TransactionWindow::onButtonEditBudgetClicked()
 {
     emit editBudgetRequest();
+}
+
+// CHARTS!!
+void TransactionWindow::onButtonChartsClicked() 
+{
+	emit showChartsRequest();
 }
 
 //Method that clears search bar while reentering view

@@ -17,6 +17,8 @@ TransactionController::TransactionController(TransactionWindow& transactionWindo
         this, &TransactionController::handleShowFinancialAccountsRequestFromView);
     connect(&transactionWindow, &TransactionWindow::editBudgetRequest,
         this, &TransactionController::handleEditBudgetRequest);
+    connect(&transactionWindow, &TransactionWindow::showChartsRequest,
+		this, &TransactionController::handleShowChartsRequestFromView); //CHARTS!!
     connect(&transactionWindow, &TransactionWindow::searchTextRequest,
         this, &TransactionController::handleFilteringTransactionRequest);
     connect(&transactionWindow, &TransactionWindow::columnSortRequest,
@@ -273,6 +275,11 @@ void TransactionController::handleShowFinancialAccountsRequestFromView()
 void TransactionController::handleShowCategoriesRequestFromView()
 {
     emit showCategories();
+}
+
+void TransactionController::handleShowChartsRequestFromView() //CHARTS!!
+{
+    emit showCharts();
 }
 
 //Method that brings back user back to profiles view

@@ -56,13 +56,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="changeProfileButton">
-       <property name="text">
-        <string>Back</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="browseFinancialAccountsButton">
        <property name="text">
         <string>Browse financial accounts</string>
@@ -73,6 +66,20 @@
       <widget class="QPushButton" name="browseCategoriesButton">
        <property name="text">
         <string>Browse categories</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonCharts">
+       <property name="text">
+        <string>Charts</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="changeProfileButton">
+       <property name="text">
+        <string>Back</string>
        </property>
       </widget>
      </item>
