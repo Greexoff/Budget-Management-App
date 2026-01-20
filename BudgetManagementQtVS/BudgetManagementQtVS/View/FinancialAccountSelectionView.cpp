@@ -1,209 +1,206 @@
-﻿#include "FinancialAccountSelectionView.h"
+﻿#include "View/FinancialAccountSelectionView.h"
+#include <QMessageBox>
+#include <QDialog>
+#include <QFormLayout>
+#include <QDialogButtonBox>
+#include <QComboBox>
+#include <QDoubleSpinBox>
+#include <QLineEdit>
 
 FinancialAccountSelectionView::FinancialAccountSelectionView(QWidget* parent)
-	: QDialog(parent), ui(new Ui::FinancialAccountSelectionView) {
-
-	ui->setupUi(this);
-	setWindowTitle("Browse financial accounts");
-	setupTable();
-	connectMethodToButton();
-}
-
-FinancialAccountSelectionView::~FinancialAccountSelectionView() {
-	delete ui;
-}
-
-
-//----------------Setting connection (button-method)-------------------------------------------------
-
-
-void FinancialAccountSelectionView::connectMethodToButton() {
-	connect(ui->addFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::addFinancialAccountButtonClicked);
-	connect(ui->deleteFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::deleteFinancialAccountButtonClicked);
-	connect(ui->cancelFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::cancelFinancialAccountButtonClicked);
-	connect(ui->editFinancialAccountButton, &QPushButton::clicked, this, &FinancialAccountSelectionView::editFinancialAccountButtonClicked);
-	connect(ui->searchEdit, &QLineEdit::textChanged, this, &FinancialAccountSelectionView::searchTextChanged);
-
-	QHeaderView* header = ui->financialAccountsTable->horizontalHeader();
-	connect(header, &QHeaderView::sectionClicked, this, &FinancialAccountSelectionView::onColumnHeaderClicked);
-}
-
-
-//----------------Setting up view-------------------------------------------------
-
-
-void FinancialAccountSelectionView::setupTable() {
-	ui->financialAccountsTable->setColumnCount(3);
-
-	ui->financialAccountsTable->setHorizontalHeaderLabels({ "Name", "Type", "Balance" });
-
-	ui->financialAccountsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-
-	ui->financialAccountsTable->verticalHeader()->setVisible(false);
-	ui->financialAccountsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-	ui->financialAccountsTable->setSelectionMode(QAbstractItemView::SingleSelection);
-}
-
-
-void FinancialAccountSelectionView::setFinancialAccounts(const QVector<FinancialAccount>& financialAccounts) {
-	financialAccountId = financialAccounts;
-
-	ui->financialAccountsTable->setRowCount(0);
-
-	for (const auto& account : financialAccountId) {
-
-		int row = ui->financialAccountsTable->rowCount();
-		ui->financialAccountsTable->insertRow(row);
-
-		ui->financialAccountsTable->setItem(row, 0, new QTableWidgetItem(account.getFinancialAccountName()));
-
-		ui->financialAccountsTable->setItem(row, 1, new QTableWidgetItem(account.getFinancialAccountType()));
-
-		QString balanceStr = QString::number(account.getFinancialAccountBalance(), 'f', 2) + " PLN";
-		ui->financialAccountsTable->setItem(row, 2, new QTableWidgetItem(balanceStr));
-	}
-}
-
-
-//----------------Pressing buttons actions-------------------------------------------------
-
-//Method that notices clicking on add button
-void FinancialAccountSelectionView::addFinancialAccountButtonClicked() {
-	QDialog dlg(this);
-	dlg.setWindowTitle(tr("New Financial Account"));
-
-	QFormLayout* layout = new QFormLayout(&dlg);
-
-	QLineEdit* nameEdit = new QLineEdit(&dlg);
-	nameEdit->setPlaceholderText("e.g. mBank, Wallet");
-
-	QComboBox* typeCombo = new QComboBox(&dlg);
-	typeCombo->addItems({ "Cash", "Bank Account", "Savings", "Credit Card" });
-
-	QDoubleSpinBox* balanceSpin = new QDoubleSpinBox(&dlg);
-	balanceSpin->setRange(-10000000.0, 10000000.0); 
-	balanceSpin->setDecimals(2);
-	balanceSpin->setSuffix(" PLN");
-
-	layout->addRow(tr("Account Name:"), nameEdit);
-	layout->addRow(tr("Account Type:"), typeCombo);
-	layout->addRow(tr("Initial Balance:"), balanceSpin);
-
-	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel, &dlg);
-	layout->addRow(buttonBox);
-
-	connect(buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
-	connect(buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
-
-	if (dlg.exec() == QDialog::Accepted) {
-		QString name = nameEdit->text();
-
-		if (name.trimmed().isEmpty()) {
-			return;
-		}
-
-		emit addRequestedFinancialAccount(name, typeCombo->currentText(), balanceSpin->value());
-	}
-}
-
-//Method that notices clicking on edit button
-void FinancialAccountSelectionView::editFinancialAccountButtonClicked() {
-	int row = ui->financialAccountsTable->currentRow();
-
-	if (row < 0 || row >= financialAccountId.size()) {
-		return;
-	}
-	FinancialAccount currentFinancialAccount = financialAccountId[0];
-
-	QString currentNameInTable = ui->financialAccountsTable->item(row, 0)->text();
-	for (const auto& acc : financialAccountId) {
-		if (acc.getFinancialAccountName() == currentNameInTable) {
-			currentFinancialAccount = acc;
-			break;
-		}
-	}
-
-	if (currentFinancialAccount.getFinancialAccountId() == 1) {
-		showFinancialAccountMessage(tr("Error"), tr("Cannot edit default account."), "error");
-		return;
-	}
-
-	QDialog dlg(this);
-	dlg.setWindowTitle(tr("Edit Financial Account"));
-	QFormLayout* layout = new QFormLayout(&dlg);
-
-	QLineEdit* nameEdit = new QLineEdit(&dlg);
-	nameEdit->setText(currentFinancialAccount.getFinancialAccountName());
-
-	QComboBox* typeCombo = new QComboBox(&dlg);
-	typeCombo->addItems({ "Cash", "Bank Account", "Savings", "Credit Card" });
-	typeCombo->setCurrentText(currentFinancialAccount.getFinancialAccountType());
-
-	QDoubleSpinBox* balanceSpin = new QDoubleSpinBox(&dlg);
-	balanceSpin->setRange(-10000000.0, 10000000.0);
-	balanceSpin->setSuffix(" PLN");
-	balanceSpin->setValue(currentFinancialAccount.getFinancialAccountBalance());
-
-	layout->addRow(tr("Name:"), nameEdit);
-	layout->addRow(tr("Type:"), typeCombo);
-	layout->addRow(tr("Balance:"), balanceSpin);
-
-	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel, &dlg);
-	layout->addRow(buttonBox);
-
-	connect(buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
-	connect(buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
-
-	if (dlg.exec() == QDialog::Accepted) {
-		QString newName = nameEdit->text();
-		if (newName.trimmed().isEmpty()) return;
-
-		emit editRequestedFinancialAccount(currentFinancialAccount.getFinancialAccountId(), newName, typeCombo->currentText(), balanceSpin->value());
-	}
-}
-
-//Method that notices clicking on delete button
-void FinancialAccountSelectionView::deleteFinancialAccountButtonClicked() {
-	
-	int row = ui->financialAccountsTable->currentRow();
-	if (row < 0 || row >= financialAccountId.size()) {
-		return;
-	}
-
-	emit deleteRequestedFinancialAccount(financialAccountId[row].getFinancialAccountId());
-}
-
-//Method that notices clicking on cancel button
-void FinancialAccountSelectionView::cancelFinancialAccountButtonClicked() {
-	reject();
-}
-
-//Method that clears search bar while reentering view
-void FinancialAccountSelectionView::clearSearchLineEdit()
+    : QWidget(parent), tableModel(new QStandardItemModel(this))
 {
-	ui->searchEdit->clear();
+    setupUI();
 }
 
-//Method that passes text inserted in search bar
-void FinancialAccountSelectionView::searchTextChanged(const QString& searchText)
+void FinancialAccountSelectionView::setupUI()
 {
-	emit searchTextRequest(searchText);
+    QVBoxLayout* contentLayout = new QVBoxLayout(this);
+    contentLayout->setContentsMargins(30, 30, 30, 30);
+    contentLayout->setSpacing(20);
+
+    // 1. Nagłówek
+    QHBoxLayout* headerLayout = new QHBoxLayout();
+    QLabel* viewLabel = new QLabel("Financial Accounts");
+    viewLabel->setObjectName("viewLabel"); 
+
+    searchEdit = new QLineEdit();
+    searchEdit->setPlaceholderText("Search accounts...");
+    searchEdit->setFixedWidth(300);
+
+    headerLayout->addWidget(viewLabel);
+    headerLayout->addStretch();
+    headerLayout->addWidget(searchEdit);
+
+    // 2. Akcje
+    QHBoxLayout* actionLayout = new QHBoxLayout();
+    btnAdd = new QPushButton("+ Add Account");
+    btnAdd->setObjectName("actionButtonAdd");
+
+    btnEdit = new QPushButton("Edit");
+    btnEdit->setObjectName("actionButton");
+
+    btnDelete = new QPushButton("Delete");
+    btnDelete->setObjectName("actionButtonDelete");
+
+    actionLayout->addWidget(btnAdd);
+    actionLayout->addWidget(btnEdit);
+    actionLayout->addWidget(btnDelete);
+    actionLayout->addStretch();
+
+    // 3. Tabela
+    accountTable = new QTableView();
+    accountTable->setModel(tableModel);
+    accountTable->setAlternatingRowColors(true);
+    accountTable->setShowGrid(false);
+    accountTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    accountTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    accountTable->verticalHeader()->setVisible(false);
+    accountTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    // Inicjalizacja nagłówków
+    tableModel->setColumnCount(3);
+    tableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
+    tableModel->setHeaderData(1, Qt::Horizontal, tr("Account Name"));
+    tableModel->setHeaderData(2, Qt::Horizontal, tr("Balance"));
+
+    accountTable->setColumnHidden(0, true);
+    accountTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    contentLayout->addLayout(headerLayout);
+    contentLayout->addLayout(actionLayout);
+    contentLayout->addWidget(accountTable);
+
+    // Connecty
+    connect(btnAdd, &QPushButton::clicked, this, &FinancialAccountSelectionView::onButtonAddClicked);
+    connect(btnEdit, &QPushButton::clicked, this, &FinancialAccountSelectionView::onButtonEditClicked);
+    connect(btnDelete, &QPushButton::clicked, this, &FinancialAccountSelectionView::onButtonDeleteClicked);
+    connect(searchEdit, &QLineEdit::textChanged, this, &FinancialAccountSelectionView::onSearchTextChanged);
+    connect(accountTable->horizontalHeader(), &QHeaderView::sectionClicked, this, &FinancialAccountSelectionView::onHeaderClicked);
 }
 
-//Method that notices clicking on column header
-void FinancialAccountSelectionView::onColumnHeaderClicked(int columnId)
+// --- Metody ---
+
+void FinancialAccountSelectionView::setAccountTabHeaders(const QVector<QStringList>& rows)
 {
-	emit columnSortRequest(columnId);
+    tableModel->removeRows(0, tableModel->rowCount());
+    for (const QStringList& row : rows) {
+        QList<QStandardItem*> items;
+        for (const QString& value : row)
+            items.append(new QStandardItem(value));
+        tableModel->appendRow(items);
+    }
 }
 
-//Method responsible for displaying error if inserted data is incorrect/is lacking 
-void FinancialAccountSelectionView::showFinancialAccountMessage(QString header, QString message, QString messageType) {
-	if (messageType == "error")
-	{
-		QMessageBox::warning(this, header, message);
-	}
-	else
-	{
-		QMessageBox::information(this, header, message);
-	}
+int FinancialAccountSelectionView::getSelectedAccountId() const
+{
+    QModelIndex index = accountTable->currentIndex();
+    if (!index.isValid()) return -1;
+    bool ok;
+    int id = tableModel->data(tableModel->index(index.row(), 0)).toInt(&ok);
+    return ok ? id : -1;
 }
+
+void FinancialAccountSelectionView::showMessage(QString header, QString message, QString messageType)
+{
+    if (messageType == "error") QMessageBox::warning(this, header, message);
+    else QMessageBox::information(this, header, message);
+}
+
+QString FinancialAccountSelectionView::getSearchText() const { return searchEdit->text(); }
+
+// Sloty
+void FinancialAccountSelectionView::onButtonAddClicked()
+{
+
+    QDialog dlg(this);
+    dlg.setWindowTitle("New Financial Account");
+    dlg.setMinimumWidth(300);
+
+    QFormLayout* form = new QFormLayout(&dlg);
+
+    QLineEdit* nameEdit = new QLineEdit(&dlg);
+    nameEdit->setPlaceholderText("e.g. mBank, Wallet");
+
+    QComboBox* typeCombo = new QComboBox(&dlg);
+    typeCombo->addItems({ "Cash", "Bank Account", "Savings", "Credit Card" });
+
+    QDoubleSpinBox* balanceSpin = new QDoubleSpinBox(&dlg);
+    balanceSpin->setRange(-1000000, 1000000);
+    balanceSpin->setSuffix(" PLN");
+
+    form->addRow("Name:", nameEdit);
+    form->addRow("Type:", typeCombo);
+    form->addRow("Balance:", balanceSpin);
+
+    QDialogButtonBox* btns = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
+    form->addRow(btns);
+
+    connect(btns, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+    connect(btns, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
+
+    if (dlg.exec() == QDialog::Accepted) {
+        QString name = nameEdit->text();
+        if (!name.trimmed().isEmpty()) {
+
+            emit addAccountRequest(name, typeCombo->currentText(), balanceSpin->value());
+        }
+        else {
+            showMessage("Warning", "Account name cannot be empty.", "error");
+        }
+    }
+}
+
+void FinancialAccountSelectionView::onButtonEditClicked()
+{
+
+
+    int row = accountTable->currentIndex().row();
+    if (row < 0) {
+        showMessage("Warning", "Select an account to edit.", "error");
+        return;
+    }
+
+
+    int id = tableModel->data(tableModel->index(row, 0)).toInt(); 
+    QString currentName = tableModel->data(tableModel->index(row, 1)).toString(); 
+
+
+
+    QDialog dlg(this);
+    dlg.setWindowTitle("Edit Financial Account");
+    dlg.setMinimumWidth(300);
+    QFormLayout* form = new QFormLayout(&dlg);
+
+    QLineEdit* nameEdit = new QLineEdit(&dlg);
+    nameEdit->setText(currentName);
+
+    QComboBox* typeCombo = new QComboBox(&dlg);
+    typeCombo->addItems({ "Cash", "Bank Account", "Savings", "Credit Card" });
+
+
+    QDoubleSpinBox* balanceSpin = new QDoubleSpinBox(&dlg);
+    balanceSpin->setRange(-1000000, 1000000);
+    balanceSpin->setSuffix(" PLN");
+
+
+    form->addRow("Name:", nameEdit);
+    form->addRow("Type:", typeCombo);
+    form->addRow("Balance:", balanceSpin);
+
+    QDialogButtonBox* btns = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
+    form->addRow(btns);
+
+    connect(btns, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+    connect(btns, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
+
+    if (dlg.exec() == QDialog::Accepted) {
+        QString name = nameEdit->text();
+        if (!name.trimmed().isEmpty()) {
+            emit editAccountRequest(id, name, typeCombo->currentText(), balanceSpin->value());
+        }
+    }
+}
+void FinancialAccountSelectionView::onButtonDeleteClicked() { emit deleteAccountRequest(); }
+void FinancialAccountSelectionView::onSearchTextChanged(const QString& text) { emit searchAccountRequest(text); }
+void FinancialAccountSelectionView::onHeaderClicked(int index) { emit columnSortRequest(index); }

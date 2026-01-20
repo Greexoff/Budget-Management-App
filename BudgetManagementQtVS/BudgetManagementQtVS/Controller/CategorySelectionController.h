@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <Model/Repositories/CategoryRepository.h>
 #include "Model/Category.h"
 
@@ -12,18 +12,27 @@
 #include <QVector>
 #include <QStringList>
 #include <QDate>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <algorithm>
 
 
 class CategoryController : public BaseController
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-    CategoryController(CategorySelectionView& categorySelectionViewRef, CategoryRepository& categoryRepositoryRef, QObject* parent = nullptr);
+    CategoryController(CategorySelectionView& viewRef, CategoryRepository& categoryRepositoryRef, QObject* parent = nullptr);
+
+    void showCategories();
+
 signals:
     void categoriesDataChanged();
+
 public slots:
     void setupCategoryView();
+
+
     void handleAddCategoryRequest(const QString& categoryName);
     void handleDeleteCategoryRequest(int categoryId);
     void handleEditCategoryRequest(int categoryId, const QString& newName);
@@ -31,13 +40,12 @@ public slots:
     void handleSortRequest(int columnId);
 
 private:
-    CategorySelectionView& categoryDialog;      
-    CategoryRepository& categoryRepository; 
+    CategorySelectionView& view;
+    CategoryRepository& categoryRepository;
 
-    int selectedCategoryIdForTransaction = 1;//REPLACE MAGIC NUMBER WITH SOME SORT OF NAMESPACE (ID OF 'NONE' CATEGORY)
- 
-    void refreshCategoryDialogList();
+    int selectedCategoryIdForTransaction = 1; 
+
+    void refreshTable();
     QVector<Category> executeFilteringCategory(const QVector<Category> allCategories);
     void executeSortingCategory(QVector<Category>& allCategories);
-
 };

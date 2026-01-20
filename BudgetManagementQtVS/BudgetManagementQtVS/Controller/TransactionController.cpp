@@ -7,18 +7,18 @@ TransactionController::TransactionController(TransactionWindow& transactionWindo
         this, &TransactionController::handleAddTransactionRequest);
     connect(&transactionWindow, &TransactionWindow::deleteTransactionRequest,
         this, &TransactionController::handleDeleteTransactionRequest);
-    connect(&transactionWindow, &TransactionWindow::showCategoriesRequest,
-        this, &TransactionController::handleShowCategoriesRequestFromView);
+    //connect(&transactionWindow, &TransactionWindow::showCategoriesRequest,
+        //this, &TransactionController::handleShowCategoriesRequestFromView);
     connect(&transactionWindow, &TransactionWindow::editTransactionRequest,
         this, &TransactionController::handleEditTransactionRequest);
     connect(&transactionWindow, &TransactionWindow::backToProfileRequested,
         this, &TransactionController::handleBackToProfileRequest);
-    connect(&transactionWindow, &TransactionWindow::showFinancialAccountsRequest,
-        this, &TransactionController::handleShowFinancialAccountsRequestFromView);
+    //connect(&transactionWindow, &TransactionWindow::showFinancialAccountsRequest,
+        //this, &TransactionController::handleShowFinancialAccountsRequestFromView);
     connect(&transactionWindow, &TransactionWindow::editBudgetRequest,
         this, &TransactionController::handleEditBudgetRequest);
-    connect(&transactionWindow, &TransactionWindow::showChartsRequest,
-		this, &TransactionController::handleShowChartsRequestFromView); //CHARTS!!
+    //connect(&transactionWindow, &TransactionWindow::showChartsRequest,
+		//this, &TransactionController::handleShowChartsRequestFromView); //CHARTS!!
     connect(&transactionWindow, &TransactionWindow::searchTextRequest,
         this, &TransactionController::handleFilteringTransactionRequest);
     connect(&transactionWindow, &TransactionWindow::columnSortRequest,

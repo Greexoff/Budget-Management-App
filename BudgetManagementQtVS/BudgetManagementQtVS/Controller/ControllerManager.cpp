@@ -13,8 +13,8 @@ ControllerManager::ControllerManager(UserController& userControllerRef, ProfileC
     connect(&transactionController, &TransactionController::showCategories,
         &categoryController, &CategoryController::setupCategoryView);
 
-	connect(&transactionController, &TransactionController::showCharts,
-		&chartsController, &ChartsController::setupChartsWindow); // CHARTS!!
+	//connect(&transactionController, &TransactionController::showCharts,
+		//&chartsController, &ChartsController::setupChartsWindow); // CHARTS!!
 
 
     connect(&transactionController, &TransactionController::showFinancialAccounts,

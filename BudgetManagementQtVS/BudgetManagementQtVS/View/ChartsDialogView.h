@@ -1,25 +1,33 @@
-#pragma once
+﻿#pragma once
 
-#include <QDialog>
-#include "ui_ChartsDialogView.h"
+#include <QWidget>
+#include <QtCharts/QChartView>
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QBarCategoryAxis>
+#include <QtCharts/QValueAxis>
+#include <QtCharts/QChart>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class ChartsDialogViewClass; };
-QT_END_NAMESPACE
 
-class ChartsDialogView : public QDialog
+
+class ChartsView : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	ChartsDialogView(QWidget *parent = nullptr);
-	~ChartsDialogView();
-	void displayPieChart(const std::map<int, double>& categorySums, const std::map<int, QString>& categoryNames);
-	void displayBarChart(const std::map<int, double>& incomeSums, const std::map<int, double>& expenseSums, int currentMonth);
+    explicit ChartsView(QWidget* parent = nullptr);
+    ~ChartsView() = default;
 
-	void clearLayout(QLayout* layout);
+    void updatePieChart(const QMap<QString, double>& data);
+    void updateBarChart(double totalIncome, double totalExpense);
 
 private:
-	Ui::ChartsDialogViewClass *ui;
-};
+    QChartView* chartViewPie;
+    QChartView* chartViewBar;
 
+    void setupUI();
+};

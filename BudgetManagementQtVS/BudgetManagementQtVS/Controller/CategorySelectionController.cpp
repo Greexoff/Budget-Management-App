@@ -1,122 +1,172 @@
-#include "Controller/CategorySelectionController.h"
+﻿#include "Controller/CategorySelectionController.h"
+#include <QInputDialog>
+#include <QMessageBox>
+#include <algorithm>
 
-CategoryController::CategoryController(
-    CategorySelectionView& categorySelectionViewRef,
-    CategoryRepository& categoryRepositoryRef, 
-    QObject* parent) : BaseController(parent),
-    categoryDialog(categorySelectionViewRef),   
+
+CategoryController::CategoryController(CategorySelectionView& viewRef, CategoryRepository& categoryRepositoryRef, QObject* parent)
+    : BaseController(parent),
+    view(viewRef),
     categoryRepository(categoryRepositoryRef)
-{    
-    connect(&categoryDialog, &CategorySelectionView::addRequestedCategory,
-        this, &CategoryController::handleAddCategoryRequest);
-    connect(&categoryDialog, &CategorySelectionView::deleteRequestedCategory,
-        this, &CategoryController::handleDeleteCategoryRequest);
-    connect(&categoryDialog, &CategorySelectionView::editRequestedCategory,
-        this, &CategoryController::handleEditCategoryRequest);
-    connect(&categoryDialog, &CategorySelectionView::searchTextRequest,
-        this, &CategoryController::handleFilteringCategoryRequest);
-    connect(&categoryDialog, &CategorySelectionView::columnSortRequest,
-        this, &CategoryController::handleSortRequest);
+{
+    setupCategoryView();
+    refreshTable();
 }
 
-
-//----------------Setting up view-------------------------------------------------
-
-
-//Method responsible for setting up all categories on screen while opening window
 void CategoryController::setupCategoryView()
 {
-    QVector<Category> categories = categoryRepository.getAllProfileCategories(getProfileId());
-    categoryDialog.setCategories(categories);
-    setFilteringText("");
-    categoryDialog.clearSearchLineEdit();
-    categoryDialog.exec();
+    // 1. ADD CATEGORY
+    connect(&view, &CategorySelectionView::addCategoryRequest, this, [this]() {
+        bool ok;
+        QString name = QInputDialog::getText(&view, "Add Category", "Category Name:", QLineEdit::Normal, "", &ok);
+        if (ok && !name.isEmpty()) {
+            handleAddCategoryRequest(name);
+        }
+        });
+
+    // 2. EDIT CATEGORY
+    connect(&view, &CategorySelectionView::editCategoryRequest, this, [this]() {
+        int id = view.getSelectedCategoryId();
+        if (id == -1) {
+            view.showMessage("Warning", "Select a category to edit.", "error");
+            return;
+        }
+
+        bool ok;
+        QString name = QInputDialog::getText(&view, "Edit Category", "New Name:", QLineEdit::Normal, "", &ok);
+        if (ok && !name.isEmpty()) {
+            handleEditCategoryRequest(id, name);
+        }
+        });
+
+    // 3. DELETE CATEGORY
+    connect(&view, &CategorySelectionView::deleteCategoryRequest, this, [this]() {
+        int id = view.getSelectedCategoryId();
+        if (id == -1) {
+            view.showMessage("Warning", "Select a category to delete.", "error");
+            return;
+        }
+
+        auto reply = QMessageBox::question(&view, "Confirm",
+            "Are you sure you want to delete this category?",
+            QMessageBox::Yes | QMessageBox::No);
+
+        if (reply == QMessageBox::Yes) {
+            handleDeleteCategoryRequest(id);
+        }
+        });
+
+    // 4. SEARCH & SORT
+    connect(&view, &CategorySelectionView::searchCategoryRequest, this, &CategoryController::handleFilteringCategoryRequest);
+    connect(&view, &CategorySelectionView::columnSortRequest, this, &CategoryController::handleSortRequest);
+
+    // 5. REFRESH
+    connect(&view, &CategorySelectionView::refreshRequest, this, &CategoryController::refreshTable);
 }
 
-//Method responsible for refreshing categories in window, used every time a change in list occurs
-void CategoryController::refreshCategoryDialogList()
+void CategoryController::showCategories()
 {
-    QVector<Category> categories = categoryRepository.getAllProfileCategories(getProfileId());
-    categories = executeFilteringCategory(categories);
-    executeSortingCategory(categories);
-    categoryDialog.setCategories(categories);
+    refreshTable();
 }
 
-
-//----------------Handling actions performed on categories-----------------------
-
-
-//Method responsible for adding category based on entered name
-void CategoryController::handleAddCategoryRequest(const QString& categoryName)
+void CategoryController::refreshTable()
 {
-    if (!categoryRepository.addCategory(categoryName, getProfileId()))
-    {
-        const QString header = tr("New category");
-        const QString message = tr("Failed to add a category.");
-        categoryDialog.showCategoryMessage(header, message, "error");
+    QVector<Category> categories = categoryRepository.getAllProfileCategories(getUserId());
+
+
+    if (!getFilteringText().isEmpty()) {
+        categories = executeFilteringCategory(categories);
     }
 
-    refreshCategoryDialogList();
+
+    executeSortingCategory(categories);
+
+
+    QVector<QStringList> viewData;
+    for (const auto& cat : categories) {
+        QStringList row;
+        row << QString::number(cat.getCategoryId());
+        row << cat.getCategoryName();
+        viewData.append(row);
+    }
+
+
+    view.setCategoryTabHeaders(viewData);
+    emit categoriesDataChanged();
 }
 
-//Method responsible for handling editing of category
+
+void CategoryController::handleAddCategoryRequest(const QString& categoryName)
+{
+    if (categoryRepository.addCategory(categoryName, getUserId())) {
+        view.showMessage("Success", "Category added successfully.", "info");
+        refreshTable();
+    }
+    else {
+        view.showMessage("Error", "Failed to add category.", "error");
+    }
+}
+
 void CategoryController::handleEditCategoryRequest(int categoryId, const QString& newName)
 {
-    if (!categoryRepository.updateCategory(categoryId, newName))
-    {
-        const QString header = tr("Edit category");
-        const QString message = tr("Failed to update category.");
-        categoryDialog.showCategoryMessage(header, message, "error");
+    if (categoryRepository.updateCategory(categoryId, newName)) {
+        view.showMessage("Success", "Category updated.", "info");
+        refreshTable();
+    }
+    else {
+        view.showMessage("Error", "Failed to update category.", "error");
+    }
+}
+
+void CategoryController::handleDeleteCategoryRequest(int categoryId)
+{
+    if (categoryId == selectedCategoryIdForTransaction) {
+        view.showMessage("Error", "Cannot delete default category.", "error");
         return;
     }
 
-    refreshCategoryDialogList();
-
-    emit categoriesDataChanged();
-}
-
-//Method responsible for handling deletion of category
-void CategoryController::handleDeleteCategoryRequest(int categoryId)
-{
-    if (!categoryRepository.removeCategoryById(categoryId))
-    {
-        const QString header = tr("Delete category");
-        const QString message = tr("Failed to delete a category.");
-        categoryDialog.showCategoryMessage(header, message, "error");
+    if (categoryRepository.removeCategoryById(categoryId)) {
+        view.showMessage("Success", "Category deleted.", "info");
+        refreshTable();
     }
-
-    refreshCategoryDialogList();
-
-    emit categoriesDataChanged();
+    else {
+        view.showMessage("Error", "Failed to delete category (might be in use).", "error");
+    }
 }
 
-//Method that sets up filtering text and calls refresh view method where filtering occurs
 void CategoryController::handleFilteringCategoryRequest(const QString& searchText)
 {
     setFilteringText(searchText);
-    refreshCategoryDialogList();
+    refreshTable();
 }
 
-//An actual method for handling filtering specific categories
-QVector<Category> CategoryController::executeFilteringCategory(const QVector<Category> allCategories)
-{
-    auto matchFound = [&](const Category& category) -> bool
-        {
-            bool categoryMatches = category.getCategoryName().contains(getFilteringText(), Qt::CaseInsensitive);
-            return categoryMatches;
-        };
-    return executeFiltering(allCategories, matchFound);
-}
-
-//Method that sets up selected column id on which sorting will occur and calls refresh view method where an actual sorting method is called
 void CategoryController::handleSortRequest(int columnId)
 {
     setSelectedColumnId(columnId);
-    refreshCategoryDialogList();
+    refreshTable();
 }
 
-//An actual method for handling sorting categories
+
+
+QVector<Category> CategoryController::executeFilteringCategory(const QVector<Category> allCategories)
+{
+    QVector<Category> filtered;
+    for (const auto& cat : allCategories) {
+        if (cat.getCategoryName().contains(getFilteringText(), Qt::CaseInsensitive)) {
+            filtered.append(cat);
+        }
+    }
+    return filtered;
+}
+
 void CategoryController::executeSortingCategory(QVector<Category>& allCategories)
 {
-    executeSorting(allCategories, getSelectedColumnId(), getLastSortingOrder());
+    std::sort(allCategories.begin(), allCategories.end(), [this](const Category& a, const Category& b) {
+        if (getLastSortingOrder() == Qt::AscendingOrder) {
+            return a.getCategoryName() < b.getCategoryName();
+        }
+        else {
+            return a.getCategoryName() > b.getCategoryName();
+        }
+        });
 }

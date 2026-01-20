@@ -11,33 +11,35 @@
 #include <QObject>
 #include <QVector>
 #include <QStringList>
-#include <QDate>
 
-class FinancialAccountController : public BaseController {
-	Q_OBJECT
+class FinancialAccountController : public BaseController
+{
+    Q_OBJECT
 
 public:
-	FinancialAccountController(FinancialAccountSelectionView& financialAccountSelectionViewRef, FinancialAccountRepository& financialAccountRepositoryRef, QObject* parent = nullptr);
+    FinancialAccountController(FinancialAccountSelectionView& viewRef, FinancialAccountRepository& repoRef, QObject* parent = nullptr);
+
+    void showAccounts();
 
 signals:
-	void financialAccountDataChanged();
+    void financialAccountDataChanged();
 
 public slots:
-	void setupFinancialAccountWindow();
-	void handleFinancialAccountAddRequest(const QString& financialAccountName, const QString& financialAccountType, double financialAccountBalance);
-	void handleFinancialAccountDeleteRequest(int financialAccountId);
-	void handleFinancialAccountEditRequest(int id, const QString& name, const QString& type, double balance);
-	void handleFinancialAccountFilteringRequest(const QString& searchText);
-	void handleSortingRequest(int columnId);
+    void setupFinancialAccountWindow();
+
+    void handleFinancialAccountAddRequest(const QString& name, const QString& type, double balance);
+    void handleFinancialAccountDeleteRequest(int id);
+    void handleFinancialAccountEditRequest(int id, const QString& name, const QString& type, double balance);
+    void handleFinancialAccountFilteringRequest(const QString& searchText);
+    void handleSortingRequest(int columnId);
 
 private:
-	FinancialAccountSelectionView& financialAccountDialog;
-	FinancialAccountRepository& financialAccountRepository;
+    FinancialAccountSelectionView& view; 
+    FinancialAccountRepository& financialAccountRepository;
 
-	int selectedFinancialAccountIdForTransaction = 1;
+    int selectedFinancialAccountIdForTransaction = 1;
 
-	void refreshFinancialAccountDialogList();
-	QVector<FinancialAccount> executeFilteringFinancialAccount(const QVector<FinancialAccount> allFinancialAccounts);
-	void executeSortingFinancialAccount(QVector<FinancialAccount>& allFinancialAccounts);
-
+    void refreshTable();
+    QVector<FinancialAccount> executeFilteringFinancialAccount(const QVector<FinancialAccount> allAccounts);
+    void executeSortingFinancialAccount(QVector<FinancialAccount>& allAccounts);
 };

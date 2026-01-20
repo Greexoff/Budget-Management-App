@@ -1,107 +1,134 @@
 ﻿#include <Controller/FinancialAccountSelectionController.h>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <algorithm>
+#include <QDialog>
+#include <QFormLayout>
+#include <QDialogButtonBox>
+#include <QComboBox>
+#include <QDoubleSpinBox>
+#include <QLineEdit>
 
-FinancialAccountController::FinancialAccountController(FinancialAccountSelectionView& financialAccountSelectionViewRef,
-	FinancialAccountRepository& financialAccountRepositoryRef,
-	QObject* parent) : BaseController(parent),
-	financialAccountDialog(financialAccountSelectionViewRef),
-	financialAccountRepository(financialAccountRepositoryRef) {
-
-	connect(&financialAccountDialog, &FinancialAccountSelectionView::addRequestedFinancialAccount, this, &FinancialAccountController::handleFinancialAccountAddRequest);
-	connect(&financialAccountDialog, &FinancialAccountSelectionView::deleteRequestedFinancialAccount, this, &FinancialAccountController::handleFinancialAccountDeleteRequest);
-	connect(&financialAccountDialog, &FinancialAccountSelectionView::editRequestedFinancialAccount,this, &FinancialAccountController::handleFinancialAccountEditRequest);
-	connect(&financialAccountDialog, &FinancialAccountSelectionView::searchTextRequest, this, &FinancialAccountController::handleFinancialAccountFilteringRequest);
-	connect(&financialAccountDialog, &FinancialAccountSelectionView::columnSortRequest, this, &FinancialAccountController::handleSortingRequest);
-
+FinancialAccountController::FinancialAccountController(FinancialAccountSelectionView& viewRef, FinancialAccountRepository& repoRef, QObject* parent)
+    : BaseController(parent), view(viewRef), financialAccountRepository(repoRef)
+{
+    setupFinancialAccountWindow();
+    refreshTable();
 }
 
+void FinancialAccountController::setupFinancialAccountWindow()
+{
+    // 1. Refresh
+    connect(&view, &FinancialAccountSelectionView::refreshRequest, this, &FinancialAccountController::refreshTable);
 
-//--------------------------Setting up view---------------------------------------------
+    // 2. ADD ACCOUNT
+    connect(&view, &FinancialAccountSelectionView::addAccountRequest, this, &FinancialAccountController::handleFinancialAccountAddRequest);
 
+    // 3. EDIT ACCOUNT 
+    connect(&view, &FinancialAccountSelectionView::editAccountRequest, this, &FinancialAccountController::handleFinancialAccountEditRequest);
 
-void FinancialAccountController::setupFinancialAccountWindow() {
+    // 4. DELETE ACCOUNT
+    connect(&view, &FinancialAccountSelectionView::deleteAccountRequest, this, [this]() {
+        int id = view.getSelectedAccountId();
+        if (id == -1) return; 
 
-	QVector<FinancialAccount> financialAccounts = financialAccountRepository.getAllProfileFinancialAccounts(getProfileId());
-	financialAccountDialog.setFinancialAccounts(financialAccounts);
-	setFilteringText("");
-	financialAccountDialog.clearSearchLineEdit();
-	financialAccountDialog.exec();
+        auto reply = QMessageBox::question(&view, "Confirm", "Delete this account?", QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes) handleFinancialAccountDeleteRequest(id);
+        });
+
+    // 5. SEARCH & SORT
+    connect(&view, &FinancialAccountSelectionView::searchAccountRequest, this, &FinancialAccountController::handleFinancialAccountFilteringRequest);
+    connect(&view, &FinancialAccountSelectionView::columnSortRequest, this, &FinancialAccountController::handleSortingRequest);
 }
 
-void FinancialAccountController::refreshFinancialAccountDialogList() {
-	QVector<FinancialAccount> financialAccounts = financialAccountRepository.getAllProfileFinancialAccounts(getProfileId());
-	financialAccounts = executeFilteringFinancialAccount(financialAccounts);
-	executeSortingFinancialAccount(financialAccounts);
-	financialAccountDialog.setFinancialAccounts(financialAccounts);
+void FinancialAccountController::showAccounts() { refreshTable(); }
+
+void FinancialAccountController::refreshTable()
+{
+    QVector<FinancialAccount> accounts = financialAccountRepository.getAllProfileFinancialAccounts(getUserId()); 
+
+    if (!getFilteringText().isEmpty()) accounts = executeFilteringFinancialAccount(accounts);
+    executeSortingFinancialAccount(accounts);
+
+    QVector<QStringList> viewData;
+    for (const auto& acc : accounts) {
+        QStringList row;
+        row << QString::number(acc.getFinancialAccountId());
+        row << acc.getFinancialAccountName();
+        row << QString::number(acc.getFinancialAccountBalance(), 'f', 2) + " PLN";
+        viewData.append(row);
+    }
+    view.setAccountTabHeaders(viewData);
+    emit financialAccountDataChanged();
 }
 
-
-//----------------Handling actions performed on financial accounts----------------------
-
-//Method responsible for adding financial account based on entered data
-void FinancialAccountController::handleFinancialAccountAddRequest(const QString& financialAccountName, const QString& financialAccountType, double financialAccountBalance) {
-	if (!financialAccountRepository.addFinancialAccount(financialAccountName, financialAccountType, financialAccountBalance, getProfileId())) {
-		const QString header = tr("New financial account");
-		const QString message = tr("Failed to add a financial account.");
-		financialAccountDialog.showFinancialAccountMessage(header, message, "error");
-	}
-
-	refreshFinancialAccountDialogList();
+// Logika
+void FinancialAccountController::handleFinancialAccountAddRequest(const QString& name, const QString& type, double balance)
+{
+    if (financialAccountRepository.addFinancialAccount(name, type, balance, getProfileId())) {
+        view.showMessage("Success", "Account added.", "info");
+        refreshTable();
+    }
+    else {
+        view.showMessage("Error", "Failed to add account.", "error");
+    }
 }
 
-//Method responsible for handling editing of financial account data
 void FinancialAccountController::handleFinancialAccountEditRequest(int id, const QString& name, const QString& type, double balance)
 {
-	if (financialAccountRepository.updateFinancialAccount(id, name, type, balance)) {
-		refreshFinancialAccountDialogList();
-
-		emit financialAccountDataChanged();
-	}
-	else {
-		financialAccountDialog.showFinancialAccountMessage(tr("Edit Account"), tr("Failed to update account."), "error");
-	}
+    if (financialAccountRepository.updateFinancialAccount(id, name, type, balance)) {
+        view.showMessage("Success", "Updated.", "info");
+        refreshTable();
+    }
+    else {
+        view.showMessage("Error", "Failed to update.", "error");
+    }
 }
 
-//Method responsible for handling deletion of financial account
-void FinancialAccountController::handleFinancialAccountDeleteRequest(int financialAccountId) {
-	if (!financialAccountRepository.removeFinancialAccount(financialAccountId)) {
-		const QString header = tr("Delete financial account");
-		const QString message = tr("Failed to delete a financial account.");
-		financialAccountDialog.showFinancialAccountMessage(header, message, "error");
-	}
-
-	refreshFinancialAccountDialogList();
-
-	emit financialAccountDataChanged();
-}
-
-//Method that sets up filtering text and calls refresh view method where filtering occurs
-void FinancialAccountController::handleFinancialAccountFilteringRequest(const QString& searchText)
+void FinancialAccountController::handleFinancialAccountDeleteRequest(int id)
 {
-	setFilteringText(searchText);
-	refreshFinancialAccountDialogList();
+    if (id == selectedFinancialAccountIdForTransaction) {
+        view.showMessage("Error", "Cannot delete default account.", "error");
+        return;
+    }
+    if (financialAccountRepository.removeFinancialAccount(id)) {
+        view.showMessage("Success", "Deleted.", "info");
+        refreshTable();
+    }
+    else {
+        view.showMessage("Error", "Failed to delete.", "error");
+    }
 }
 
-//An actual method for handling filtering specific financial accounts
-QVector<FinancialAccount> FinancialAccountController::executeFilteringFinancialAccount(const QVector<FinancialAccount> allFinancialAccounts)
+void FinancialAccountController::handleFinancialAccountFilteringRequest(const QString& text)
 {
-	auto matchFound = [&](const FinancialAccount& financialAccount) -> bool
-		{
-			bool finAccountNameMatches = financialAccount.getFinancialAccountName().contains(getFilteringText(), Qt::CaseInsensitive);
-			bool finAccountTypeMatches = financialAccount.getFinancialAccountType().contains(getFilteringText(), Qt::CaseInsensitive);
-			return finAccountNameMatches || finAccountTypeMatches;
-		};
-	return executeFiltering(allFinancialAccounts, matchFound);
+    setFilteringText(text);
+    refreshTable();
 }
 
-//Method that sets up selected column id on which sorting will occur and calls refresh view method where an actual sorting method is called
 void FinancialAccountController::handleSortingRequest(int columnId)
 {
-	setSelectedColumnId(columnId);
-	refreshFinancialAccountDialogList();
+    setSelectedColumnId(columnId);
+    refreshTable();
 }
 
-//An actual method for handling sorting financial account
-void FinancialAccountController::executeSortingFinancialAccount(QVector<FinancialAccount>& allFinancialAccounts)
+QVector<FinancialAccount> FinancialAccountController::executeFilteringFinancialAccount(const QVector<FinancialAccount> allAccounts)
 {
-	executeSorting(allFinancialAccounts, getSelectedColumnId(), getLastSortingOrder());
+    QVector<FinancialAccount> filtered;
+    for (const auto& acc : allAccounts) {
+        if (acc.getFinancialAccountName().contains(getFilteringText(), Qt::CaseInsensitive))
+            filtered.append(acc);
+    }
+    return filtered;
+}
+
+void FinancialAccountController::executeSortingFinancialAccount(QVector<FinancialAccount>& allAccounts)
+{
+    std::sort(allAccounts.begin(), allAccounts.end(), [this](const FinancialAccount& a, const FinancialAccount& b) {
+        bool asc = (getLastSortingOrder() == Qt::AscendingOrder);
+        if (getSelectedColumnId() == 2) {
+            return asc ? a.getFinancialAccountBalance() < b.getFinancialAccountBalance() : a.getFinancialAccountBalance() > b.getFinancialAccountBalance();
+        }
+        return asc ? a.getFinancialAccountName() < b.getFinancialAccountName() : a.getFinancialAccountName() > b.getFinancialAccountName();
+        });
 }

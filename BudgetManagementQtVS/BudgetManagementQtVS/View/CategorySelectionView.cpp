@@ -1,156 +1,114 @@
-﻿#include "CategorySelectionView.h"
+﻿#include "View/CategorySelectionView.h"
+#include <QMessageBox>
 
-CategorySelectionView::CategorySelectionView(QWidget *parent)
-	: QDialog(parent), ui(new Ui::CategorySelectionView)
+CategorySelectionView::CategorySelectionView(QWidget* parent)
+    : QWidget(parent), tableModel(new QStandardItemModel(this))
 {
-	ui->setupUi(this);
-    setWindowTitle("Browse category");
-    setUpTable();
-	connectMethodToButton();
+    setupUI();
 }
 
-CategorySelectionView::~CategorySelectionView() 
+void CategorySelectionView::setupUI()
 {
-    delete ui;
+    QVBoxLayout* contentLayout = new QVBoxLayout(this);
+    contentLayout->setContentsMargins(30, 30, 30, 30);
+    contentLayout->setSpacing(20);
+
+    // 1. Nagłówek i Szukanie
+    QHBoxLayout* headerLayout = new QHBoxLayout();
+    QLabel* viewLabel = new QLabel("Categories Management");
+    viewLabel->setObjectName("viewLabel"); 
+
+    searchEdit = new QLineEdit();
+    searchEdit->setPlaceholderText("Search categories...");
+    searchEdit->setFixedWidth(300);
+
+    headerLayout->addWidget(viewLabel);
+    headerLayout->addStretch();
+    headerLayout->addWidget(searchEdit);
+
+    // 2. Przyciski Akcji
+    QHBoxLayout* actionLayout = new QHBoxLayout();
+
+    btnAdd = new QPushButton("+ Add Category");
+    btnAdd->setObjectName("actionButtonAdd");
+
+    btnEdit = new QPushButton("Edit");
+    btnEdit->setObjectName("actionButton");
+
+    btnDelete = new QPushButton("Delete");
+    btnDelete->setObjectName("actionButtonDelete");
+
+    actionLayout->addWidget(btnAdd);
+    actionLayout->addWidget(btnEdit);
+    actionLayout->addWidget(btnDelete);
+    actionLayout->addStretch();
+
+    // 3. Tabela
+    categoryTable = new QTableView();
+    categoryTable->setModel(tableModel);
+    categoryTable->setAlternatingRowColors(true);
+    categoryTable->setShowGrid(false);
+    categoryTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    categoryTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    categoryTable->verticalHeader()->setVisible(false);
+    categoryTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+
+    tableModel->setColumnCount(2);
+    tableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
+    tableModel->setHeaderData(1, Qt::Horizontal, tr("Category Name"));
+    categoryTable->setColumnHidden(0, true); 
+    categoryTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+
+    contentLayout->addLayout(headerLayout);
+    contentLayout->addLayout(actionLayout);
+    contentLayout->addWidget(categoryTable);
+
+    connect(btnAdd, &QPushButton::clicked, this, &CategorySelectionView::onButtonAddClicked);
+    connect(btnEdit, &QPushButton::clicked, this, &CategorySelectionView::onButtonEditClicked);
+    connect(btnDelete, &QPushButton::clicked, this, &CategorySelectionView::onButtonDeleteClicked);
+    connect(searchEdit, &QLineEdit::textChanged, this, &CategorySelectionView::onSearchTextChanged);
+    connect(categoryTable->horizontalHeader(), &QHeaderView::sectionClicked, this, &CategorySelectionView::onHeaderClicked);
 }
 
-//----------------Setting connection (button-method)-------------------------------------------------
 
-void CategorySelectionView::connectMethodToButton()
+void CategorySelectionView::setCategoryTabHeaders(const QVector<QStringList>& rows)
 {
-    connect(ui->addCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::addCategoryButtonClicked);
-    connect(ui->deleteCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::deleteCategoryButtonClicked);
-    connect(ui->cancelButton, &QPushButton::clicked, this, &CategorySelectionView::cancelButtonClicked);
-    connect(ui->editCategoryButton, &QPushButton::clicked, this, &CategorySelectionView::editCategoryButtonClicked);
-    connect(ui->searchLineEdit, &QLineEdit::textChanged, this, &CategorySelectionView::searchTextChanged);
+    tableModel->removeRows(0, tableModel->rowCount());
 
-    QHeaderView* header = ui->categoryTable->horizontalHeader();
-    connect(header, &QHeaderView::sectionClicked, this, &CategorySelectionView::onColumnHeaderClicked);
-}
-
-
-//----------------Setting up view-------------------------------------------------
-
-
-//Method that sets up table where all catergories are shown
-void CategorySelectionView::setUpTable()
-{
-    ui->categoryTable->setColumnCount(1);
-    ui->categoryTable->setHorizontalHeaderLabels({ "Name" });
-    ui->categoryTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-
-    ui->categoryTable->verticalHeader()->setVisible(false);
-    ui->categoryTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->categoryTable->setSelectionMode(QAbstractItemView::SingleSelection);
-}
-
-//Method responsible for filling table with categories
-void CategorySelectionView::setCategories(const QVector<Category>& categories)
-{
-    categoryId = categories;
-    ui->categoryTable->setRowCount(0);
-    for (const auto& category : categoryId) 
-    {
-        int row = ui->categoryTable->rowCount();
-        ui->categoryTable->insertRow(row);
-        ui->categoryTable->setItem(row, 0, new QTableWidgetItem(category.getCategoryName()));
+    for (const QStringList& row : rows) {
+        QList<QStandardItem*> items;
+        for (const QString& value : row)
+            items.append(new QStandardItem(value));
+        tableModel->appendRow(items);
     }
 }
 
-
-//----------------Pressing buttons actions-------------------------------------------------
-
-
-//Method that notices clicking on add button
-void CategorySelectionView::addCategoryButtonClicked()
+int CategorySelectionView::getSelectedCategoryId() const
 {
-    bool ok = false;
-    QString name = QInputDialog::getText(this, tr("New category"), tr("Category name:"), QLineEdit::Normal, "", &ok);
-    if (!ok || name.trimmed().isEmpty())
-    {
-        return;
-    }
-
-    emit addRequestedCategory(name);
+    QModelIndex index = categoryTable->currentIndex();
+    if (!index.isValid()) return -1;
+    bool ok;
+    int id = tableModel->data(tableModel->index(index.row(), 0)).toInt(&ok);
+    return ok ? id : -1;
 }
 
-//Method that notices clicking on edit button
-void CategorySelectionView::editCategoryButtonClicked()
-{
-    int row = ui->categoryTable->currentRow();
-
-    if (row < 0 || row >= categoryId.size()) {
-        return;
-    }
-
-    Category currentCat = categoryId[row];
-
-    if (currentCat.getCategoryId() == 1) {
-        showCategoryMessage(tr("Edit category"), tr("Cannot edit default category."), "error");
-        return;
-    }
-
-    bool ok = false;
-
-    QString newName = QInputDialog::getText(
-        this,
-        tr("Edit category"),
-        tr("New name:"),
-        QLineEdit::Normal,
-        currentCat.getCategoryName(),
-        &ok
-    );
-
-    if (ok && !newName.trimmed().isEmpty()) {
-        emit editRequestedCategory(currentCat.getCategoryId(), newName);
-    }
-}
-
-//Method that notices clicking on delete button
-void CategorySelectionView::deleteCategoryButtonClicked()
-{
-    int row = ui->categoryTable->currentRow();
-    if (row < 0 || row >= categoryId.size())
-    {
-        return;
-    }
-
-    emit deleteRequestedCategory(categoryId[row].getCategoryId());
-}
-
-//Method that notices clicking on cancel button
-void CategorySelectionView::cancelButtonClicked()
-{
-    reject();
-}
-
-//Method that clears search bar while reentering view
-void CategorySelectionView::clearSearchLineEdit()
-{
-    ui->searchLineEdit->clear();
-}
-
-//Method that passes text inserted in search bar
-void CategorySelectionView::searchTextChanged(const QString& searchText)
-{
-    emit searchTextRequest(searchText);
-}
-
-//Method that notices clicking on column header
-void CategorySelectionView::onColumnHeaderClicked(int columnId)
-{
-    emit columnSortRequest(columnId);
-}
-
-//Method responsible for displaying error if inserted data is incorrect/is lacking 
-void CategorySelectionView::showCategoryMessage(QString header, QString message, QString messageType)
+void CategorySelectionView::showMessage(QString header, QString message, QString messageType)
 {
     if (messageType == "error")
-    {
         QMessageBox::warning(this, header, message);
-    }
     else
-    {
         QMessageBox::information(this, header, message);
-    }
 }
+
+QString CategorySelectionView::getSearchText() const
+{
+    return searchEdit->text();
+}
+
+void CategorySelectionView::onButtonAddClicked() { emit addCategoryRequest(); }
+void CategorySelectionView::onButtonEditClicked() { emit editCategoryRequest(); }
+void CategorySelectionView::onButtonDeleteClicked() { emit deleteCategoryRequest(); }
+void CategorySelectionView::onSearchTextChanged(const QString& text) { emit searchCategoryRequest(text); }
+void CategorySelectionView::onHeaderClicked(int index) { emit columnSortRequest(index); }

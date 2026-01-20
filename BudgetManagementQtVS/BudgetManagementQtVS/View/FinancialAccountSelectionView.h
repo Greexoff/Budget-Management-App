@@ -1,60 +1,53 @@
 ﻿#pragma once
 
-#include <QFormLayout>
-#include <QDialogButtonBox>
-#include <QDoubleSpinBox>
-#include <QComboBox>
+#include <QWidget>
+#include <QStandardItemModel>
+#include <QTableView>
+#include <QPushButton>
 #include <QLineEdit>
-#include <QDialog>
-#include <QInputDialog>
-#include <QMessageBox>
-#include "ui_FinancialAccountSelectionView.h"
-#include "Model/FinancialAccount.h"
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QHeaderView>
 
-class FinancialAccountSelectionView : public QDialog {
-	Q_OBJECT
+class FinancialAccountSelectionView : public QWidget
+{
+    Q_OBJECT
 
 public:
-	explicit FinancialAccountSelectionView(QWidget* parent = nullptr);
-	~FinancialAccountSelectionView();
+    explicit FinancialAccountSelectionView(QWidget* parent = nullptr);
+    ~FinancialAccountSelectionView() = default;
 
-	void setFinancialAccounts(const QVector<FinancialAccount>& financialAccounts);
 
-	int getSelectedFinancialAccountId() const { return selectedFinancialAccountId; }
-
-	void clearSearchLineEdit();
-
-public slots:
-	void showFinancialAccountMessage(QString header, QString message, QString messageType);
+    void setAccountTabHeaders(const QVector<QStringList>& rows);
+    int getSelectedAccountId() const;
+    void showMessage(QString header, QString message, QString messageType);
+    QString getSearchText() const;
+    void refreshView() { emit refreshRequest(); }
 
 signals:
 
-	void selectRequestedFinancialAccount(int financialAccountId);
-
-	void addRequestedFinancialAccount(const QString& financialAccountName, const QString& financialAccountType, double financialAccount_balance);
-
-	void deleteRequestedFinancialAccount(int financialAccountId);
-
-	void editRequestedFinancialAccount(int financialAccountId, const QString& name, const QString& type, double balance);
-
-	void searchTextRequest(const QString& searchText);
-
-	void columnSortRequest(int columnId);
+    void addAccountRequest(const QString& name, const QString& type, double balance);
+    void deleteAccountRequest();
+    void editAccountRequest(int id, const QString& name, const QString& type, double balance);
+    void searchAccountRequest(const QString& searchText);
+    void columnSortRequest(int columnId);
+    void refreshRequest();
 
 private slots:
-	void addFinancialAccountButtonClicked();
-	void deleteFinancialAccountButtonClicked();
-	void editFinancialAccountButtonClicked();
-	void cancelFinancialAccountButtonClicked();
-	void searchTextChanged(const QString& searchText);
-	void onColumnHeaderClicked(int columnId);
+    void onButtonAddClicked();
+    void onButtonEditClicked();
+    void onButtonDeleteClicked();
+    void onSearchTextChanged(const QString& text);
+    void onHeaderClicked(int index);
 
 private:
-	Ui::FinancialAccountSelectionView* ui;
-	QVector<FinancialAccount> financialAccountId;
-	int selectedFinancialAccountId = -1;
+    QStandardItemModel* tableModel;
+    QTableView* accountTable;
+    QLineEdit* searchEdit;
+    QPushButton* btnAdd;
+    QPushButton* btnEdit;
+    QPushButton* btnDelete;
 
-	void connectMethodToButton();
-
-	void setupTable();
+    void setupUI();
 };

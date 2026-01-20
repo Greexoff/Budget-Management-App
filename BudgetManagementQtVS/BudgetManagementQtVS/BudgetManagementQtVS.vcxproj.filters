@@ -179,9 +179,6 @@
     <ClInclude Include="Model\FinancialAccount.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Controller\ChartsController.h">
-      <Filter>Header Files\Controller</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="ProfileDialogView.ui">
@@ -251,6 +248,9 @@
     </QtMoc>
     <QtMoc Include="View\ChartsDialogView.h">
       <Filter>Header Files\View</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\ChartsController.h">
+      <Filter>Header Files\Controller</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

@@ -39,9 +39,15 @@ int main(int argc, char* argv[])
     LoginDialog loginDialog;
     ProfileDialog profileDialog;
     TransactionWindow transactionWindow;
-    CategorySelectionView categoryDialog;
-    FinancialAccountSelectionView financialAccountDialog;
-    ChartsDialogView chartsDialogView;
+
+    CategorySelectionView categoryView;
+    transactionWindow.setCategoryView(&categoryView);
+
+    FinancialAccountSelectionView financialAccountView;
+    transactionWindow.setAccountView(&financialAccountView);
+
+    ChartsView chartsView;
+    transactionWindow.setChartsView(&chartsView);
 
     UserController userController(loginDialog, userRepository, nullptr);
     ProfileController profileController(profileDialog, profileRepository, nullptr);
@@ -55,9 +61,9 @@ int main(int argc, char* argv[])
         nullptr
     );
 
-    CategoryController categoryController(categoryDialog, categoryRepository, nullptr);
-    FinancialAccountController financialAccountController(financialAccountDialog, financialAccountRepository, nullptr);
-	ChartsController chartsController(transactionRepository, categoryRepository, chartsDialogView, nullptr);
+    CategoryController categoryController(categoryView, categoryRepository, nullptr);
+    FinancialAccountController financialAccountController(financialAccountView, financialAccountRepository, nullptr);
+	ChartsController chartsController(transactionWindow, chartsView, transactionRepository, categoryRepository, nullptr);
 
     ControllerManager controllerManager(userController, profileController, transactionController, categoryController, financialAccountController, chartsController);
 

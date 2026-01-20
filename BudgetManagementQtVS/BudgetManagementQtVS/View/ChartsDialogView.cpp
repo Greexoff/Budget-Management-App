@@ -1,148 +1,119 @@
-#include "View/ChartsDialogView.h"
+﻿#include "View/ChartsDialogView.h"
 
-#include <QtCharts>
-
-ChartsDialogView::ChartsDialogView(QWidget *parent)
-	: QDialog(parent)
-	, ui(new Ui::ChartsDialogViewClass())
+ChartsView::ChartsView(QWidget* parent) : QWidget(parent)
 {
-	ui->setupUi(this);
+    setupUI();
 }
 
-ChartsDialogView::~ChartsDialogView()
+void ChartsView::setupUI()
 {
-	delete ui;
+    QVBoxLayout* contentLayout = new QVBoxLayout(this);
+    contentLayout->setContentsMargins(30, 30, 30, 30);
+    contentLayout->setSpacing(20);
+
+    // Nagłówek
+    QLabel* viewLabel = new QLabel("Statistics & Analytics");
+    viewLabel->setObjectName("viewLabel"); 
+    contentLayout->addWidget(viewLabel);
+
+    // Layout na wykresy
+    QHBoxLayout* chartsLayout = new QHBoxLayout();
+    chartsLayout->setSpacing(20);
+
+    // --- 1. WYKRES KOŁOWY ---
+    QChart* chartPie = new QChart();
+    chartPie->setTitle("Expenses by Category");
+    chartPie->setAnimationOptions(QChart::SeriesAnimations);
+    chartPie->setTheme(QChart::ChartThemeDark); 
+    chartPie->setBackgroundVisible(false); 
+
+    chartPie->legend()->setVisible(true);
+    chartPie->legend()->setAlignment(Qt::AlignRight);
+    chartPie->legend()->setLabelColor(Qt::white);
+
+    chartViewPie = new QChartView(chartPie);
+    chartViewPie->setRenderHint(QPainter::Antialiasing);
+    chartViewPie->setObjectName("chartPlaceholder");
+
+    // --- 2. WYKRES SŁUPKOWY ---
+    QChart* chartBar = new QChart();
+    chartBar->setTitle("Income vs Expenses");
+    chartBar->setAnimationOptions(QChart::SeriesAnimations);
+    chartBar->setTheme(QChart::ChartThemeDark);
+    chartBar->setBackgroundVisible(false);
+
+    chartBar->legend()->setVisible(true);
+    chartBar->legend()->setAlignment(Qt::AlignBottom);
+    chartBar->legend()->setLabelColor(Qt::white);
+
+    chartViewBar = new QChartView(chartBar);
+    chartViewBar->setRenderHint(QPainter::Antialiasing);
+    chartViewBar->setObjectName("chartPlaceholder");
+
+    chartsLayout->addWidget(chartViewPie);
+    chartsLayout->addWidget(chartViewBar);
+
+    contentLayout->addLayout(chartsLayout);
 }
 
+void ChartsView::updatePieChart(const QMap<QString, double>& data)
+{
+    QChart* chart = chartViewPie->chart();
+    chart->removeAllSeries();
 
-void ChartsDialogView::displayPieChart(const std::map<int, double>& categorySums, const std::map<int, QString>& categoryNames)
-{	
-    QPieSeries* pieSeries = new QPieSeries();
+    if (data.isEmpty()) return;
 
-    for (const auto& pair : categorySums) {
-        int categoryId = pair.first;
-        double sum = pair.second;
-
-        if (sum > 0.0) {
-            auto it = categoryNames.find(categoryId);
-            QString categoryName = (it != categoryNames.end()) ? it->second : "Unknown";
-
-            QPieSlice* slice = pieSeries->append(categoryName, sum);
-            slice->setLabelVisible();
-        }
+    QPieSeries* series = new QPieSeries();
+    for (auto it = data.begin(); it != data.end(); ++it) {
+        series->append(it.key(), it.value());
     }
 
-    QChart* pieChart = new QChart();
-    pieChart->addSeries(pieSeries);
-    pieChart->setTitle("Expense Distribution by Category for the current month");
-    pieChart->setAnimationOptions(QChart::SeriesAnimations); // Animations
-    pieChart->legend()->setAlignment(Qt::AlignRight); // Better visual layout
-
-    QChartView* pieChartView = new QChartView(pieChart, this);
-    pieChartView->setRenderHint(QPainter::Antialiasing);
-
-	ui->verticalLayout->addWidget(pieChartView);
-}
-
-void ChartsDialogView::displayBarChart(const std::map<int, double>& incomeSums, const std::map<int, double>& expenseSums, int currentMonth) {
-    const std::map<int, QString> monthMap = {
-        {{1}, {"January"}},
-        {{2}, {"February"}},
-        {{3}, {"March"}},
-        {{4}, {"April"}},
-        {{5}, {"May"}},
-        {{6}, {"June"}},
-        {{7}, {"July"}},
-        {{8}, {"August"}},
-        {{9}, {"September"}},
-        {{10}, {"October"}},
-        {{11}, {"November"}},
-        {{12}, {"December"} },
-    };
-
-    QStringList months;
-    
-    double min = 0.0;
-    double max = 0.0;
-
-    QBarSet *incomeValue = new QBarSet("Income value");
-    QBarSet *expenseValue = new QBarSet("Expense value");
-
-    incomeValue->setColor("GREEN");
-    expenseValue->setColor("RED");
-
-    int month = 1;
-    while (month <= currentMonth) {
-        // Appending category list for x axis - months
-        months.append(monthMap.at(month));
-
-		// Logic for appending values to bar sets
-		// If the key is found in the map, append the value, else append 0
-        if (incomeSums.count(month) != 0) {
-			incomeValue->append(incomeSums.at(month));
-        }
-        else {
-            incomeValue->append(0);
-        }
-
-		// Same as above for expenses
-        if (expenseSums.count(month) != 0) {
-            expenseValue->append(expenseSums.at(month));
-        }
-        else {
-            expenseValue->append(0);
-        }
-        month++;
+    // Etykiety
+    for (auto slice : series->slices()) {
+        slice->setLabel(QString("%1: %2").arg(slice->label()).arg(slice->value()));
     }
 
-    QBarSeries *series = new QBarSeries();
-    series->append(incomeValue);
-    series->append(expenseValue);
+    chart->addSeries(series);
+}
 
-    QChart* barChart = new QChart();
-    barChart->addSeries(series);
-    barChart->setTitle("Monthly incomes & expenses");
-    barChart->setAnimationOptions(QChart::SeriesAnimations);
+void ChartsView::updateBarChart(double totalIncome, double totalExpense)
+{
+    QChart* chart = chartViewBar->chart();
+    chart->removeAllSeries();
 
+
+    auto axes = chart->axes();
+    for (auto axis : axes) {
+        chart->removeAxis(axis);
+        delete axis;
+    }
+
+    QBarSet* setIncome = new QBarSet("Income");
+    QBarSet* setExpense = new QBarSet("Expenses");
+
+    *setIncome << totalIncome;
+    *setExpense << totalExpense;
+
+    setIncome->setColor(QColor("#2ecc71"));
+    setExpense->setColor(QColor("#e74c3c"));
+
+    QBarSeries* series = new QBarSeries();
+    series->append(setIncome);
+    series->append(setExpense);
+
+    chart->addSeries(series);
+
+
+    QStringList categories;
+    categories << "Current Period";
     QBarCategoryAxis* axisX = new QBarCategoryAxis();
-    axisX->append(months);
-    axisX->setTitleText("Month");
+    axisX->append(categories);
+    axisX->setLabelsColor(Qt::white);
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
 
     QValueAxis* axisY = new QValueAxis();
-    axisY->setRange(min, max);
-    axisY->setTitleText("Value");
-    
-
-    barChart->addAxis(axisX, Qt::AlignBottom);
-    series->attachAxis(axisX);
-    barChart->addAxis(axisY, Qt::AlignLeft);
+    axisY->setLabelsColor(Qt::white);
+    chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
-
-
-    QChartView* barChartView = new QChartView(barChart);
-    barChartView->setRenderHint(QPainter::Antialiasing);
-
-    ui->verticalLayout_2->addWidget(barChartView);
-
-    this->show();
-
-    connect(this, &QDialog::finished, this, [this]() {
-        clearLayout(ui->verticalLayout);
-        clearLayout(ui->verticalLayout_2);
-        });
 }
-
-// Recursive function to clear a layout and delete its widgets
-void ChartsDialogView::clearLayout(QLayout* layout)
-{
-    while (QLayoutItem* item = layout->takeAt(0)) {
-        if (QWidget* widget = item->widget()) {
-            widget->deleteLater();   // delete the widget
-        }
-        if (QLayout* childLayout = item->layout()) {
-            clearLayout(childLayout); // recursive cleanup
-        }
-        delete item; // delete the layout item itself
-    }
-}
-
