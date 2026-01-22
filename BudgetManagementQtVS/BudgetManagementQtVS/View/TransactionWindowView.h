@@ -41,6 +41,7 @@ private slots:
 private:
     QMap<QString, QPushButton*> actionButtons;
     QPushButton* createButton(const QString& text, const QString& objName, void (TransactionWindow::* slot)());
+    QLayout* createHeaderSection();
 
     QStandardItemModel* tableModel;
     QLineEdit* searchEdit;
@@ -48,6 +49,8 @@ private:
     QLabel* budgetLabel;
     QTableView* transactionTable;
 
+    QWidget* createBudgetSection();
+    QLayout* createActionSection();
     void setupUI();
     void setupStyle();
     void setupConnections();

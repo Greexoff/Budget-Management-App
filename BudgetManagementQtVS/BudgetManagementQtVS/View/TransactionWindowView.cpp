@@ -19,58 +19,78 @@ QPushButton* TransactionWindow::createButton(const QString& text, const QString&
     return btn;
 }
 
+QLayout* TransactionWindow::createHeaderSection()
+{
+    QHBoxLayout* layout = new QHBoxLayout();
+
+    QLabel* viewLabel = new QLabel("Transactions Overview");
+    viewLabel->setObjectName("viewLabel");
+
+    searchEdit = new QLineEdit();
+    searchEdit->setPlaceholderText("Search transactions...");
+    searchEdit->setFixedWidth(300);
+
+    layout->addWidget(viewLabel);
+    layout->addStretch();
+    layout->addWidget(searchEdit);
+
+    return layout;
+}
+
+QWidget* TransactionWindow::createBudgetSection()
+{
+    QFrame* frame = new QFrame();
+    frame->setObjectName("budgetFrame");
+    QVBoxLayout* layout = new QVBoxLayout(frame);
+
+    QHBoxLayout* header = new QHBoxLayout();
+    budgetLabel = new QLabel("Monthly Budget Usage");
+
+    actionButtons["budget"] = createButton("Set Limit", "actionButton", &TransactionWindow::onButtonBudgetClicked);
+    actionButtons["budget"]->setFixedWidth(100);
+
+    header->addWidget(budgetLabel);
+    header->addStretch();
+    header->addWidget(actionButtons["budget"]);
+
+    budgetProgressBar = new QProgressBar();
+    budgetProgressBar->setFixedHeight(15);
+    budgetProgressBar->setTextVisible(false);
+
+    layout->addLayout(header);
+    layout->addWidget(budgetProgressBar);
+
+    return frame;
+}
+
+QLayout* TransactionWindow::createActionSection()
+{
+    QHBoxLayout* layout = new QHBoxLayout();
+
+    actionButtons["add"] = createButton("+ Add Transaction", "actionButtonAdd", &TransactionWindow::onButtonAddClicked);
+    actionButtons["edit"] = createButton("Edit", "actionButton", &TransactionWindow::onButtonEditClicked);
+    actionButtons["delete"] = createButton("Delete", "actionButtonDelete", &TransactionWindow::onButtonDeleteClicked);
+
+    layout->addWidget(actionButtons["add"]);
+    layout->addWidget(actionButtons["edit"]);
+    layout->addWidget(actionButtons["delete"]);
+    layout->addStretch();
+
+    return layout;
+}
+
 void TransactionWindow::setupUI()
 {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(30, 30, 30, 30);
     mainLayout->setSpacing(20);
 
-    QHBoxLayout* headerLayout = new QHBoxLayout();
-    QLabel* viewLabel = new QLabel("Transactions Overview");
-    viewLabel->setObjectName("viewLabel");
-    searchEdit = new QLineEdit();
-    searchEdit->setPlaceholderText("Search transactions...");
-    searchEdit->setFixedWidth(300);
-    headerLayout->addWidget(viewLabel);
-    headerLayout->addStretch();
-    headerLayout->addWidget(searchEdit);
-
-    QFrame* budgetFrame = new QFrame();
-    budgetFrame->setObjectName("budgetFrame");
-    QVBoxLayout* budgetLayout = new QVBoxLayout(budgetFrame);
-    QHBoxLayout* budgetHeaderLayout = new QHBoxLayout();
-
-    budgetLabel = new QLabel("Monthly Budget Usage");
-    actionButtons["budget"] = createButton("Set Limit", "actionButton", &TransactionWindow::onButtonBudgetClicked);
-    actionButtons["budget"]->setFixedWidth(100);
-
-    budgetHeaderLayout->addWidget(budgetLabel);
-    budgetHeaderLayout->addStretch();
-    budgetHeaderLayout->addWidget(actionButtons["budget"]);
-
-    budgetProgressBar = new QProgressBar();
-    budgetProgressBar->setFixedHeight(15);
-    budgetProgressBar->setTextVisible(false);
-
-    budgetLayout->addLayout(budgetHeaderLayout);
-    budgetLayout->addWidget(budgetProgressBar);
-
-    QHBoxLayout* actionLayout = new QHBoxLayout();
-    actionButtons["add"] = createButton("+ Add Transaction", "actionButtonAdd", &TransactionWindow::onButtonAddClicked);
-    actionButtons["edit"] = createButton("Edit", "actionButton", &TransactionWindow::onButtonEditClicked);
-    actionButtons["delete"] = createButton("Delete", "actionButtonDelete", &TransactionWindow::onButtonDeleteClicked);
-
-    actionLayout->addWidget(actionButtons["add"]);
-    actionLayout->addWidget(actionButtons["edit"]);
-    actionLayout->addWidget(actionButtons["delete"]);
-    actionLayout->addStretch();
+    mainLayout->addLayout(createHeaderSection());
+    mainLayout->addWidget(createBudgetSection());
+    mainLayout->addLayout(createActionSection());
 
     transactionTable = new QTableView();
     initializeTable();
-
-    mainLayout->addLayout(headerLayout);
-    mainLayout->addWidget(budgetFrame);
-    mainLayout->addLayout(actionLayout);
     mainLayout->addWidget(transactionTable);
 }
 
