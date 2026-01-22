@@ -13,12 +13,14 @@ class BaseController : public QObject
 	Q_OBJECT
 public:
 	explicit BaseController(QObject* parent = nullptr) : QObject(parent) {}
-protected:
-	void setProfileId(int profileId);
-	int getProfileId();
+	~BaseController() override = default;
 
-	void setUserId(int userId);
-	int getUserId();
+	virtual void run() = 0;
+	static void setProfileId(int profileId);
+	static void setUserId(int userId);
+	static int getProfileId();
+	static int getUserId();
+protected:
 
 	QString getFilteringText();
 	void setFilteringText(const QString& searchText);

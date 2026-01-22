@@ -26,14 +26,20 @@
 #include <QSqlQuery>
 #include <QDebug>
 
+#include "Controller/AppController.h"
+
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
 
     DatabaseManager::instance();
-    DashboardView dashboardView;
-    dashboardView.show();
-    return app.exec(); 
+    //DashboardView dashboardView;
+   // dashboardView.show();
+   // return app.exec(); 
+
+    AppController appController;
+    appController.start();
+    return app.exec();
 /*
     UserRepository userRepository;
     ProfilesRepository profileRepository;

@@ -7,35 +7,46 @@
 #include <Model/Repositories/CategoryRepository.h>
 #include <Model/Repositories/FinancialAccountRepository.h>
 
-ProfileController::ProfileController(ProfileDialog& profileDialogRef, ProfilesRepository& profileRepositoryRef, QObject* parent) : BaseController(parent), profileDialog(profileDialogRef), profileRepository(profileRepositoryRef)
+ProfileController::ProfileController(ProfilesRepository& profileRepositoryRef, QObject* parent) : BaseController(parent), profileRepository(profileRepositoryRef)
 {
-    connect(&profileDialog, &ProfileDialog::profileSelected,
+    profileDialog = new ProfileDialog();
+    if (profileDialog)
+    {
+        profileDialog->setAttribute(Qt::WA_DeleteOnClose);
+    }
+    connect(profileDialog, &ProfileDialog::profileSelected,
         this, &ProfileController::handleProfileSelection);
-    connect(&profileDialog, &ProfileDialog::addProfileRequested,
+    connect(profileDialog, &ProfileDialog::addProfileRequested,
         this, &ProfileController::handleAddProfileRequest);
-    connect(&profileDialog, &ProfileDialog::removeProfileRequested,
+    connect(profileDialog, &ProfileDialog::removeProfileRequested,
         this, &ProfileController::handleRemoveProfileRequest);
-    connect(&profileDialog, &ProfileDialog::editProfileRequested,
+    connect(profileDialog, &ProfileDialog::editProfileRequested,
         this, &ProfileController::handleEditProfileRequest);
-    connect(&profileDialog, &ProfileDialog::logoutRequested,
+    connect(profileDialog, &ProfileDialog::logoutRequested,
         this, &ProfileController::handleLogoutRequest);
-    connect(&profileDialog, &ProfileDialog::exportDataRequested,
+    connect(profileDialog, &ProfileDialog::exportDataRequested,
         this, &ProfileController::handleExportDataRequest);
 }
 
 //TODO: ADD FILTERING AND SORTING OF PROFILES
 
+void ProfileController::run()
+{
+    refreshProfilesForCurrentUser();
+}
 
 //----------------------Setting up view---------------------------------------
 
 //Method responsible for refreshing/setting up profiles in window, used every time a change in list occurs
 void ProfileController::refreshProfilesForCurrentUser()
 {
-    QVector<Profile> profiles = profileRepository.getProfilesByUserId(getUserId());
-    profileDialog.setProfiles(profiles);
-    if (profileDialog.exec() == QDialog::Rejected) {
-        QApplication::quit();
+    if (!profileDialog)
+    {
+        return;
     }
+    QVector<Profile> profiles = profileRepository.getProfilesByUserId(getUserId());
+    profileDialog->setProfiles(profiles);
+    profileDialog->show();
 }
 
 
@@ -44,10 +55,14 @@ void ProfileController::refreshProfilesForCurrentUser()
 //Method responsible for adding profile based on entered data
 void ProfileController::handleAddProfileRequest(const QString& name)
 {
+    if (!profileDialog)
+    {
+        return;
+    }
     if (!profileRepository.addProfile(getUserId(), name)) {
         const QString header = tr("New profile");
         const QString message = tr("Failed to add a profile.");
-        profileDialog.showProfileMessage(header, message, "error");
+        profileDialog->showProfileMessage(header, message, "error");
         return;
     }
     refreshProfilesForCurrentUser();
@@ -56,10 +71,14 @@ void ProfileController::handleAddProfileRequest(const QString& name)
 //Method responsible for handling editing of profile
 void ProfileController::handleEditProfileRequest(int profileId, const QString& newName)
 {
+    if (!profileDialog)
+    {
+        return;
+    }
     if (!profileRepository.updateProfile(profileId, newName)) {
         const QString header = tr("Edit Profile");
         const QString message = tr("Failed to update profile.");
-        profileDialog.showProfileMessage(header, message, "error");
+        profileDialog->showProfileMessage(header, message, "error");
         return;
     }
     refreshProfilesForCurrentUser();
@@ -68,10 +87,14 @@ void ProfileController::handleEditProfileRequest(int profileId, const QString& n
 //Method responsible for handling deletion of profile
 void ProfileController::handleRemoveProfileRequest(int profileId)
 {
+    if (!profileDialog)
+    {
+        return;
+    }
     if (!profileRepository.removeProfileById(profileId)) {
         const QString header = tr("Delete profile");
         const QString message = tr("Failed to delete a profile.");
-        profileDialog.showProfileMessage(header, message, "error");
+        profileDialog->showProfileMessage(header, message, "error");
         return;
     }
     refreshProfilesForCurrentUser();
@@ -81,8 +104,10 @@ void ProfileController::handleRemoveProfileRequest(int profileId)
 void ProfileController::handleProfileSelection(int profileId)
 {
     setProfileId(profileId);
-    profileDialog.accept();
-
+    if (profileDialog)
+    {
+        profileDialog->close();
+    }
     emit profileSelected();
 }
 
@@ -91,16 +116,21 @@ void ProfileController::handleLogoutRequest()
 {
     setUserId(-1);
     setProfileId(-1);
-
-    profileDialog.accept();
-
+    if (profileDialog)
+    {
+        profileDialog->close();
+    }
     emit logout();
 }
 
 void ProfileController::handleExportDataRequest()
 {
+    if (!profileDialog)
+    {
+        return;
+    }
     QString fileName = QFileDialog::getSaveFileName(
-        &profileDialog,
+        profileDialog,
         tr("Export Data"),
         "",
         tr("CSV Files (*.csv);;All Files (*)"));
@@ -110,7 +140,7 @@ void ProfileController::handleExportDataRequest()
 
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        profileDialog.showProfileMessage(tr("Export Error"), tr("Could not open file for writing"), "error");
+        profileDialog->showProfileMessage(tr("Export Error"), tr("Could not open file for writing"), "error");
         return;
     }
 
@@ -168,5 +198,5 @@ void ProfileController::handleExportDataRequest()
     }
 
     file.close();
-    profileDialog.showProfileMessage(tr("Export Success"), tr("Data exported successfully to ") + fileName, "info");
+    profileDialog->showProfileMessage(tr("Export Success"), tr("Data exported successfully to ") + fileName, "info");
 }

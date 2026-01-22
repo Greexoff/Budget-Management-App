@@ -92,6 +92,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Controller\AppController.cpp" />
     <ClCompile Include="Controller\BaseController.cpp" />
     <ClCompile Include="Controller\CategorySelectionController.cpp" />
     <ClCompile Include="Controller\ChartsController.cpp" />
@@ -133,7 +134,8 @@
     <QtMoc Include="Controller\ControllerManager.h" />
     <QtMoc Include="Controller\FinancialAccountSelectionController.h" />
     <QtMoc Include="Controller\ChartsController.h" />
-    <ClInclude Include="Controller\DashboardController.h" />
+    <QtMoc Include="Controller\AppController.h" />
+    <QtMoc Include="Controller\DashboardController.h" />
     <ClInclude Include="Model\FinancialAccount.h" />
     <ClInclude Include="Model\Profile.h" />
     <ClInclude Include="Model\Repositories\BaseRepository.h" />

@@ -5,12 +5,13 @@
 
 #include "View/ProfileDialogView.h"
 
-#include <QDebug>
+#include <QPointer>
 class ProfileController : public BaseController
 {
     Q_OBJECT
 public:
-    ProfileController(ProfileDialog& profileDialogRef, ProfilesRepository& profileRepositoryRef, QObject* parent = nullptr);
+    ProfileController(ProfilesRepository& profileRepositoryRef, QObject* parent = nullptr);
+    void run() override;
 signals:
     void profileSelected();
     void logout();
@@ -18,7 +19,7 @@ public slots:
 
     void refreshProfilesForCurrentUser();
 private:
-    ProfileDialog& profileDialog;
+    QPointer<ProfileDialog> profileDialog;
 
     ProfilesRepository& profileRepository;
 

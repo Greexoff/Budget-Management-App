@@ -5,18 +5,19 @@
 
 #include "View/LoginDialogView.h"
 
+#include <QPointer>
+
 class UserController : public BaseController
 {
     Q_OBJECT
 public:
-	UserController(LoginDialog& loginDialogRef, UserRepository& userRepositoryRef, QObject* parent = nullptr);
-    void run();
+	UserController(UserRepository& userRepositoryRef, QObject* parent = nullptr);
+    void run() override;
 signals:
     void userLoggedIn();
 private:
-	LoginDialog& loginDialog;                   ///< Reference to the login dialog
-
-	UserRepository& userRepository;             ///< Reference to the user repository
+	QPointer<LoginDialog> loginDialog;                  
+	UserRepository& userRepository;  
 private slots:
     // Authentication handlers
     /**

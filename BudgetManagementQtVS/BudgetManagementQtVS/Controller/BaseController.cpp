@@ -1,7 +1,7 @@
 #include "Controller/BaseController.h"
 
-int BaseController::s_currentUserId = 0;//namespace?
-int BaseController::s_currentProfileId = 0;//namespace?
+int BaseController::s_currentUserId = -1;//namespace?
+int BaseController::s_currentProfileId = -1;//namespace?
 
 //Setters
 void BaseController::setProfileId(int profileId)

@@ -144,6 +144,9 @@
     <ClCompile Include="Controller\DashboardController.cpp">
       <Filter>Source Files\Controller</Filter>
     </ClCompile>
+    <ClCompile Include="Controller\AppController.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model\Transaction.h">
@@ -184,9 +187,6 @@
     </ClInclude>
     <ClInclude Include="Model\FinancialAccount.h">
       <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller\DashboardController.h">
-      <Filter>Header Files\Controller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -263,6 +263,12 @@
     </QtMoc>
     <QtMoc Include="View\DashboardView.h">
       <Filter>Header Files\View</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\AppController.h">
+      <Filter>Header Files\Controller</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\DashboardController.h">
+      <Filter>Header Files\Controller</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>
