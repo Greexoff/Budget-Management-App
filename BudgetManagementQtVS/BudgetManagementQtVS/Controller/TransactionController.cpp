@@ -9,23 +9,14 @@ TransactionController::TransactionController(TransactionRepository& transactionR
 	transactionView = new TransactionWindow();
 	
 	    if (transactionView) {
-           // transactionView->setWindowFlag(Qt::Widget);//DO USUNIECIA
 	        connect(transactionView, &TransactionWindow::addTransactionRequest,
 	            this, &TransactionController::handleAddTransactionRequest);
 	        connect(transactionView, &TransactionWindow::deleteTransactionRequest,
 	            this, &TransactionController::handleDeleteTransactionRequest);
-	        //connect(&transactionWindow, &TransactionWindow::showCategoriesRequest,
-	            //this, &TransactionController::handleShowCategoriesRequestFromView);
 	        connect(transactionView, &TransactionWindow::editTransactionRequest,
 	            this, &TransactionController::handleEditTransactionRequest);
-	        connect(transactionView, &TransactionWindow::backToProfileRequested,
-	            this, &TransactionController::handleBackToProfileRequest);
-	        //connect(&transactionWindow, &TransactionWindow::showFinancialAccountsRequest,
-	            //this, &TransactionController::handleShowFinancialAccountsRequestFromView);
 	        connect(transactionView, &TransactionWindow::editBudgetRequest,
 	            this, &TransactionController::handleEditBudgetRequest);
-	        //connect(&transactionWindow, &TransactionWindow::showChartsRequest,
-	            //this, &TransactionController::handleShowChartsRequestFromView); //CHARTS!!
 	        connect(transactionView, &TransactionWindow::searchTextRequest,
 	            this, &TransactionController::handleFilteringTransactionRequest);
 	        connect(transactionView, &TransactionWindow::columnSortRequest,
@@ -43,26 +34,15 @@ QWidget* TransactionController::getView()
     return transactionView;
 }
 
-//----------------Setting up view-------------------------------------------------
-
-//Method responsible for setting up transactions window
-void TransactionController::setupTransactionWindow()
-{
-    refreshTransactionsView();
-    setFilteringText("");
-    transactionView->clearSearchEdit();
-    transactionView->show();
-}
-
-//Method responsible for refreshing transactions in window, used every time a change in list occurs
 void TransactionController::refreshTransactionsView()
 {
     if (!transactionView || getProfileId() < 0) return;
     QVector<Transaction> allTransactions = transactionRepository.getAllProfileTransaction(getProfileId());
+
     allTransactions = executeFilteringTransaction(allTransactions);
     executeSortingTransaction(allTransactions);
-    QVector<QStringList> tableRows;
 
+    QVector<QStringList> tableRows;
     for (const auto& transaction : allTransactions) {
         QStringList rowData;
         rowData << QString::number(transaction.getTransactionId())
@@ -79,22 +59,15 @@ void TransactionController::refreshTransactionsView()
 
     QDate current = QDate::currentDate();
     double budgetLimit = profileRepository.getBudgetLimit(getProfileId());
-
     double monthlySpent = transactionRepository.getMonthlyExpenses(getProfileId(), current.month(), current.year());
 
     transactionView->updateBudgetDisplay(budgetLimit, monthlySpent);
 }
 
 
-//----------------Handling actions performed on transactions-----------------------
-
-//Method responsible for adding transaction based on inserted data
 void TransactionController::handleAddTransactionRequest()
 {
-    if (getProfileId() < 0) {
-        transactionView->showTransactionMessage(tr("New transaction"), tr("Please select a profile first."), "error");
-        return;
-    }
+    if (getProfileId() < 0) {return;}
 
     QVector<Category> categories = categoryRepository.getAllProfileCategories(getProfileId());
     QVector<FinancialAccount> accounts = financialAccountRepository.getAllProfileFinancialAccounts(getProfileId());
@@ -272,38 +245,6 @@ void TransactionController::handleDeleteTransactionRequest()
         return;
     }
     refreshTransactionsView();
-}
-
-//Method responsible for calling refresh view method when change of data occurs
-void TransactionController::handleDataChangeRequest()
-{
-    if (getProfileId() >= 0) {
-        refreshTransactionsView();
-    }
-}
-
-//Method responsible for showing financial account window when user pressed button
-void TransactionController::handleShowFinancialAccountsRequestFromView()
-{
-    emit showFinancialAccounts();
-}
-
-//Method responsible for showing categories window when user pressed button
-void TransactionController::handleShowCategoriesRequestFromView()
-{
-    emit showCategories();
-}
-
-void TransactionController::handleShowChartsRequestFromView() //CHARTS!!
-{
-    emit showCharts();
-}
-
-//Method that brings back user back to profiles view
-void TransactionController::handleBackToProfileRequest()
-{
-    transactionView->hide();
-    emit returnToProfileView();
 }
 
 //Method responsible for changing amount assigned to monthly budget

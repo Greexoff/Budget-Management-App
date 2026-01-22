@@ -18,24 +18,13 @@ public:
 	TransactionController(TransactionRepository& transactionRepositoryRef, CategoryRepository& categoryRepositoryRef, FinancialAccountRepository& financialAccountRepositoryRef, ProfilesRepository& profileRepositoryRef, QObject* parent = nullptr);
     void run() override;
     QWidget* getView();
-signals: 
-    void categorySelectionRequest(TransactionBuilder& builder);
-    void showCategories();
-	void showCharts(); //CHARTS!!
-    void financialAccountSelectionRequest(TransactionBuilder& builder);
-    void showFinancialAccounts();
-    void returnToProfileView();
 
 public slots:
-
     void handleAddTransactionRequest();
-    void setupTransactionWindow();
-    void handleDataChangeRequest();
     void handleFilteringTransactionRequest(QString searchText);
     void handleEditBudgetRequest();
 
 private:
-	//TransactionWindow& transactionWindow;
 	TransactionRepository& transactionRepository;
     CategoryRepository& categoryRepository;
     FinancialAccountRepository& financialAccountRepository;
@@ -45,17 +34,9 @@ private:
 
     void handleDeleteTransactionRequest();
 
-    void handleShowCategoriesRequestFromView();
-
-    void handleShowFinancialAccountsRequestFromView();
-
-    void handleShowChartsRequestFromView(); //CHARTS!!
-
     void refreshTransactionsView();
 
     void handleEditTransactionRequest();
-
-    void handleBackToProfileRequest();
 
     void handleSortingRequest(int columnId);
 

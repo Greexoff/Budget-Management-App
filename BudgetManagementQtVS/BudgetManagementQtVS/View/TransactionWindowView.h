@@ -2,16 +2,14 @@
 
 #include <QWidget>
 #include <QStandardItemModel>
-#include <QPushButton>
 #include <QTableView>
+#include <QPushButton>
 #include <QLabel>
 #include <QProgressBar>
 #include <QLineEdit>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QMap>
 #include <QHeaderView>
 #include <QMessageBox>
-#include <QFrame>
 
 class TransactionWindow : public QWidget
 {
@@ -33,29 +31,25 @@ signals:
     void editBudgetRequest();
     void columnSortRequest(int columnId);
     void searchTextRequest(const QString& searchText);
-    void backToProfileRequested();
 
 private slots:
-    void onButtonAddTransactionClicked() { emit addTransactionRequest(); }
-    void onButtonDeleteTransactionClicked() { emit deleteTransactionRequest(); }
-    void onButtonEditTransactionClicked() { emit editTransactionRequest(); }
-    void onButtonEditBudgetClicked() { emit editBudgetRequest(); }
-    void onSearchTextChanged(const QString& text) { emit searchTextRequest(text); }
-    void onColumnHeaderClicked(int columnId) { emit columnSortRequest(columnId); }
+    void onButtonAddClicked() { emit addTransactionRequest(); }
+    void onButtonEditClicked() { emit editTransactionRequest(); }
+    void onButtonDeleteClicked() { emit deleteTransactionRequest(); }
+    void onButtonBudgetClicked() { emit editBudgetRequest(); }
 
 private:
-    void setupUI();
-    void setupStyle();
-    void setupConnections();
-    void initializeTransactionTable() const;
+    QMap<QString, QPushButton*> actionButtons;
+    QPushButton* createButton(const QString& text, const QString& objName, void (TransactionWindow::* slot)());
 
     QStandardItemModel* tableModel;
     QLineEdit* searchEdit;
     QProgressBar* budgetProgressBar;
     QLabel* budgetLabel;
-    QPushButton* btnEditBudget;
-    QPushButton* btnAddTransaction;
-    QPushButton* btnEditTransaction;
-    QPushButton* btnDeleteTransaction;
     QTableView* transactionTable;
+
+    void setupUI();
+    void setupStyle();
+    void setupConnections();
+    void initializeTable() const;
 };
