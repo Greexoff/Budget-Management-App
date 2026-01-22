@@ -13,6 +13,8 @@
 #include "View/FinancialAccountSelectionView.h"
 #include "View/ChartsDialogView.h"
 
+#include "View/DashboardView.h"
+
 #include <Model/Repositories/CategoryRepository.h>
 #include <Model/Repositories/UserRepository.h>
 #include <Model/Repositories/ProfileRepository.h>
@@ -29,7 +31,10 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
 
     DatabaseManager::instance();
-
+    DashboardView dashboardView;
+    dashboardView.show();
+    return app.exec(); 
+/*
     UserRepository userRepository;
     ProfilesRepository profileRepository;
     TransactionRepository transactionRepository;
@@ -69,5 +74,5 @@ int main(int argc, char* argv[])
 
     userController.run();
 
-    return app.exec();
+    return app.exec();*/
 }

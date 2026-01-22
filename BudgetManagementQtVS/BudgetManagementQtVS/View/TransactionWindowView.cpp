@@ -91,7 +91,7 @@ void TransactionWindow::setupUI()
 }
 
 
-void TransactionWindow::setCategoryView(CategorySelectionView* view)
+void TransactionWindow::setCategoryView(CategorySelectionView* view)//zrobic z tego templatke i przekazywac index?
 {
 
     QWidget* old = stackedWidget->widget(1);
@@ -101,7 +101,7 @@ void TransactionWindow::setCategoryView(CategorySelectionView* view)
 
     categoryView = view;
 
-    stackedWidget->insertWidget(1, categoryView);
+    stackedWidget->insertWidget(1, view);
 }
 
 void TransactionWindow::setAccountView(FinancialAccountSelectionView* view)
@@ -115,7 +115,7 @@ void TransactionWindow::setAccountView(FinancialAccountSelectionView* view)
     }
 
     accountView = view;
-    stackedWidget->insertWidget(2, accountView);
+    stackedWidget->insertWidget(2, view);
 }
 
 void TransactionWindow::setChartsView(ChartsView* view)
@@ -124,7 +124,7 @@ void TransactionWindow::setChartsView(ChartsView* view)
     if (old) stackedWidget->removeWidget(old);
 
     chartsView = view;
-    stackedWidget->insertWidget(3, chartsView);
+    stackedWidget->insertWidget(3, view);
 }
 
 

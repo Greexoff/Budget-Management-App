@@ -94,7 +94,10 @@ private:
     void setupStyle();
     void setupConnections();
     void updateSidebarStyle(int activeIndex);
-
     QWidget* createTransactionsPage();
     void initializeTransactionTable();
+
+
+    //new stuff
+
 };
