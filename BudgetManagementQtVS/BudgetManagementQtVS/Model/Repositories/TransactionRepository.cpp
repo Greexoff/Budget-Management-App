@@ -69,7 +69,7 @@ QVector<Transaction> TransactionRepository::getAll() const
     return result;
 }
 
-bool TransactionRepository::addTransaction(const Transaction& transaction)
+bool TransactionRepository::addTransaction(const Transaction& transaction) const
 {
     QSqlQuery query(database);
     query.prepare(
@@ -93,7 +93,7 @@ bool TransactionRepository::addTransaction(const Transaction& transaction)
     return true;
 }
 
-bool TransactionRepository::removeTransactionById(int id)
+bool TransactionRepository::removeTransactionById(int id) const
 {
     QSqlQuery query(database);
     query.prepare("DELETE FROM transactions WHERE id = :id");
@@ -108,7 +108,7 @@ bool TransactionRepository::removeTransactionById(int id)
     return true;
 }
 
-bool TransactionRepository::updateTransaction(const Transaction& transaction)
+bool TransactionRepository::updateTransaction(const Transaction& transaction) const
 {
     QSqlQuery query(database);
 

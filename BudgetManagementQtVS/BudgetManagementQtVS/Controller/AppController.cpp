@@ -51,8 +51,7 @@ void AppController::showDashboard()
 {
 	delete currentController;
 
-
-	DashboardController* dashCtrl = new DashboardController();
+	DashboardController* dashCtrl = new DashboardController(profileRepo, transactionRepo, categoryRepo, fAccRepo);
     currentController = dashCtrl;
 
     connect(dashCtrl, &DashboardController::logoutRequested, this, &AppController::handleSwitchingProfile);

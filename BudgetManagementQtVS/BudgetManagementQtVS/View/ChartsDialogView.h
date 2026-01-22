@@ -22,8 +22,8 @@ public:
     explicit ChartsView(QWidget* parent = nullptr);
     ~ChartsView() = default;
 
-    void updatePieChart(const QMap<QString, double>& data);
-    void updateBarChart(double totalIncome, double totalExpense);
+    void updatePieChart(const QMap<QString, double>& data) const;
+    void updateBarChart(double totalIncome, double totalExpense) const;
 
 private:
     QChartView* chartViewPie;

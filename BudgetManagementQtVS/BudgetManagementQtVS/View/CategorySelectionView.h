@@ -19,7 +19,7 @@ public:
     ~CategorySelectionView() = default;
 
 
-    void setCategoryTabHeaders(const QVector<QStringList>& rows);
+    void setCategoryTabHeaders(const QVector<QStringList>& rows) const;
     int getSelectedCategoryId() const;
     void showMessage(QString header, QString message, QString messageType);
     

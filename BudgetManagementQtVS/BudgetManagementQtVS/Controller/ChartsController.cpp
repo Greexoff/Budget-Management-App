@@ -2,17 +2,23 @@
 #include <QDate>
 #include <map>
 
-ChartsController::ChartsController(TransactionWindow& windowRef, ChartsView& viewRef,
-    TransactionRepository& transRepo, CategoryRepository& catRepo,
+ChartsController::ChartsController(TransactionRepository& transRepo, CategoryRepository& catRepo,
     QObject* parent)
     : BaseController(parent),
-    window(windowRef),
-    view(viewRef),
-    transactionRepository(transRepo),
+	transactionRepository(transRepo),
     categoryRepository(catRepo)
 {
- 
-    connect(&window, &TransactionWindow::showChartsRequest, this, &ChartsController::updateCharts);
+    chartsView = new ChartsView();
+}
+
+void ChartsController::run()
+{
+    updateCharts();
+}
+
+QWidget* ChartsController::getView()
+{
+    return chartsView;
 }
 
 void ChartsController::updateCharts()
@@ -27,7 +33,7 @@ QVector<int> ChartsController::getCurrentMonthAndYear()
     return QVector<int>{ d.month(), d.year() };
 }
 
-void ChartsController::setUpPieChart()
+void ChartsController::setUpPieChart() const
 {
 
     QVector<Transaction> transactions = transactionRepository.getAllProfileTransaction(getProfileId());
@@ -39,7 +45,7 @@ void ChartsController::setUpPieChart()
             chartData[catName] += t.getTransactionAmount();
         }
     }
-    view.updatePieChart(chartData);
+    chartsView->updatePieChart(chartData);
 }
 
 void ChartsController::setUptBarChart()
@@ -54,10 +60,10 @@ void ChartsController::setUptBarChart()
     for (auto const& [d, val] : incomeSums) totalIncome += val;
     for (auto const& [d, val] : expenseSums) totalExpense += val;
 
-    view.updateBarChart(totalIncome, totalExpense);
+    chartsView->updateBarChart(totalIncome, totalExpense);
 }
 
-void ChartsController::getSumsforBarChartByDate(std::map<int, double>& incomeSums, std::map<int, double>& expenseSums, int m, int y)
+void ChartsController::getSumsforBarChartByDate(std::map<int, double>& incomeSums, std::map<int, double>& expenseSums, int m, int y) const
 {
     QVector<Transaction> transactions = transactionRepository.getAllProfileTransaction(getProfileId());
     for (const auto& t : transactions) {

@@ -32,5 +32,5 @@ private slots:
      * @param username Desired username
      * @param password Desired password
      */
-    void handleRegisterRequest(const QString& username, const QString& password);
+    void handleRegisterRequest(const QString& username, const QString& password) const;
 };

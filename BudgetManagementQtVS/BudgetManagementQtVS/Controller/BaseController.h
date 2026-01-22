@@ -25,10 +25,10 @@ protected:
 	QString getFilteringText();
 	void setFilteringText(const QString& searchText);
 
-	int getSelectedColumnId();
+	int getSelectedColumnId() const;
 	void setSelectedColumnId(int columnId);
 
-	Qt::SortOrder getLastSortingOrder();
+	Qt::SortOrder getLastSortingOrder() const;
 	void setLastSortingOrder();
 
 	template<typename T, typename matchFound>

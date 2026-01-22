@@ -11,13 +11,16 @@
 #include <QObject>
 #include <QVector>
 #include <QStringList>
+#include <QPointer>
 
 class FinancialAccountController : public BaseController
 {
     Q_OBJECT
 
 public:
-    FinancialAccountController(FinancialAccountSelectionView& viewRef, FinancialAccountRepository& repoRef, QObject* parent = nullptr);
+    FinancialAccountController(FinancialAccountRepository& repoRef, QObject* parent = nullptr);
+    void run();
+    QWidget* getView();
 
     void showAccounts();
 
@@ -34,12 +37,12 @@ public slots:
     void handleSortingRequest(int columnId);
 
 private:
-    FinancialAccountSelectionView& view; 
+    QPointer<FinancialAccountSelectionView> fAccountView; 
     FinancialAccountRepository& financialAccountRepository;
 
     int selectedFinancialAccountIdForTransaction = 1;
 
     void refreshTable();
     QVector<FinancialAccount> executeFilteringFinancialAccount(const QVector<FinancialAccount> allAccounts);
-    void executeSortingFinancialAccount(QVector<FinancialAccount>& allAccounts);
+    void executeSortingFinancialAccount(QVector<FinancialAccount>& allAccounts) const;
 };

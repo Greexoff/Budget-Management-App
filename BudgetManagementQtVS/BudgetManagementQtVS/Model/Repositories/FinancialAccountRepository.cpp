@@ -30,7 +30,8 @@ QVector<FinancialAccount> FinancialAccountRepository::getAllProfileFinancialAcco
 	return financialAccountsForProfile;
 }
 
-bool FinancialAccountRepository::addFinancialAccount(const QString& financialAccountName, const QString& financialAccountType, double financialAccountBalance, int profileId) {
+bool FinancialAccountRepository::addFinancialAccount(const QString& financialAccountName, const QString& financialAccountType, double financialAccountBalance, int profileId) const
+{
 
 	QSqlQuery query(database);
 
@@ -49,7 +50,8 @@ bool FinancialAccountRepository::addFinancialAccount(const QString& financialAcc
 	return true;
 }
 
-bool FinancialAccountRepository::removeFinancialAccount(int financialAccountId) {
+bool FinancialAccountRepository::removeFinancialAccount(int financialAccountId) const
+{
 	
 	if (financialAccountId == 1) {
 		return false;
@@ -88,7 +90,7 @@ bool FinancialAccountRepository::removeFinancialAccount(int financialAccountId) 
 	return true;
 }
 
-bool FinancialAccountRepository::updateFinancialAccount(int financialAccountId, const QString& newName, const QString& newType, double newBalance)
+bool FinancialAccountRepository::updateFinancialAccount(int financialAccountId, const QString& newName, const QString& newType, double newBalance) const
 {
 	if (financialAccountId == 1) return false;
 

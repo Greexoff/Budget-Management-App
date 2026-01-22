@@ -56,7 +56,7 @@ void ChartsView::setupUI()
     contentLayout->addLayout(chartsLayout);
 }
 
-void ChartsView::updatePieChart(const QMap<QString, double>& data)
+void ChartsView::updatePieChart(const QMap<QString, double>& data) const
 {
     QChart* chart = chartViewPie->chart();
     chart->removeAllSeries();
@@ -76,7 +76,7 @@ void ChartsView::updatePieChart(const QMap<QString, double>& data)
     chart->addSeries(series);
 }
 
-void ChartsView::updateBarChart(double totalIncome, double totalExpense)
+void ChartsView::updateBarChart(double totalIncome, double totalExpense) const
 {
     QChart* chart = chartViewBar->chart();
     chart->removeAllSeries();

@@ -15,6 +15,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <algorithm>
+#include <QPointer>
 
 
 class CategoryController : public BaseController
@@ -22,9 +23,12 @@ class CategoryController : public BaseController
     Q_OBJECT
 
 public:
-    CategoryController(CategorySelectionView& viewRef, CategoryRepository& categoryRepositoryRef, QObject* parent = nullptr);
+    CategoryController(CategoryRepository& categoryRepositoryRef, QObject* parent = nullptr);
+    void run();
 
     void showCategories();
+
+    QWidget* getView();
 
 signals:
     void categoriesDataChanged();
@@ -40,12 +44,12 @@ public slots:
     void handleSortRequest(int columnId);
 
 private:
-    CategorySelectionView& view;
+    QPointer<CategorySelectionView> categoryView;
     CategoryRepository& categoryRepository;
 
     int selectedCategoryIdForTransaction = 1; 
 
     void refreshTable();
     QVector<Category> executeFilteringCategory(const QVector<Category> allCategories);
-    void executeSortingCategory(QVector<Category>& allCategories);
+    void executeSortingCategory(QVector<Category>& allCategories) const;
 };

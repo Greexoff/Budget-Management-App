@@ -8,13 +8,13 @@ public:
 
     QVector<Profile> getProfilesByUserId(int userId) const;
 
-    bool addProfile(int userId, QString profileName);
+    bool addProfile(int userId, QString profileName) const;
 
-    bool removeProfileById(int profileId);
+    bool removeProfileById(int profileId) const;
 
-    bool updateProfile(int profileId, const QString& newName);
+    bool updateProfile(int profileId, const QString& newName) const;
 
     double getBudgetLimit(int profileId) const;
 
-    bool setBudgetLimit(int profileId, double limit);
+    bool setBudgetLimit(int profileId, double limit) const;
 };

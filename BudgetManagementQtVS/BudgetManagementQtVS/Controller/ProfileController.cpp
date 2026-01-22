@@ -38,7 +38,7 @@ void ProfileController::run()
 //----------------------Setting up view---------------------------------------
 
 //Method responsible for refreshing/setting up profiles in window, used every time a change in list occurs
-void ProfileController::refreshProfilesForCurrentUser()
+void ProfileController::refreshProfilesForCurrentUser() const
 {
     if (!profileDialog)
     {
@@ -53,7 +53,7 @@ void ProfileController::refreshProfilesForCurrentUser()
 //----------------Handling actions performed on profiles----------------------
 
 //Method responsible for adding profile based on entered data
-void ProfileController::handleAddProfileRequest(const QString& name)
+void ProfileController::handleAddProfileRequest(const QString& name) const
 {
     if (!profileDialog)
     {
@@ -69,7 +69,7 @@ void ProfileController::handleAddProfileRequest(const QString& name)
 }
 
 //Method responsible for handling editing of profile
-void ProfileController::handleEditProfileRequest(int profileId, const QString& newName)
+void ProfileController::handleEditProfileRequest(int profileId, const QString& newName) const
 {
     if (!profileDialog)
     {
@@ -85,7 +85,7 @@ void ProfileController::handleEditProfileRequest(int profileId, const QString& n
 }
 
 //Method responsible for handling deletion of profile
-void ProfileController::handleRemoveProfileRequest(int profileId)
+void ProfileController::handleRemoveProfileRequest(int profileId) const
 {
     if (!profileDialog)
     {
@@ -123,7 +123,7 @@ void ProfileController::handleLogoutRequest()
     emit logout();
 }
 
-void ProfileController::handleExportDataRequest()
+void ProfileController::handleExportDataRequest() const
 {
     if (!profileDialog)
     {

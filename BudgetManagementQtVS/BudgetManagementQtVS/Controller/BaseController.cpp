@@ -61,12 +61,12 @@ QString BaseController::getFilteringText()
 	return filteringText;
 }
 
-int BaseController::getSelectedColumnId()
+int BaseController::getSelectedColumnId() const
 {
 	return selectedColumnId;
 }
 
-Qt::SortOrder BaseController::getLastSortingOrder()
+Qt::SortOrder BaseController::getLastSortingOrder() const
 {
 	return lastSortingOrder;
 }

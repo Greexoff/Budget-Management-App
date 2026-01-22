@@ -10,9 +10,9 @@ public:
 
     int getUserIdBasedOnUsername(QString username, QString password) const;
 
-    bool addUser(QString username, QString password);
+    bool addUser(QString username, QString password) const;
 
-    bool removeUserById(int userId);
+    bool removeUserById(int userId) const;
 
-    bool checkIfUserExists(const QString& username);
+    bool checkIfUserExists(const QString& username) const;
 };

@@ -9,13 +9,15 @@
 
 #include "View/TransactionWindowView.h"
 #include "View/TransactionEditorDialogView.h"
-
+#include <QPointer>
 #include <memory>
 class TransactionController : public BaseController
 {
     Q_OBJECT
 public:
-	TransactionController(TransactionWindow& transactionWindowRef, TransactionRepository& transactionRepositoryRef, CategoryRepository& categoryRepositoryRef, FinancialAccountRepository& financialAccountRepositoryRef, ProfilesRepository& profileRepositoryRef, QObject* parent = nullptr);
+	TransactionController(TransactionRepository& transactionRepositoryRef, CategoryRepository& categoryRepositoryRef, FinancialAccountRepository& financialAccountRepositoryRef, ProfilesRepository& profileRepositoryRef, QObject* parent = nullptr);
+    void run() override;
+    QWidget* getView();
 signals: 
     void categorySelectionRequest(TransactionBuilder& builder);
     void showCategories();
@@ -33,11 +35,13 @@ public slots:
     void handleEditBudgetRequest();
 
 private:
-	TransactionWindow& transactionWindow;
+	//TransactionWindow& transactionWindow;
 	TransactionRepository& transactionRepository;
     CategoryRepository& categoryRepository;
     FinancialAccountRepository& financialAccountRepository;
     ProfilesRepository& profileRepository;
+
+    QPointer<TransactionWindow> transactionView;
 
     void handleDeleteTransactionRequest();
 
@@ -55,7 +59,7 @@ private:
 
     void handleSortingRequest(int columnId);
 
-    void executeSortingTransaction(QVector<Transaction>& allTransactions);
+    void executeSortingTransaction(QVector<Transaction>& allTransactions) const;
 
     QVector<Transaction> executeFilteringTransaction(const QVector<Transaction> allTransactions);
 };

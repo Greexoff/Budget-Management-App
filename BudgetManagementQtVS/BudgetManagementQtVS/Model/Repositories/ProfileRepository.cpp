@@ -27,7 +27,7 @@ QVector<Profile> ProfilesRepository::getProfilesByUserId(int userId) const
     return foundProfiles;
 }
 
-bool ProfilesRepository::addProfile(int userId, QString profileName)
+bool ProfilesRepository::addProfile(int userId, QString profileName) const
 {
     QSqlQuery query(database);
     query.prepare("INSERT INTO profiles (profile_name, user_id) VALUES (:profileName, :userId)");
@@ -43,7 +43,7 @@ bool ProfilesRepository::addProfile(int userId, QString profileName)
     return true;
 }
 
-bool ProfilesRepository::removeProfileById(int profileId)
+bool ProfilesRepository::removeProfileById(int profileId) const
 {
     QSqlQuery query(database);
     query.prepare("DELETE FROM profiles WHERE id = :id");
@@ -57,7 +57,7 @@ bool ProfilesRepository::removeProfileById(int profileId)
     return true;
 }
 
-bool ProfilesRepository::updateProfile(int profileId, const QString& newName)
+bool ProfilesRepository::updateProfile(int profileId, const QString& newName) const
 {
     QSqlQuery query(database);
     query.prepare("UPDATE profiles SET profile_name = :name WHERE id = :id");
@@ -82,7 +82,7 @@ double ProfilesRepository::getBudgetLimit(int profileId) const
     return 0.0;
 }
 
-bool ProfilesRepository::setBudgetLimit(int profileId, double limit)
+bool ProfilesRepository::setBudgetLimit(int profileId, double limit) const
 {
     QSqlQuery query(database);
     query.prepare("UPDATE profiles SET budget_limit = :limit WHERE id = :id");

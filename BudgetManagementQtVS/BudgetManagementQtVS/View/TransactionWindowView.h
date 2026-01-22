@@ -1,9 +1,6 @@
 ﻿#pragma once
-#include "View/CategorySelectionView.h"
-#include "View/FinancialAccountSelectionView.h"
-#include "View/ChartsDialogView.h"
 
-#include <QMainWindow>
+#include <QWidget>
 #include <QStandardItemModel>
 #include <QPushButton>
 #include <QTableView>
@@ -13,73 +10,46 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
-#include <QStackedWidget> 
+#include <QMessageBox>
+#include <QFrame>
 
-class TransactionWindow : public QMainWindow
+class TransactionWindow : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit TransactionWindow(QWidget* parent = nullptr);
-    ~TransactionWindow();
 
-    void setCategoryView(CategorySelectionView* view);
-    void setAccountView(FinancialAccountSelectionView* view);
-    void setChartsView(ChartsView* view);
-
-
-    void navigateToPage(int pageIndex);
-
-    void setTransactionTabHeaders(const QVector<QStringList>& rows);
+    void setTransactionTabHeaders(const QVector<QStringList>& rows) const;
     int getSelectedTransactionId() const;
-    void updateBudgetDisplay(double limit, double spent);
-    void clearSearchEdit();
-    void showTransactionMessage(QString header, QString message, QString messageType);
+    void updateBudgetDisplay(double limit, double spent) const;
+    void clearSearchEdit() const;
+    void showTransactionMessage(const QString& header, const QString& message, const QString& messageType);
 
 signals:
-
-    void backToProfileRequested();
-
-
     void addTransactionRequest();
     void deleteTransactionRequest();
     void editTransactionRequest();
     void editBudgetRequest();
     void columnSortRequest(int columnId);
     void searchTextRequest(const QString& searchText);
-
-    void showChartsRequest();
+    void backToProfileRequested();
 
 private slots:
- 
-    void onButtonChangeProfileClicked();
-
-
-    void onButtonAddTransactionClicked();
-    void onButtonDeleteTransactionClicked();
-    void onButtonEditTransactionClicked();
-    void onButtonEditBudgetClicked();
-    void onColumnHeaderClicked(int columnId);
-    void searchTextChanged(const QString& text);
+    void onButtonAddTransactionClicked() { emit addTransactionRequest(); }
+    void onButtonDeleteTransactionClicked() { emit deleteTransactionRequest(); }
+    void onButtonEditTransactionClicked() { emit editTransactionRequest(); }
+    void onButtonEditBudgetClicked() { emit editBudgetRequest(); }
+    void onSearchTextChanged(const QString& text) { emit searchTextRequest(text); }
+    void onColumnHeaderClicked(int columnId) { emit columnSortRequest(columnId); }
 
 private:
-    QWidget* centralWidget;
-    QStackedWidget* stackedWidget;
+    void setupUI();
+    void setupStyle();
+    void setupConnections();
+    void initializeTransactionTable() const;
 
-
-    QPushButton* btnNavTransactions;
-    QPushButton* btnNavCategories;
-    QPushButton* btnNavAccounts;
-    QPushButton* btnNavCharts;
-    QPushButton* btnNavProfile;
-
-    CategorySelectionView* categoryView = nullptr;
-    FinancialAccountSelectionView* accountView = nullptr;
-    ChartsView* chartsView = nullptr;
-    
-
-    QWidget* pageTransactions;
-    QStandardItemModel* TableModel;
+    QStandardItemModel* tableModel;
     QLineEdit* searchEdit;
     QProgressBar* budgetProgressBar;
     QLabel* budgetLabel;
@@ -88,16 +58,4 @@ private:
     QPushButton* btnEditTransaction;
     QPushButton* btnDeleteTransaction;
     QTableView* transactionTable;
-
-
-    void setupUI();
-    void setupStyle();
-    void setupConnections();
-    void updateSidebarStyle(int activeIndex);
-    QWidget* createTransactionsPage();
-    void initializeTransactionTable();
-
-
-    //new stuff
-
 };

@@ -28,7 +28,7 @@ QVector<Category> CategoryRepository::getAllProfileCategories(int profileId) con
     return categoriesForProfile;
 }
 
-bool CategoryRepository::addCategory(const QString& categoryName, int profileId)
+bool CategoryRepository::addCategory(const QString& categoryName, int profileId) const
 {
     QSqlQuery query(database);
 
@@ -45,7 +45,7 @@ bool CategoryRepository::addCategory(const QString& categoryName, int profileId)
     return true;
 }
 
-bool CategoryRepository::removeCategoryById(int categoryId)
+bool CategoryRepository::removeCategoryById(int categoryId) const
 {
     if (categoryId == 1)//Can adjust magic numbers in some type of namespace
     {
@@ -106,7 +106,7 @@ QString CategoryRepository::getCategoryNameById(int categoryId) const
     return categoryName;
 }
 
-bool CategoryRepository::updateCategory(int categoryId, const QString& newName)
+bool CategoryRepository::updateCategory(int categoryId, const QString& newName) const
 {
     if (categoryId == 1) return false;
 

@@ -4,50 +4,60 @@
 #include <algorithm>
 
 
-CategoryController::CategoryController(CategorySelectionView& viewRef, CategoryRepository& categoryRepositoryRef, QObject* parent)
+CategoryController::CategoryController(CategoryRepository& categoryRepositoryRef, QObject* parent)
     : BaseController(parent),
-    view(viewRef),
     categoryRepository(categoryRepositoryRef)
 {
+    categoryView = new CategorySelectionView();
     setupCategoryView();
     refreshTable();
+}
+
+void CategoryController::run()
+{
+    refreshTable();
+}
+
+QWidget* CategoryController::getView()
+{
+    return categoryView;
 }
 
 void CategoryController::setupCategoryView()
 {
     // 1. ADD CATEGORY
-    connect(&view, &CategorySelectionView::addCategoryRequest, this, [this]() {
+    connect(categoryView, &CategorySelectionView::addCategoryRequest, this, [this]() {
         bool ok;
-        QString name = QInputDialog::getText(&view, "Add Category", "Category Name:", QLineEdit::Normal, "", &ok);
+        QString name = QInputDialog::getText(categoryView, "Add Category", "Category Name:", QLineEdit::Normal, "", &ok);
         if (ok && !name.isEmpty()) {
             handleAddCategoryRequest(name);
         }
         });
 
     // 2. EDIT CATEGORY
-    connect(&view, &CategorySelectionView::editCategoryRequest, this, [this]() {
-        int id = view.getSelectedCategoryId();
+    connect(categoryView, &CategorySelectionView::editCategoryRequest, this, [this]() {
+        int id = categoryView->getSelectedCategoryId();
         if (id == -1) {
-            view.showMessage("Warning", "Select a category to edit.", "error");
+            categoryView->showMessage("Warning", "Select a category to edit.", "error");
             return;
         }
 
         bool ok;
-        QString name = QInputDialog::getText(&view, "Edit Category", "New Name:", QLineEdit::Normal, "", &ok);
+        QString name = QInputDialog::getText(categoryView, "Edit Category", "New Name:", QLineEdit::Normal, "", &ok);
         if (ok && !name.isEmpty()) {
             handleEditCategoryRequest(id, name);
         }
         });
 
     // 3. DELETE CATEGORY
-    connect(&view, &CategorySelectionView::deleteCategoryRequest, this, [this]() {
-        int id = view.getSelectedCategoryId();
+    connect(categoryView, &CategorySelectionView::deleteCategoryRequest, this, [this]() {
+        int id = categoryView->getSelectedCategoryId();
         if (id == -1) {
-            view.showMessage("Warning", "Select a category to delete.", "error");
+            categoryView->showMessage("Warning", "Select a category to delete.", "error");
             return;
         }
 
-        auto reply = QMessageBox::question(&view, "Confirm",
+        auto reply = QMessageBox::question(categoryView, "Confirm",
             "Are you sure you want to delete this category?",
             QMessageBox::Yes | QMessageBox::No);
 
@@ -57,11 +67,11 @@ void CategoryController::setupCategoryView()
         });
 
     // 4. SEARCH & SORT
-    connect(&view, &CategorySelectionView::searchCategoryRequest, this, &CategoryController::handleFilteringCategoryRequest);
-    connect(&view, &CategorySelectionView::columnSortRequest, this, &CategoryController::handleSortRequest);
+    connect(categoryView, &CategorySelectionView::searchCategoryRequest, this, &CategoryController::handleFilteringCategoryRequest);
+    connect(categoryView, &CategorySelectionView::columnSortRequest, this, &CategoryController::handleSortRequest);
 
     // 5. REFRESH
-    connect(&view, &CategorySelectionView::refreshRequest, this, &CategoryController::refreshTable);
+    connect(categoryView, &CategorySelectionView::refreshRequest, this, &CategoryController::refreshTable);
 }
 
 void CategoryController::showCategories()
@@ -91,7 +101,7 @@ void CategoryController::refreshTable()
     }
 
 
-    view.setCategoryTabHeaders(viewData);
+    categoryView->setCategoryTabHeaders(viewData);
     emit categoriesDataChanged();
 }
 
@@ -99,38 +109,38 @@ void CategoryController::refreshTable()
 void CategoryController::handleAddCategoryRequest(const QString& categoryName)
 {
     if (categoryRepository.addCategory(categoryName, getUserId())) {
-        view.showMessage("Success", "Category added successfully.", "info");
+        categoryView->showMessage("Success", "Category added successfully.", "info");
         refreshTable();
     }
     else {
-        view.showMessage("Error", "Failed to add category.", "error");
+        categoryView->showMessage("Error", "Failed to add category.", "error");
     }
 }
 
 void CategoryController::handleEditCategoryRequest(int categoryId, const QString& newName)
 {
     if (categoryRepository.updateCategory(categoryId, newName)) {
-        view.showMessage("Success", "Category updated.", "info");
+        categoryView->showMessage("Success", "Category updated.", "info");
         refreshTable();
     }
     else {
-        view.showMessage("Error", "Failed to update category.", "error");
+        categoryView->showMessage("Error", "Failed to update category.", "error");
     }
 }
 
 void CategoryController::handleDeleteCategoryRequest(int categoryId)
 {
     if (categoryId == selectedCategoryIdForTransaction) {
-        view.showMessage("Error", "Cannot delete default category.", "error");
+        categoryView->showMessage("Error", "Cannot delete default category.", "error");
         return;
     }
 
     if (categoryRepository.removeCategoryById(categoryId)) {
-        view.showMessage("Success", "Category deleted.", "info");
+        categoryView->showMessage("Success", "Category deleted.", "info");
         refreshTable();
     }
     else {
-        view.showMessage("Error", "Failed to delete category (might be in use).", "error");
+        categoryView->showMessage("Error", "Failed to delete category (might be in use).", "error");
     }
 }
 
@@ -159,7 +169,7 @@ QVector<Category> CategoryController::executeFilteringCategory(const QVector<Cat
     return filtered;
 }
 
-void CategoryController::executeSortingCategory(QVector<Category>& allCategories)
+void CategoryController::executeSortingCategory(QVector<Category>& allCategories) const
 {
     std::sort(allCategories.begin(), allCategories.end(), [this](const Category& a, const Category& b) {
         if (getLastSortingOrder() == Qt::AscendingOrder) {

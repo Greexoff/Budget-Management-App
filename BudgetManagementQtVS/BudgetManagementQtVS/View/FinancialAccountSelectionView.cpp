@@ -81,7 +81,7 @@ void FinancialAccountSelectionView::setupUI()
 
 // --- Metody ---
 
-void FinancialAccountSelectionView::setAccountTabHeaders(const QVector<QStringList>& rows)
+void FinancialAccountSelectionView::setAccountTabHeaders(const QVector<QStringList>& rows) const
 {
     tableModel->removeRows(0, tableModel->rowCount());
     for (const QStringList& row : rows) {

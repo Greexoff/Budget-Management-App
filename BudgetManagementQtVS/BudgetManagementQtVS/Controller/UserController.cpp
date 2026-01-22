@@ -52,7 +52,7 @@ void UserController::handleLoginRequest(const QString& username, const QString& 
 }
 
 //Method responsible for register request and adding correct data to database
-void UserController::handleRegisterRequest(const QString& username, const QString& password)
+void UserController::handleRegisterRequest(const QString& username, const QString& password) const
 {
     if (username.isEmpty() || password.isEmpty()) {
         loginDialog->showLoginMessage("Register", "Username and password cannot be empty.", "error");

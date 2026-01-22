@@ -9,13 +9,13 @@ public:
 
     QVector<Transaction> getAll() const;
 
-    bool addTransaction(const Transaction& transaction);
+    bool addTransaction(const Transaction& transaction) const;
 
-    bool removeTransactionById(int id);
+    bool removeTransactionById(int id) const;
 
     QVector<Transaction> getAllProfileTransaction(int profileId) const;
 
-    bool updateTransaction(const Transaction& transaction);
+    bool updateTransaction(const Transaction& transaction) const;
     Transaction getTransactionById(int id) const;
 
     double getMonthlyExpenses(int profileId, int month, int year) const;

@@ -68,7 +68,8 @@ void TransactionEditorDialogView::setTransactionTypes()
 }
 
 
-void TransactionEditorDialogView::setName(const QString& name) {
+void TransactionEditorDialogView::setName(const QString& name) const
+{
 	ui->nameEdit->setText(name);
 }
 
@@ -76,15 +77,18 @@ void TransactionEditorDialogView::setName(const QString& name) {
 //-----------Setting up data of transaction while editing transaction-------------------
 
 
-void TransactionEditorDialogView::setAmount(double amount) {
+void TransactionEditorDialogView::setAmount(double amount) const
+{
 	ui->amountSpin->setValue(amount);
 }
 
-void TransactionEditorDialogView::setDate(const QDate& date) {
+void TransactionEditorDialogView::setDate(const QDate& date) const
+{
 	ui->dateEdit->setDate(date);
 }
 
-void TransactionEditorDialogView::setDescription(const QString& description) {
+void TransactionEditorDialogView::setDescription(const QString& description) const
+{
 	ui->descriptionEdit->setText(description);
 }
 

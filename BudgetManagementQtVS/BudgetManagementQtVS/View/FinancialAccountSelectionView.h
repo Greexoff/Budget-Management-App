@@ -16,10 +16,8 @@ class FinancialAccountSelectionView : public QWidget
 
 public:
     explicit FinancialAccountSelectionView(QWidget* parent = nullptr);
-    ~FinancialAccountSelectionView() = default;
 
-
-    void setAccountTabHeaders(const QVector<QStringList>& rows);
+    void setAccountTabHeaders(const QVector<QStringList>& rows) const;
     int getSelectedAccountId() const;
     void showMessage(QString header, QString message, QString messageType);
     QString getSearchText() const;

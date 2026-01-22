@@ -31,6 +31,9 @@ private slots:
 private:
     UserRepository userRepo;
     ProfilesRepository profileRepo;
+    TransactionRepository transactionRepo;
+    CategoryRepository categoryRepo;
+    FinancialAccountRepository fAccRepo;
 
     QPointer<BaseController> currentController;
 };

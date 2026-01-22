@@ -1,6 +1,6 @@
 ﻿#include <Model/Repositories/UserRepository.h>
 
-bool UserRepository::addUser(QString username, QString password)
+bool UserRepository::addUser(QString username, QString password) const
 {
     QString salt = QUuid::createUuid().toString();
 
@@ -21,7 +21,7 @@ bool UserRepository::addUser(QString username, QString password)
     return true;
 }
 
-bool UserRepository::removeUserById(int userId)
+bool UserRepository::removeUserById(int userId) const
 {
     QSqlQuery query(database);
     query.prepare("DELETE FROM users WHERE id = :id");
@@ -59,7 +59,7 @@ int UserRepository::getUserIdBasedOnUsername(QString username, QString password)
     return -1;
 }
 
-bool UserRepository::checkIfUserExists(const QString& username)
+bool UserRepository::checkIfUserExists(const QString& username) const
 {
     QSqlQuery query(database);
     query.prepare("SELECT id FROM users WHERE username = :username");

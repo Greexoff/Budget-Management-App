@@ -17,7 +17,7 @@ signals:
     void logout();
 public slots:
 
-    void refreshProfilesForCurrentUser();
+    void refreshProfilesForCurrentUser() const;
 private:
     QPointer<ProfileDialog> profileDialog;
 
@@ -25,14 +25,14 @@ private:
 
     void handleProfileSelection(int profileId);
 
-    void handleAddProfileRequest(const QString& name);
+    void handleAddProfileRequest(const QString& name) const;
 
-    void handleRemoveProfileRequest(int profileId);
+    void handleRemoveProfileRequest(int profileId) const;
 
-    void handleEditProfileRequest(int profileId, const QString& newName);
+    void handleEditProfileRequest(int profileId, const QString& newName) const;
 
     void handleLogoutRequest();
 
-    void handleExportDataRequest();
+    void handleExportDataRequest() const;
 };
 

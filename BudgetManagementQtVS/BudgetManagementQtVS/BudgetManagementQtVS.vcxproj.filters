@@ -114,9 +114,6 @@
     <ClCompile Include="Model\Repositories\BaseRepository.cpp">
       <Filter>Source Files\Model\Repositories</Filter>
     </ClCompile>
-    <ClCompile Include="Controller\ControllerManager.cpp">
-      <Filter>Source Files\Controller</Filter>
-    </ClCompile>
     <ClCompile Include="View\TransactionEditorDialogView.cpp">
       <Filter>Source Files\View</Filter>
     </ClCompile>
@@ -233,9 +230,6 @@
     </QtMoc>
     <QtMoc Include="View\CategorySelectionView.h">
       <Filter>Header Files\View</Filter>
-    </QtMoc>
-    <QtMoc Include="Controller\ControllerManager.h">
-      <Filter>Header Files\Controller</Filter>
     </QtMoc>
     <QtMoc Include="Controller\ProfileController.h">
       <Filter>Header Files\Controller</Filter>

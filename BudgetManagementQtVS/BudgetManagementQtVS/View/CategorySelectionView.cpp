@@ -73,7 +73,7 @@ void CategorySelectionView::setupUI()
 }
 
 
-void CategorySelectionView::setCategoryTabHeaders(const QVector<QStringList>& rows)
+void CategorySelectionView::setCategoryTabHeaders(const QVector<QStringList>& rows) const
 {
     tableModel->removeRows(0, tableModel->rowCount());
 

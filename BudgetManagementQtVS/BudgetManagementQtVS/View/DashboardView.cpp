@@ -92,28 +92,33 @@ void DashboardView::setDashboardUi()
     fillSectionsTabs();
     addTabsWidgetsToSidebar(sidebarLayout);
 
-
-
-
-    // --- 2. CONTENT  ---
     stackedWidget = new QStackedWidget();
-
-
-    stackedWidget->addWidget(new QWidget());
-
-
-    QWidget* accountsPlaceholder = new QWidget();
-    new QVBoxLayout(accountsPlaceholder);
-    stackedWidget->addWidget(accountsPlaceholder);
-
-
-    QWidget* chartsPlaceholder = new QWidget();
-    new QVBoxLayout(chartsPlaceholder);
-    stackedWidget->addWidget(chartsPlaceholder);
-
-
+    for (auto const& page : sectionsTabs.keys())
+    {
+        stackedWidget->addWidget(new QWidget());
+    }
     mainLayout->addWidget(sidebarFrame);
     mainLayout->addWidget(stackedWidget);
+
+}
+
+void DashboardView::replaceCurrentWidget(SelectedPage page, QWidget* widget) const
+{
+    if (!widget)
+    {
+        return;
+    }
+    QWidget* oldWidget = stackedWidget->widget(page);
+    if (oldWidget == widget) return;
+    stackedWidget->removeWidget(oldWidget);
+    if (oldWidget)
+    {
+        oldWidget->deleteLater();
+    }
+    stackedWidget->insertWidget(page, widget);
+    stackedWidget->setCurrentIndex(page);
+    widget->show();
+    stackedWidget->update();
 }
 
 void DashboardView::setupConnections()
@@ -129,6 +134,7 @@ void DashboardView::navigateToPage(SelectedPage selectedPage)
 {
     stackedWidget->setCurrentIndex(selectedPage);
     updateSidebarStyle(selectedPage);
+    emit pageChangeRequested(selectedPage);
 }
 
 void DashboardView::updateSidebarStyle(SelectedPage selectedPage)
@@ -151,19 +157,6 @@ void DashboardView::setupStyle()
         "QPushButton#navButton { text-align: left; padding: 15px 30px; border: none; color: #b0bec5; font-size: 14px; background: transparent; }"
         "QPushButton#navButton:hover { background-color: #333333; color: white; }"
         "QPushButton#navButton[active='true'] { text-align: left; padding: 15px 30px; border: none; color: white; font-size: 14px; background-color: #2c3e50; border-left: 5px solid #3498db; }"
-        "QLabel#viewLabel { font-size: 24px; font-weight: bold; color: white; }"
-        "QLineEdit, QDateEdit, QSpinBox, QDoubleSpinBox, QComboBox { padding: 8px; border: 1px solid #444444; border-radius: 5px; background-color: #2d2d2d; color: white; selection-background-color: #3498db; }"
-        "QFrame#budgetFrame { background-color: #1e1e1e; border-radius: 10px; border: 1px solid #333333; padding: 10px; }"
-        "QFrame#budgetFrame QLabel { color: white; }"
-        "QProgressBar { border: none; background-color: #2d2d2d; border-radius: 7px; text-align: center; color: white; }"
-        "QProgressBar::chunk { background-color: #2ecc71; border-radius: 7px; }"
-        "QPushButton#actionButtonAdd { background-color: #27ae60; color: white; border-radius: 5px; padding: 8px 15px; font-weight: bold; }"
-        "QPushButton#actionButtonDelete { background-color: #c0392b; color: white; border-radius: 5px; padding: 8px 15px; }"
-        "QPushButton#actionButton { background-color: #2980b9; color: white; border-radius: 5px; padding: 8px 15px; }"
-        "QTableView { border: 1px solid #333333; background-color: #1e1e1e; color: white; gridline-color: #333333; selection-background-color: #3498db; selection-color: white; }"
-        "QHeaderView::section { background-color: #2d2d2d; padding: 8px; border: 1px solid #333333; font-weight: bold; color: white; }"
-        "QDialog, QMessageBox, QInputDialog { background-color: #1e1e1e; color: white; font-size: 14px; }"
-        "QDialog QPushButton { background-color: #333333; color: white; border: 1px solid #444444; border-radius: 4px; padding: 6px 15px; }"
     );
 }
 void DashboardView::onButtonChangeProfileClicked() { emit backToProfileRequested(); }

@@ -25,11 +25,6 @@ public:
     static QVBoxLayout* setSidebarLayout(QFrame* sidebarFrame);
     static void setAppTitle(QVBoxLayout*& sidebarLayout);
     void fillSectionsTabs();
-
-	signals:
-        void backToProfileRequested();
-
-private:
     enum SelectedPage
     {
         DashboardPage,
@@ -38,6 +33,12 @@ private:
         FinancialAccountPage,
         ChartsPage
     };
+    void replaceCurrentWidget(SelectedPage page, QWidget* widget) const;
+	signals:
+        void backToProfileRequested();
+        void pageChangeRequested(SelectedPage selectedPage);
+
+private:
     QMap<SelectedPage, QPushButton*> sectionsTabs;
     QPushButton* logoutButton;
     QStackedWidget* stackedWidget;

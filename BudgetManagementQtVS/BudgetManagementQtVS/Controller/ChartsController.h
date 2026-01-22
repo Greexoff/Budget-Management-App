@@ -6,6 +6,7 @@
 
 #include <View/TransactionWindowView.h>
 #include "View/ChartsDialogView.h"
+#include <QPointer>
 
 
 class ChartsController : public BaseController
@@ -13,21 +14,20 @@ class ChartsController : public BaseController
     Q_OBJECT
 
 public:
-    ChartsController(TransactionWindow& windowRef, ChartsView& viewRef,
-        TransactionRepository& transRepo, CategoryRepository& catRepo,
-        QObject* parent = nullptr);
+    ChartsController(TransactionRepository& transRepo, CategoryRepository& catRepo, QObject* parent = nullptr);
+    void run();
+    QWidget* getView();
 
 public slots:
     void updateCharts();
 
 private:
-    TransactionWindow& window;
-    ChartsView& view;
+    QPointer<ChartsView> chartsView;
     TransactionRepository& transactionRepository;
     CategoryRepository& categoryRepository;
 
-    void setUpPieChart();
+    void setUpPieChart() const;
     void setUptBarChart();
     QVector<int> getCurrentMonthAndYear();
-    void getSumsforBarChartByDate(std::map<int, double>& incomeSums, std::map<int, double>& expenseSums, const int currentMonth, const int currentYear);
+    void getSumsforBarChartByDate(std::map<int, double>& incomeSums, std::map<int, double>& expenseSums, const int currentMonth, const int currentYear) const;
 };

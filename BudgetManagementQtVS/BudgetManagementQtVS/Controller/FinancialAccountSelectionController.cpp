@@ -9,36 +9,51 @@
 #include <QDoubleSpinBox>
 #include <QLineEdit>
 
-FinancialAccountController::FinancialAccountController(FinancialAccountSelectionView& viewRef, FinancialAccountRepository& repoRef, QObject* parent)
-    : BaseController(parent), view(viewRef), financialAccountRepository(repoRef)
+FinancialAccountController::FinancialAccountController(FinancialAccountRepository& repoRef, QObject* parent)
+    : BaseController(parent), financialAccountRepository(repoRef)
 {
-    setupFinancialAccountWindow();
+    fAccountView = new FinancialAccountSelectionView();
+    if (fAccountView) {
+        setupFinancialAccountWindow();
+        refreshTable();
+    }
+}
+
+
+void FinancialAccountController::run()
+{
     refreshTable();
 }
+
+QWidget* FinancialAccountController::getView()
+{
+    return fAccountView;
+}
+
 
 void FinancialAccountController::setupFinancialAccountWindow()
 {
     // 1. Refresh
-    connect(&view, &FinancialAccountSelectionView::refreshRequest, this, &FinancialAccountController::refreshTable);
+    connect(fAccountView, &FinancialAccountSelectionView::refreshRequest, this, &FinancialAccountController::refreshTable);
 
     // 2. ADD ACCOUNT
-    connect(&view, &FinancialAccountSelectionView::addAccountRequest, this, &FinancialAccountController::handleFinancialAccountAddRequest);
+    connect(fAccountView, &FinancialAccountSelectionView::addAccountRequest, this, &FinancialAccountController::handleFinancialAccountAddRequest);
 
     // 3. EDIT ACCOUNT 
-    connect(&view, &FinancialAccountSelectionView::editAccountRequest, this, &FinancialAccountController::handleFinancialAccountEditRequest);
+    connect(fAccountView, &FinancialAccountSelectionView::editAccountRequest, this, &FinancialAccountController::handleFinancialAccountEditRequest);
 
     // 4. DELETE ACCOUNT
-    connect(&view, &FinancialAccountSelectionView::deleteAccountRequest, this, [this]() {
-        int id = view.getSelectedAccountId();
+    connect(fAccountView, &FinancialAccountSelectionView::deleteAccountRequest, this, [this]() {
+        int id = fAccountView->getSelectedAccountId();
         if (id == -1) return; 
 
-        auto reply = QMessageBox::question(&view, "Confirm", "Delete this account?", QMessageBox::Yes | QMessageBox::No);
+        auto reply = QMessageBox::question(fAccountView, "Confirm", "Delete this account?", QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) handleFinancialAccountDeleteRequest(id);
         });
 
     // 5. SEARCH & SORT
-    connect(&view, &FinancialAccountSelectionView::searchAccountRequest, this, &FinancialAccountController::handleFinancialAccountFilteringRequest);
-    connect(&view, &FinancialAccountSelectionView::columnSortRequest, this, &FinancialAccountController::handleSortingRequest);
+    connect(fAccountView, &FinancialAccountSelectionView::searchAccountRequest, this, &FinancialAccountController::handleFinancialAccountFilteringRequest);
+    connect(fAccountView, &FinancialAccountSelectionView::columnSortRequest, this, &FinancialAccountController::handleSortingRequest);
 }
 
 void FinancialAccountController::showAccounts() { refreshTable(); }
@@ -58,7 +73,7 @@ void FinancialAccountController::refreshTable()
         row << QString::number(acc.getFinancialAccountBalance(), 'f', 2) + " PLN";
         viewData.append(row);
     }
-    view.setAccountTabHeaders(viewData);
+    fAccountView->setAccountTabHeaders(viewData);
     emit financialAccountDataChanged();
 }
 
@@ -66,37 +81,37 @@ void FinancialAccountController::refreshTable()
 void FinancialAccountController::handleFinancialAccountAddRequest(const QString& name, const QString& type, double balance)
 {
     if (financialAccountRepository.addFinancialAccount(name, type, balance, getProfileId())) {
-        view.showMessage("Success", "Account added.", "info");
+        fAccountView->showMessage("Success", "Account added.", "info");
         refreshTable();
     }
     else {
-        view.showMessage("Error", "Failed to add account.", "error");
+        fAccountView->showMessage("Error", "Failed to add account.", "error");
     }
 }
 
 void FinancialAccountController::handleFinancialAccountEditRequest(int id, const QString& name, const QString& type, double balance)
 {
     if (financialAccountRepository.updateFinancialAccount(id, name, type, balance)) {
-        view.showMessage("Success", "Updated.", "info");
+        fAccountView->showMessage("Success", "Updated.", "info");
         refreshTable();
     }
     else {
-        view.showMessage("Error", "Failed to update.", "error");
+        fAccountView->showMessage("Error", "Failed to update.", "error");
     }
 }
 
 void FinancialAccountController::handleFinancialAccountDeleteRequest(int id)
 {
     if (id == selectedFinancialAccountIdForTransaction) {
-        view.showMessage("Error", "Cannot delete default account.", "error");
+        fAccountView->showMessage("Error", "Cannot delete default account.", "error");
         return;
     }
     if (financialAccountRepository.removeFinancialAccount(id)) {
-        view.showMessage("Success", "Deleted.", "info");
+        fAccountView->showMessage("Success", "Deleted.", "info");
         refreshTable();
     }
     else {
-        view.showMessage("Error", "Failed to delete.", "error");
+        fAccountView->showMessage("Error", "Failed to delete.", "error");
     }
 }
 
@@ -122,7 +137,7 @@ QVector<FinancialAccount> FinancialAccountController::executeFilteringFinancialA
     return filtered;
 }
 
-void FinancialAccountController::executeSortingFinancialAccount(QVector<FinancialAccount>& allAccounts)
+void FinancialAccountController::executeSortingFinancialAccount(QVector<FinancialAccount>& allAccounts) const
 {
     std::sort(allAccounts.begin(), allAccounts.end(), [this](const FinancialAccount& a, const FinancialAccount& b) {
         bool asc = (getLastSortingOrder() == Qt::AscendingOrder);

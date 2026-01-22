@@ -1,30 +1,47 @@
 ﻿#include "Controller/TransactionController.h"
 #include <QInputDialog> 
 
-TransactionController::TransactionController(TransactionWindow& transactionWindowRef, TransactionRepository& transactionRepositoryRef, CategoryRepository& categoryRepositoryRef, FinancialAccountRepository& financialAccountRepositoryRef, ProfilesRepository& profileRepositoryRef, QObject* parent)
-    : BaseController(parent), transactionWindow(transactionWindowRef), transactionRepository(transactionRepositoryRef), categoryRepository(categoryRepositoryRef), financialAccountRepository(financialAccountRepositoryRef), profileRepository(profileRepositoryRef) {
-    connect(&transactionWindow, &TransactionWindow::addTransactionRequest,
-        this, &TransactionController::handleAddTransactionRequest);
-    connect(&transactionWindow, &TransactionWindow::deleteTransactionRequest,
-        this, &TransactionController::handleDeleteTransactionRequest);
-    //connect(&transactionWindow, &TransactionWindow::showCategoriesRequest,
-        //this, &TransactionController::handleShowCategoriesRequestFromView);
-    connect(&transactionWindow, &TransactionWindow::editTransactionRequest,
-        this, &TransactionController::handleEditTransactionRequest);
-    connect(&transactionWindow, &TransactionWindow::backToProfileRequested,
-        this, &TransactionController::handleBackToProfileRequest);
-    //connect(&transactionWindow, &TransactionWindow::showFinancialAccountsRequest,
-        //this, &TransactionController::handleShowFinancialAccountsRequestFromView);
-    connect(&transactionWindow, &TransactionWindow::editBudgetRequest,
-        this, &TransactionController::handleEditBudgetRequest);
-    //connect(&transactionWindow, &TransactionWindow::showChartsRequest,
-		//this, &TransactionController::handleShowChartsRequestFromView); //CHARTS!!
-    connect(&transactionWindow, &TransactionWindow::searchTextRequest,
-        this, &TransactionController::handleFilteringTransactionRequest);
-    connect(&transactionWindow, &TransactionWindow::columnSortRequest,
-        this, &TransactionController::handleSortingRequest);
+TransactionController::TransactionController(TransactionRepository& transactionRepositoryRef, CategoryRepository& categoryRepositoryRef, FinancialAccountRepository& financialAccountRepositoryRef, ProfilesRepository& profileRepositoryRef, QObject* parent)
+	: BaseController(parent), transactionRepository(transactionRepositoryRef),
+	  categoryRepository(categoryRepositoryRef), financialAccountRepository(financialAccountRepositoryRef),
+	  profileRepository(profileRepositoryRef)
+{
+	transactionView = new TransactionWindow();
+	
+	    if (transactionView) {
+           // transactionView->setWindowFlag(Qt::Widget);//DO USUNIECIA
+	        connect(transactionView, &TransactionWindow::addTransactionRequest,
+	            this, &TransactionController::handleAddTransactionRequest);
+	        connect(transactionView, &TransactionWindow::deleteTransactionRequest,
+	            this, &TransactionController::handleDeleteTransactionRequest);
+	        //connect(&transactionWindow, &TransactionWindow::showCategoriesRequest,
+	            //this, &TransactionController::handleShowCategoriesRequestFromView);
+	        connect(transactionView, &TransactionWindow::editTransactionRequest,
+	            this, &TransactionController::handleEditTransactionRequest);
+	        connect(transactionView, &TransactionWindow::backToProfileRequested,
+	            this, &TransactionController::handleBackToProfileRequest);
+	        //connect(&transactionWindow, &TransactionWindow::showFinancialAccountsRequest,
+	            //this, &TransactionController::handleShowFinancialAccountsRequestFromView);
+	        connect(transactionView, &TransactionWindow::editBudgetRequest,
+	            this, &TransactionController::handleEditBudgetRequest);
+	        //connect(&transactionWindow, &TransactionWindow::showChartsRequest,
+	            //this, &TransactionController::handleShowChartsRequestFromView); //CHARTS!!
+	        connect(transactionView, &TransactionWindow::searchTextRequest,
+	            this, &TransactionController::handleFilteringTransactionRequest);
+	        connect(transactionView, &TransactionWindow::columnSortRequest,
+	            this, &TransactionController::handleSortingRequest);
+	    }
 }
 
+void TransactionController::run()
+{
+    refreshTransactionsView();
+}
+
+QWidget* TransactionController::getView()
+{
+    return transactionView;
+}
 
 //----------------Setting up view-------------------------------------------------
 
@@ -33,14 +50,14 @@ void TransactionController::setupTransactionWindow()
 {
     refreshTransactionsView();
     setFilteringText("");
-    transactionWindow.clearSearchEdit();
-    transactionWindow.show();
+    transactionView->clearSearchEdit();
+    transactionView->show();
 }
 
 //Method responsible for refreshing transactions in window, used every time a change in list occurs
 void TransactionController::refreshTransactionsView()
 {
-    if (getProfileId() < 0) return;
+    if (!transactionView || getProfileId() < 0) return;
     QVector<Transaction> allTransactions = transactionRepository.getAllProfileTransaction(getProfileId());
     allTransactions = executeFilteringTransaction(allTransactions);
     executeSortingTransaction(allTransactions);
@@ -58,14 +75,14 @@ void TransactionController::refreshTransactionsView()
             << financialAccountRepository.getFinancialAccountNameById(transaction.getFinancialAccountId());
         tableRows.append(rowData);
     }
-    transactionWindow.setTransactionTabHeaders(tableRows);
+    transactionView->setTransactionTabHeaders(tableRows);
 
     QDate current = QDate::currentDate();
     double budgetLimit = profileRepository.getBudgetLimit(getProfileId());
 
     double monthlySpent = transactionRepository.getMonthlyExpenses(getProfileId(), current.month(), current.year());
 
-    transactionWindow.updateBudgetDisplay(budgetLimit, monthlySpent);
+    transactionView->updateBudgetDisplay(budgetLimit, monthlySpent);
 }
 
 
@@ -75,7 +92,7 @@ void TransactionController::refreshTransactionsView()
 void TransactionController::handleAddTransactionRequest()
 {
     if (getProfileId() < 0) {
-        transactionWindow.showTransactionMessage(tr("New transaction"), tr("Please select a profile first."), "error");
+        transactionView->showTransactionMessage(tr("New transaction"), tr("Please select a profile first."), "error");
         return;
     }
 
@@ -83,11 +100,11 @@ void TransactionController::handleAddTransactionRequest()
     QVector<FinancialAccount> accounts = financialAccountRepository.getAllProfileFinancialAccounts(getProfileId());
 
     if (accounts.isEmpty()) {
-        transactionWindow.showTransactionMessage(tr("Warning"), tr("You need to add a Financial Account first!"), "error");
+        transactionView->showTransactionMessage(tr("Warning"), tr("You need to add a Financial Account first!"), "error");
         return;
     }
 
-    TransactionEditorDialogView dialog(&transactionWindow);
+    TransactionEditorDialogView dialog(transactionView);
     dialog.setCategories(categories);
     dialog.setFinancialAccounts(accounts);
     dialog.setTransactionTypes();
@@ -104,7 +121,7 @@ void TransactionController::handleAddTransactionRequest()
                 dialog.refreshCategories(newCats, newId);
             }
             else {
-                transactionWindow.showTransactionMessage("Error", "Failed to add category", "error");
+                transactionView->showTransactionMessage("Error", "Failed to add category", "error");
             }
         });
 
@@ -120,14 +137,14 @@ void TransactionController::handleAddTransactionRequest()
                 dialog.refreshFinancialAccounts(newAccs, newId);
             }
             else {
-                transactionWindow.showTransactionMessage("Error", "Failed to add account", "error");
+                transactionView->showTransactionMessage("Error", "Failed to add account", "error");
             }
         });
 
     if (dialog.exec() == QDialog::Accepted) {
         QString name = dialog.getName();
         if (name.trimmed().isEmpty()) {
-            transactionWindow.showTransactionMessage(tr("Error"), tr("Transaction name cannot be empty."), "error");
+            transactionView->showTransactionMessage(tr("Error"), tr("Transaction name cannot be empty."), "error");
             return;
         }
 
@@ -147,7 +164,7 @@ void TransactionController::handleAddTransactionRequest()
             refreshTransactionsView();
         }
         else {
-            transactionWindow.showTransactionMessage(tr("Error"), tr("Failed to add transaction to database."), "error");
+            transactionView->showTransactionMessage(tr("Error"), tr("Failed to add transaction to database."), "error");
         }
     }
 }
@@ -155,9 +172,9 @@ void TransactionController::handleAddTransactionRequest()
 //Method responsible for handling transaction edition
 void TransactionController::handleEditTransactionRequest()
 {
-    int transactionId = transactionWindow.getSelectedTransactionId();
+    int transactionId = transactionView->getSelectedTransactionId();
     if (transactionId < 0) {
-        transactionWindow.showTransactionMessage(tr("Edit transaction"), tr("No transaction selected."), "error");
+        transactionView->showTransactionMessage(tr("Edit transaction"), tr("No transaction selected."), "error");
         return;
     }
 
@@ -167,7 +184,7 @@ void TransactionController::handleEditTransactionRequest()
     QVector<Category> categories = categoryRepository.getAllProfileCategories(getProfileId());
     QVector<FinancialAccount> accounts = financialAccountRepository.getAllProfileFinancialAccounts(getProfileId());
 
-    TransactionEditorDialogView dialog(&transactionWindow);
+    TransactionEditorDialogView dialog(transactionView);
     dialog.setWindowTitle(tr("Edit Transaction"));
 
     dialog.setCategories(categories);
@@ -193,7 +210,7 @@ void TransactionController::handleEditTransactionRequest()
                 dialog.refreshCategories(newCats, newId);
             }
             else {
-                transactionWindow.showTransactionMessage("Error", "Failed to add category", "error");
+                transactionView->showTransactionMessage("Error", "Failed to add category", "error");
             }
         });
     connect(&dialog, &TransactionEditorDialogView::addFinancialAccountRequested, this,
@@ -207,14 +224,14 @@ void TransactionController::handleEditTransactionRequest()
                 dialog.refreshFinancialAccounts(newAccs, newId);
             }
             else {
-                transactionWindow.showTransactionMessage("Error", "Failed to add account", "error");
+                transactionView->showTransactionMessage("Error", "Failed to add account", "error");
             }
         });
 
     if (dialog.exec() == QDialog::Accepted) {
         QString name = dialog.getName();
         if (name.trimmed().isEmpty()) {
-            transactionWindow.showTransactionMessage(tr("Error"), tr("Transaction name cannot be empty."), "error");
+            transactionView->showTransactionMessage(tr("Error"), tr("Transaction name cannot be empty."), "error");
             return;
         }
 
@@ -235,7 +252,7 @@ void TransactionController::handleEditTransactionRequest()
             refreshTransactionsView();
         }
         else {
-            transactionWindow.showTransactionMessage(tr("Error"), tr("Failed to update transaction."), "error");
+            transactionView->showTransactionMessage(tr("Error"), tr("Failed to update transaction."), "error");
         }
     }
 }
@@ -243,15 +260,15 @@ void TransactionController::handleEditTransactionRequest()
 //Method responsible for handling deletion of transaction
 void TransactionController::handleDeleteTransactionRequest()
 {
-    int transactionId = transactionWindow.getSelectedTransactionId();
+    int transactionId = transactionView->getSelectedTransactionId();
     if (transactionId < 0) {
-        transactionWindow.showTransactionMessage(tr("Delete"), tr("No transaction selected."), "error");
+        transactionView->showTransactionMessage(tr("Delete"), tr("No transaction selected."), "error");
         return;
     }
 
     if (!transactionRepository.removeTransactionById(transactionId))
     {
-        transactionWindow.showTransactionMessage(tr("Delete"), tr("Failed to delete transaction."), "error");
+        transactionView->showTransactionMessage(tr("Delete"), tr("Failed to delete transaction."), "error");
         return;
     }
     refreshTransactionsView();
@@ -285,7 +302,7 @@ void TransactionController::handleShowChartsRequestFromView() //CHARTS!!
 //Method that brings back user back to profiles view
 void TransactionController::handleBackToProfileRequest()
 {
-    transactionWindow.hide();
+    transactionView->hide();
     emit returnToProfileView();
 }
 
@@ -294,7 +311,7 @@ void TransactionController::handleEditBudgetRequest()
 {
     bool ok;
     double currentLimit = profileRepository.getBudgetLimit(getProfileId());
-    double newLimit = QInputDialog::getDouble(&transactionWindow, tr("Budget"),
+    double newLimit = QInputDialog::getDouble(transactionView, tr("Budget"),
         tr("Set Monthly Budget Limit (PLN):"),
         currentLimit, 0, 1000000, 2, &ok);
     if (ok) {
@@ -338,7 +355,7 @@ void TransactionController::handleSortingRequest(int columnId)
 }
 
 //An actual method for handling sorting transactions
-void TransactionController::executeSortingTransaction(QVector<Transaction>& allTransactions)
+void TransactionController::executeSortingTransaction(QVector<Transaction>& allTransactions) const
 {
     auto compareValues = [&](const auto& valA, const auto& valB) -> bool
         {

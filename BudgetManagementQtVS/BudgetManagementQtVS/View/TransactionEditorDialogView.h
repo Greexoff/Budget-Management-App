@@ -26,10 +26,10 @@ public:
 	int getSelectedCategoryId() const;
 	int getSelectedFinancialAccountId() const;
 
-	void setName(const QString& name);
-	void setAmount(double amount);
-	void setDate(const QDate& date);
-	void setDescription(const QString& description);
+	void setName(const QString& name) const;
+	void setAmount(double amount) const;
+	void setDate(const QDate& date) const;
+	void setDescription(const QString& description) const;
 	void setType(const QString& type);
 	void setSelectedCategoryId(int categoryId);
 	void setSelectedFinancialAccountId(int financialAccountId);
