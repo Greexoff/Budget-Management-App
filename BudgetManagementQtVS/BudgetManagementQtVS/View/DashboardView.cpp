@@ -56,7 +56,6 @@ void DashboardView::setAppTitle(QVBoxLayout* &sidebarLayout)
 void DashboardView::fillSectionsTabs()
 {
     sectionsTabs = {
-      {DashboardPage, new QPushButton("Dashboard") },
       {TransactionPage, new QPushButton("Transaction")},
       {CategoryPage, new QPushButton("Categories")},
       {FinancialAccountPage, new QPushButton("Financial Accounts")},
@@ -70,7 +69,7 @@ void DashboardView::addTabsWidgetsToSidebar(QVBoxLayout* &sidebarLayout)
     {
         navigationButton->setObjectName("navButton");
         sidebarLayout->addWidget(navigationButton);
-        if (page == DashboardPage)
+        if (page == TransactionPage)
         {
             navigationButton->setProperty("active", true);
         }

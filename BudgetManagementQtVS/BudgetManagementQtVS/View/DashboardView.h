@@ -27,12 +27,12 @@ public:
     void fillSectionsTabs();
     enum SelectedPage
     {
-        DashboardPage,
         TransactionPage,
         CategoryPage,
         FinancialAccountPage,
         ChartsPage
     };
+    void navigateToPage(SelectedPage selectedPage);
     void replaceCurrentWidget(SelectedPage page, QWidget* widget) const;
 	signals:
         void backToProfileRequested();
@@ -46,7 +46,6 @@ private:
     void addTabsWidgetsToSidebar(QVBoxLayout*& sidebarLayout);
     void setDashboardUi();
     void setupConnections();
-    void navigateToPage(SelectedPage selectedPage);
     void updateSidebarStyle(SelectedPage selectedPage);
     void setupStyle();
 private slots:
