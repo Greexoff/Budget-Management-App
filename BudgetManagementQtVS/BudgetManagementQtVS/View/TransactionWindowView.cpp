@@ -1,175 +1,171 @@
 ﻿#include "View/TransactionWindowView.h"
-#include "ui_TransactionWindowView.h"
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QAbstractItemView>
-#include <QHeaderView>  
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFrame>
 
-/**
- * @brief Constructs the main window and initializes UI components
- * @param parent Parent widget
- */
-TransactionWindow::TransactionWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow), TableModel(new QStandardItemModel(this))
+TransactionWindow::TransactionWindow(QWidget* parent)
+    : QWidget(parent), tableModel(new QStandardItemModel(this))
 {
-	ui->setupUi(this);
-
-    initializeTransactionTable();
-    setWindowTitle("Browse transactions");
-	setupConnections();
+    setupUI();
+    setupStyle();
+    setupConnections();
 }
 
-/**
- * @brief Destructor - cleans up UI resources
- */
-TransactionWindow::~TransactionWindow()
+QPushButton* TransactionWindow::createButton(const QString& text, const QString& objName, void (TransactionWindow::* slot)())
 {
-	delete ui;
+    QPushButton* btn = new QPushButton(text);
+    btn->setObjectName(objName);
+    connect(btn, &QPushButton::clicked, this, slot);
+    return btn;
 }
 
-/**
- * @brief Initializes the transaction table with columns and display settings
- */
-void TransactionWindow::initializeTransactionTable()
+QLayout* TransactionWindow::createHeaderSection()
 {
-    // Define table columns
-    TableModel->setColumnCount(7);
-    TableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
-    TableModel->setHeaderData(1, Qt::Horizontal, tr("Name"));
-    TableModel->setHeaderData(2, Qt::Horizontal, tr("Date"));
-    TableModel->setHeaderData(3, Qt::Horizontal, tr("Description"));
-    TableModel->setHeaderData(4, Qt::Horizontal, tr("Amount"));
-    TableModel->setHeaderData(5, Qt::Horizontal, tr("Type"));
-    TableModel->setHeaderData(6, Qt::Horizontal, tr("Category"));
+    QHBoxLayout* layout = new QHBoxLayout();
 
-    // Apply model to table view
-    ui->TransactionTabelView->setModel(TableModel);
+    QLabel* viewLabel = new QLabel("Transactions Overview");
+    viewLabel->setObjectName("viewLabel");
 
-    // Configure selection behavior
-    ui->TransactionTabelView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->TransactionTabelView->setSelectionMode(QAbstractItemView::SingleSelection);
-    ui->TransactionTabelView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    searchEdit = new QLineEdit();
+    searchEdit->setPlaceholderText("Search transactions...");
+    searchEdit->setFixedWidth(300);
 
-    // Configure column sizing
-    ui->TransactionTabelView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    layout->addWidget(viewLabel);
+    layout->addStretch();
+    layout->addWidget(searchEdit);
 
-    // Hide ID column 
-    ui->TransactionTabelView->setColumnHidden(0, true);
+    return layout;
 }
 
-/**
- * @brief Connects UI buttons to their handler methods
- */
-void TransactionWindow::setupConnections() 
+QWidget* TransactionWindow::createBudgetSection()
 {
-	connect(ui->buttonAddTransaction, &QPushButton::clicked, this, &TransactionWindow::onButtonAddTransactionClicked);
-	connect(ui->buttonDeleteTransaction, &QPushButton::clicked, this, &TransactionWindow::onButtonDeleteTransactionClicked);
-    connect(ui->browseCategoriesButton, &QPushButton::clicked, this, &TransactionWindow::onButtonManageCategoriesClicked);
+    QFrame* frame = new QFrame();
+    frame->setObjectName("budgetFrame");
+    QVBoxLayout* layout = new QVBoxLayout(frame);
+
+    QHBoxLayout* header = new QHBoxLayout();
+    budgetLabel = new QLabel("Monthly Budget Usage");
+
+    actionButtons["budget"] = createButton("Set Limit", "actionButton", &TransactionWindow::onButtonBudgetClicked);
+    actionButtons["budget"]->setFixedWidth(100);
+
+    header->addWidget(budgetLabel);
+    header->addStretch();
+    header->addWidget(actionButtons["budget"]);
+
+    budgetProgressBar = new QProgressBar();
+    budgetProgressBar->setFixedHeight(15);
+    budgetProgressBar->setTextVisible(false);
+
+    layout->addLayout(header);
+    layout->addWidget(budgetProgressBar);
+
+    return frame;
 }
 
-/**
- * @brief Handles click on Add Transaction button
- */
-void TransactionWindow::onButtonAddTransactionClicked()
+QLayout* TransactionWindow::createActionSection()
 {
-	emit addTransactionRequest();
+    QHBoxLayout* layout = new QHBoxLayout();
+
+    actionButtons["add"] = createButton("+ Add Transaction", "actionButtonAdd", &TransactionWindow::onButtonAddClicked);
+    actionButtons["edit"] = createButton("Edit", "actionButton", &TransactionWindow::onButtonEditClicked);
+    actionButtons["delete"] = createButton("Delete", "actionButtonDelete", &TransactionWindow::onButtonDeleteClicked);
+
+    layout->addWidget(actionButtons["add"]);
+    layout->addWidget(actionButtons["edit"]);
+    layout->addWidget(actionButtons["delete"]);
+    layout->addStretch();
+
+    return layout;
 }
 
-/**
- * @brief Handles click on Delete Transaction button
- */
-void TransactionWindow::onButtonDeleteTransactionClicked()
+void TransactionWindow::setupUI()
 {
-	emit deleteTransactionRequest();
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(30, 30, 30, 30);
+    mainLayout->setSpacing(20);
+
+    mainLayout->addLayout(createHeaderSection());
+    mainLayout->addWidget(createBudgetSection());
+    mainLayout->addLayout(createActionSection());
+
+    transactionTable = new QTableView();
+    initializeTable();
+    mainLayout->addWidget(transactionTable);
 }
 
-/**
- * @brief Handles click on Manage Categories button
- */
-void TransactionWindow::onButtonManageCategoriesClicked()
+void TransactionWindow::initializeTable() const
 {
-    emit showCategoriesRequest();
+    transactionTable->setModel(tableModel);
+    QStringList headers = { "ID", "Name", "Date", "Description", "Amount", "Type", "Category", "Account" };
+    tableModel->setHorizontalHeaderLabels(headers);
+
+    transactionTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    transactionTable->setColumnHidden(0, true);
+    transactionTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    transactionTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    transactionTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    transactionTable->verticalHeader()->setVisible(false);
+    transactionTable->setAlternatingRowColors(true);
 }
 
-/**
- * @brief Updates the transaction table with new data
- * @param rows Vector of transaction data rows
- */
-void TransactionWindow::setTransactionRows(const QVector<QStringList>& rows)
+void TransactionWindow::setupConnections()
 {
-    TableModel->clear();
+    connect(searchEdit, &QLineEdit::textChanged, this, [this](const QString& text) {
+        emit searchTextRequest(text);
+        });
 
-    // Set column headers
-    TableModel->setHorizontalHeaderLabels({ "ID", "Name", "Date", "Description", "Amount", "Type", "Category" });
+    connect(transactionTable->horizontalHeader(), &QHeaderView::sectionClicked, this, [this](int logicalIndex) {
+        emit columnSortRequest(logicalIndex);
+        });
+}
 
-    // Add transaction rows
+void TransactionWindow::setTransactionTabHeaders(const QVector<QStringList>& rows) const
+{
+    tableModel->removeRows(0, tableModel->rowCount());
     for (const QStringList& row : rows) {
         QList<QStandardItem*> items;
-        for (const QString& value : row)
-            items.append(new QStandardItem(value));
-        TableModel->appendRow(items);
+        for (const QString& value : row) items.append(new QStandardItem(value));
+        tableModel->appendRow(items);
     }
-
-    // Configure column display
-    auto header = ui->TransactionTabelView->horizontalHeader();
-    header->setSectionResizeMode(QHeaderView::Stretch);
-    ui->TransactionTabelView->setColumnHidden(0, true);
 }
 
-/**
- * @brief Collect the ID of the currently selected transaction
- * @return int Transaction ID, or -1 if no valid selection
- */
+void TransactionWindow::updateBudgetDisplay(double limit, double spent) const
+{
+    double percentage = (limit > 0) ? (spent / limit) * 100.0 : 0.0;
+    budgetProgressBar->setValue(percentage > 100 ? 100 : static_cast<int>(percentage));
+    budgetLabel->setText(QString("Budget: %1 / %2 PLN (Remaining: %3 PLN)")
+        .arg(spent, 0, 'f', 2).arg(limit, 0, 'f', 2).arg(limit - spent, 0, 'f', 2));
+}
+
 int TransactionWindow::getSelectedTransactionId() const
 {
-    QModelIndex index = ui->TransactionTabelView->currentIndex();
-    if (!index.isValid())
-        return -1;
+    QModelIndex index = transactionTable->currentIndex();
+    if (!index.isValid()) return -1;
+    return tableModel->data(tableModel->index(index.row(), 0)).toInt();
+}
 
-    bool ok = false;
-    int id = TableModel->data(TableModel->index(index.row(), 0)).toInt(&ok);
-    return ok ? id : -1;
-}
-void TransactionWindow::showTransactionMessage(QString header, QString message, QString messageType)
+void TransactionWindow::showTransactionMessage(const QString& header, const QString& message, const QString& messageType)
 {
-    if (messageType == "error")
-    {
-        QMessageBox::warning(this, header, message);
-    }
-    else
-    {
-        QMessageBox::information(this, header, message);
-    }
+    if (messageType == "error") QMessageBox::warning(this, header, message);
+    else QMessageBox::information(this, header, message);
 }
-QString TransactionWindow::getTransactionNameFromInput(bool& correctData)
+
+void TransactionWindow::clearSearchEdit() const { searchEdit->clear(); }
+
+void TransactionWindow::setupStyle()
 {
-    return QInputDialog::getText(
-        this,
-        tr("New transaction"),
-        tr("Name:"),
-        QLineEdit::Normal,
-        "",
-        &correctData
-    );
-}
-double TransactionWindow::getTransactionAmountFromInput(bool& correctData)
-{
-    return QInputDialog::getDouble(this,
-        tr("New transaction"),
-        tr("Amount:"),
-        0.0,
-        0,
-        1e9,
-        2,
-        &correctData);
-}
-QString TransactionWindow::getTransactionDescriptionFromInput(bool& correctData)
-{
-    return QInputDialog::getText(
-        this,
-        tr("New transaction"),
-        tr("Description:"),
-        QLineEdit::Normal,
-        "",
-        &correctData
+    this->setStyleSheet(
+        "QWidget { color: white; background-color: transparent; }"
+        "QLabel#viewLabel { font-size: 24px; font-weight: bold; color: white; }"
+        "QLineEdit { padding: 8px; border: 1px solid #444444; border-radius: 5px; background-color: #2d2d2d; color: white; }"
+        "QFrame#budgetFrame { background-color: #1e1e1e; border-radius: 10px; border: 1px solid #333333; padding: 10px; }"
+        "QProgressBar { border: none; background-color: #2d2d2d; border-radius: 7px; text-align: center; }"
+        "QProgressBar::chunk { background-color: #2ecc71; border-radius: 7px; }"
+        "QPushButton#actionButtonAdd { background-color: #27ae60; color: white; border-radius: 5px; padding: 8px 15px; font-weight: bold; }"
+        "QPushButton#actionButtonDelete { background-color: #c0392b; color: white; border-radius: 5px; padding: 8px 15px; }"
+        "QPushButton#actionButton { background-color: #2980b9; color: white; border-radius: 5px; padding: 8px 15px; }"
+        "QTableView { border: 1px solid #333333; background-color: #1e1e1e; color: white; selection-background-color: #3498db; }"
+        "QHeaderView::section { background-color: #2d2d2d; padding: 8px; border: 1px solid #333333; font-weight: bold; }"
     );
 }

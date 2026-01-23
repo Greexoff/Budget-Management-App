@@ -20,6 +20,30 @@
     <Filter Include="Ui Files">
       <UniqueIdentifier>{4a417a02-92a8-443b-9444-bd017484f679}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Controller">
+      <UniqueIdentifier>{00c6b3fb-61a5-438f-b136-c19fc5faea2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Model">
+      <UniqueIdentifier>{9b82b4b2-3061-4f1f-bae1-7e2820387004}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\View">
+      <UniqueIdentifier>{c6c36d62-2b6d-4cc6-86f3-7e9495406215}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Controller">
+      <UniqueIdentifier>{056aa256-72bb-42bb-89e7-99e781ff790a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Model">
+      <UniqueIdentifier>{8e2d35d2-7906-4e0a-848d-14163acc6dbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\View">
+      <UniqueIdentifier>{37e0e533-bc62-4c75-b4c7-92d5a1389bf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Model\Repositories">
+      <UniqueIdentifier>{40ff9e11-92df-4c25-8754-f46b7d8eee59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Model\Repositories">
+      <UniqueIdentifier>{4fbe5e9e-7aab-4aa6-9cb5-11ebcd4871ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="BudgetManagementQtVS.qrc">
@@ -30,58 +54,136 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Controller\Controller.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Controller\BaseController.cpp">
+      <Filter>Source Files\Controller</Filter>
     </ClCompile>
-    <ClCompile Include="Model\DatabaseManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Model\Transaction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Model\Category.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Model\Repositories.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Model\User&amp;Profiles.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="View\LoginDialogView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="View\ProfileDialogView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="View\CategorySelectionView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="View\TransactionWindowView.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Controller\CategorySelectionController.cpp">
+      <Filter>Source Files\Controller</Filter>
     </ClCompile>
     <ClCompile Include="Model\TransactionBuilder.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Transaction.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Category.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\DatabaseManager.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="View\CategorySelectionView.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\LoginDialogView.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\ProfileDialogView.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\TransactionWindowView.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\TransactionController.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\UserController.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\ProfileController.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\User.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Profile.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Repositories\CategoryRepository.cpp">
+      <Filter>Source Files\Model\Repositories</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Repositories\ProfileRepository.cpp">
+      <Filter>Source Files\Model\Repositories</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Repositories\TransactionRepository.cpp">
+      <Filter>Source Files\Model\Repositories</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Repositories\UserRepository.cpp">
+      <Filter>Source Files\Model\Repositories</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Repositories\BaseRepository.cpp">
+      <Filter>Source Files\Model\Repositories</Filter>
+    </ClCompile>
+    <ClCompile Include="View\TransactionEditorDialogView.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\FinancialAccount.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Repositories\FinancialAccountRepository.cpp">
+      <Filter>Source Files\Model\Repositories</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\FinancialAccountSelectionController.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="View\FinancialAccountSelectionView.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\ChartsController.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="View\ChartsDialogView.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="View\DashboardView.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\DashboardController.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\AppController.cpp">
+      <Filter>Source Files\Controller</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Model\DatabaseManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Model\Transaction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\Category.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\Repositories.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\User&amp;Profiles.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Model</Filter>
     </ClInclude>
     <ClInclude Include="Model\TransactionBuilder.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\DatabaseManager.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Category.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\User.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Profile.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Repositories\CategoryRepository.h">
+      <Filter>Header Files\Model\Repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Repositories\ProfileRepository.h">
+      <Filter>Header Files\Model\Repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Repositories\TransactionRepository.h">
+      <Filter>Header Files\Model\Repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Repositories\UserRepository.h">
+      <Filter>Header Files\Model\Repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Repositories\BaseRepository.h">
+      <Filter>Header Files\Model\Repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Repositories\FinancialAccountRepository.h">
+      <Filter>Header Files\Model\Repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\FinancialAccount.h">
+      <Filter>Header Files\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -91,24 +193,76 @@
     <QtUic Include="LoginDialogView.ui">
       <Filter>Ui Files</Filter>
     </QtUic>
-    <QtUic Include="CategorySelectionView.ui" />
-    <QtUic Include="TransactionWindowView.ui" />
+    <QtUic Include="TransactionEditorDialogView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
+    <QtUic Include="CategorySelectionView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
+    <QtUic Include="FinancialAccountSelectionView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
+    <QtUic Include="TransactionWindowView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
+    <QtUic Include="QtWidgetsClass.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
+    <QtUic Include="ChartsDialogView.ui">
+      <Filter>Ui Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="Controller\Controller.h">
-      <Filter>Header Files</Filter>
+    <QtMoc Include="Controller\BaseController.h">
+      <Filter>Header Files\Controller</Filter>
     </QtMoc>
-    <QtMoc Include="View\ProfileDialogView.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="View\LoginDialogView.h">
-      <Filter>Header Files</Filter>
+    <QtMoc Include="Controller\CategorySelectionController.h">
+      <Filter>Header Files\Controller</Filter>
     </QtMoc>
     <QtMoc Include="View\TransactionWindowView.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\View</Filter>
+    </QtMoc>
+    <QtMoc Include="View\ProfileDialogView.h">
+      <Filter>Header Files\View</Filter>
+    </QtMoc>
+    <QtMoc Include="View\LoginDialogView.h">
+      <Filter>Header Files\View</Filter>
     </QtMoc>
     <QtMoc Include="View\CategorySelectionView.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\View</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\ProfileController.h">
+      <Filter>Header Files\Controller</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\TransactionController.h">
+      <Filter>Header Files\Controller</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\UserController.h">
+      <Filter>Header Files\Controller</Filter>
+    </QtMoc>
+    <QtMoc Include="View\TransactionEditorDialogView.h">
+      <Filter>Header Files\View</Filter>
+    </QtMoc>
+    <QtMoc Include="View\FinancialAccountSelectionView.h">
+      <Filter>Header Files\View</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\FinancialAccountSelectionController.h">
+      <Filter>Header Files\Controller</Filter>
+    </QtMoc>
+    <QtMoc Include="View\ChartsDialogView.h">
+      <Filter>Header Files\View</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\ChartsController.h">
+      <Filter>Header Files\Controller</Filter>
+    </QtMoc>
+    <QtMoc Include="View\DashboardView.h">
+      <Filter>Header Files\View</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\AppController.h">
+      <Filter>Header Files\Controller</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller\DashboardController.h">
+      <Filter>Header Files\Controller</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

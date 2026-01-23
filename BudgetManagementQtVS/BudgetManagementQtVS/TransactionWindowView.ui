@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>1136</width>
+    <height>614</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,19 +17,19 @@
    <widget class="QTableView" name="TransactionTabelView">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>20</y>
-      <width>601</width>
-      <height>191</height>
+      <x>60</x>
+      <y>60</y>
+      <width>1011</width>
+      <height>351</height>
      </rect>
     </property>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>230</y>
-      <width>215</width>
+      <x>60</x>
+      <y>430</y>
+      <width>1011</width>
       <height>80</height>
      </rect>
     </property>
@@ -48,18 +48,20 @@
        </property>
       </widget>
      </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="horizontalLayoutWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>230</y>
-      <width>160</width>
-      <height>80</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="buttonEdit">
+       <property name="text">
+        <string>Edit transaction</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="browseFinancialAccountsButton">
+       <property name="text">
+        <string>Browse financial accounts</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="browseCategoriesButton">
        <property name="text">
@@ -67,7 +69,86 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="buttonCharts">
+       <property name="text">
+        <string>Charts</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="changeProfileButton">
+       <property name="text">
+        <string>Back</string>
+       </property>
+      </widget>
+     </item>
     </layout>
+   </widget>
+   <widget class="QProgressBar" name="budgetProgressBar">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>10</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>24</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="budgetLabel">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>10</y>
+      <width>371</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Budget: 0.00 PLN</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="editBudgetButton">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>10</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set budget</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="searchEdit">
+    <property name="geometry">
+     <rect>
+      <x>940</x>
+      <y>20</y>
+      <width>113</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>900</x>
+      <y>20</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Search</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -75,7 +156,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
+     <width>1136</width>
      <height>21</height>
     </rect>
    </property>

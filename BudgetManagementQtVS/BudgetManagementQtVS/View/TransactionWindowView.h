@@ -1,85 +1,58 @@
 ﻿#pragma once
 
-#include <QMainWindow>
-#include <qstandarditemmodel.h>
+#include <QWidget>
+#include <QStandardItemModel>
+#include <QTableView>
+#include <QPushButton>
+#include <QLabel>
+#include <QProgressBar>
+#include <QLineEdit>
+#include <QMap>
+#include <QHeaderView>
+#include <QMessageBox>
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
-
-/**
- * @class MainWindow
- * @brief Main application window for budget management
- *
- * The MainWindow provides the primary interface for viewing and managing
- * transactions. It displays transactions in a table view and provides
- * buttons for adding/deleting transactions and managing categories.
- */
-class TransactionWindow : public QMainWindow
+class TransactionWindow : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit TransactionWindow(QWidget* parent = nullptr);
-    ~TransactionWindow();
 
-    /**
-     * @brief Populates the transaction table with data
-     * @param rows Vector of string lists, each representing a transaction row
-     */
-    void setTransactionRows(const QVector<QStringList>& rows);
-
-    /**
-     * @brief Gets the ID of the currently selected transaction
-     * @return int Transaction ID, or -1 if no transaction selected
-     */
-    int getSelectedTransactionId() const; 
-public slots:
-    void showTransactionMessage(QString header, QString message, QString messageType);
-    QString getTransactionNameFromInput(bool& correctData);
-    double getTransactionAmountFromInput(bool& correctData);
-    QString getTransactionDescriptionFromInput(bool& correctData);
+    void setTransactionTabHeaders(const QVector<QStringList>& rows) const;
+    int getSelectedTransactionId() const;
+    void updateBudgetDisplay(double limit, double spent) const;
+    void clearSearchEdit() const;
+    void showTransactionMessage(const QString& header, const QString& message, const QString& messageType);
 
 signals:
-    /**
-     * @brief Emitted when user requests to add a new transaction
-     */
     void addTransactionRequest();
-
-    /**
-     * @brief Emitted when user requests to delete selected transaction
-     */
     void deleteTransactionRequest();
-
-    /**
-     * @brief Emitted when user requests to manage categories
-     */
-    void showCategoriesRequest();
+    void editTransactionRequest();
+    void editBudgetRequest();
+    void columnSortRequest(int columnId);
+    void searchTextRequest(const QString& searchText);
 
 private slots:
-    void onButtonAddTransactionClicked();
-    void onButtonDeleteTransactionClicked();
-    void onButtonManageCategoriesClicked();
+    void onButtonAddClicked() { emit addTransactionRequest(); }
+    void onButtonEditClicked() { emit editTransactionRequest(); }
+    void onButtonDeleteClicked() { emit deleteTransactionRequest(); }
+    void onButtonBudgetClicked() { emit editBudgetRequest(); }
 
 private:
-    Ui::MainWindow* ui;                         ///< Pointer to UI elements
-    QStandardItemModel* TableModel = nullptr;   ///< Data model for transaction table
+    QMap<QString, QPushButton*> actionButtons;
+    QPushButton* createButton(const QString& text, const QString& objName, void (TransactionWindow::* slot)());
+    QLayout* createHeaderSection();
 
-    /**
-     * @brief Sets up connections for UI buttons
-     */
+    QStandardItemModel* tableModel;
+    QLineEdit* searchEdit;
+    QProgressBar* budgetProgressBar;
+    QLabel* budgetLabel;
+    QTableView* transactionTable;
+
+    QWidget* createBudgetSection();
+    QLayout* createActionSection();
+    void setupUI();
+    void setupStyle();
     void setupConnections();
-
-    /**
-     * @brief Initializes the transaction table model
-     *
-     * Sets up table columns, headers, and display properties.
-     */
-    void initializeTransactionTable();
-
+    void initializeTable() const;
 };
-
-
-
-    
-

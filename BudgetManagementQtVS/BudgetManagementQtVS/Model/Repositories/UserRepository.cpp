@@ -1,0 +1,72 @@
+﻿#include <Model/Repositories/UserRepository.h>
+
+bool UserRepository::addUser(QString username, QString password) const
+{
+    QString salt = QUuid::createUuid().toString();
+
+    QByteArray dataToHash = (password + salt).toUtf8();
+    QString hashedPassword = QString(QCryptographicHash::hash(dataToHash, QCryptographicHash::Sha256).toHex());
+
+    QSqlQuery query(database);
+    query.prepare("INSERT INTO users (username, password_hash, salt) VALUES (:username, :password_hash, :salt)");
+
+    query.bindValue(":username", username);
+    query.bindValue(":password_hash", hashedPassword);
+    query.bindValue(":salt", salt);
+
+    if (!query.exec()) {
+        qDebug() << "Registration error:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool UserRepository::removeUserById(int userId) const
+{
+    QSqlQuery query(database);
+    query.prepare("DELETE FROM users WHERE id = :id");
+    query.bindValue(":id", userId);
+
+    if (!query.exec())
+    {
+        qDebug() << "UserRepo::removing user to database error:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+
+int UserRepository::getUserIdBasedOnUsername(QString username, QString password) const
+{
+    QSqlQuery query(database);
+    query.prepare("SELECT id, password_hash, salt FROM users WHERE username = :username");
+    query.bindValue(":username", username);
+
+    if (query.exec() && query.next()) {
+        int userId = query.value(0).toInt();
+        QString storedHash = query.value(1).toString();
+        QString storedSalt = query.value(2).toString();
+
+        QByteArray dataToHash = (password + storedSalt).toUtf8();
+        QString calculatedHash = QString(QCryptographicHash::hash(dataToHash, QCryptographicHash::Sha256).toHex());
+
+        if (storedHash == calculatedHash) {
+            return userId; 
+        }
+    }
+
+    return -1;
+}
+
+bool UserRepository::checkIfUserExists(const QString& username) const
+{
+    QSqlQuery query(database);
+    query.prepare("SELECT id FROM users WHERE username = :username");
+    query.bindValue(":username", username);
+
+    if (query.exec() && query.next()) {
+        return true; 
+    }
+    return false;
+}

@@ -3,10 +3,6 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-/**
- * @brief Constructs the profile selection dialog
- * @param parent Parent widget
- */
 ProfileDialog::ProfileDialog(QWidget* parent)
     : QDialog(parent),
     ui(new Ui::ProfileDialog)
@@ -16,29 +12,22 @@ ProfileDialog::ProfileDialog(QWidget* parent)
     setupConnections();
 }
 
-/**
- * @brief Destructor - cleans up UI resources
- */
 ProfileDialog::~ProfileDialog()
 {
     delete ui;
 }
 
-/**
- * @brief Connects UI buttons to their handler methods
- */
 void ProfileDialog::setupConnections()
 {
     connect(ui->buttonSelect, &QPushButton::clicked, this, &ProfileDialog::onButtonSelectClicked);
     connect(ui->buttonAdd, &QPushButton::clicked, this, &ProfileDialog::onButtonAddClicked);
     connect(ui->buttonRemove, &QPushButton::clicked, this, &ProfileDialog::onButtonRemoveClicked);
     connect(ui->buttonCancel, &QPushButton::clicked, this, &ProfileDialog::onButtonCancelClicked);
+    connect(ui->buttonEdit, &QPushButton::clicked, this, &ProfileDialog::onButtonEditClicked);
+    connect(ui->logoutButton, &QPushButton::clicked, this, &ProfileDialog::onButtonLogoutClicked);
+    connect(ui->buttonExport, &QPushButton::clicked, this, &ProfileDialog::onButtonExportClicked);
 }
 
-/**
- * @brief Loads profiles into the list widget
- * @param profiles List of Profile objects to display
- */
 void ProfileDialog::setProfiles(const QVector<Profile>& profiles)
 {
     profilesId = profiles;
@@ -48,9 +37,6 @@ void ProfileDialog::setProfiles(const QVector<Profile>& profiles)
     }
 }
 
-/**
- * @brief Handles click on the Select button
- */
 void ProfileDialog::onButtonSelectClicked()
 {
     int row = ui->listProfiles->currentRow();
@@ -60,9 +46,6 @@ void ProfileDialog::onButtonSelectClicked()
     emit profileSelected(profilesId[row].getProfileId());
 }
 
-/**
- * @brief Handles click on the Add button
- */
 void ProfileDialog::onButtonAddClicked()
 {
     bool ok = false;
@@ -74,9 +57,6 @@ void ProfileDialog::onButtonAddClicked()
     emit addProfileRequested(name);
 }
 
-/**
- * @brief Handles click on the Remove button
- */
 void ProfileDialog::onButtonRemoveClicked()
 {
     int row = ui->listProfiles->currentRow();
@@ -86,9 +66,6 @@ void ProfileDialog::onButtonRemoveClicked()
     emit removeProfileRequested(profilesId[row].getProfileId());
 }
 
-/**
- * @brief Handles click on the Cancel button
- */
 void ProfileDialog::onButtonCancelClicked()
 {
     reject();
@@ -103,4 +80,31 @@ void ProfileDialog::showProfileMessage(QString header, QString message, QString 
     {
         QMessageBox::information(this, header, message);
     }
+}
+
+void ProfileDialog::onButtonEditClicked()
+{
+    int row = ui->listProfiles->currentRow();
+    if (row < 0 || row >= profilesId.size()) return;
+
+    int id = profilesId[row].getProfileId();
+    QString currentName = profilesId[row].getProfileName();
+
+    bool ok = false;
+    QString newName = QInputDialog::getText(this, tr("Edit Profile"), tr("New Name:"),
+        QLineEdit::Normal, currentName, &ok);
+
+    if (ok && !newName.trimmed().isEmpty()) {
+        emit editProfileRequested(id, newName);
+    }
+}
+
+void ProfileDialog::onButtonLogoutClicked()
+{
+    emit logoutRequested();
+}
+
+void ProfileDialog::onButtonExportClicked()
+{
+    emit exportDataRequested();
 }

@@ -37,7 +37,7 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>6.10.1_msvc2022_64</QtInstall>
-    <QtModules>core;gui;widgets; sql</QtModules>
+    <QtModules>core;gui;widgets; sql; charts</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
@@ -92,38 +92,80 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Controller\AppController.cpp" />
+    <ClCompile Include="Controller\BaseController.cpp" />
+    <ClCompile Include="Controller\CategorySelectionController.cpp" />
+    <ClCompile Include="Controller\ChartsController.cpp" />
+    <ClCompile Include="Controller\DashboardController.cpp" />
+    <ClCompile Include="Controller\FinancialAccountSelectionController.cpp" />
+    <ClCompile Include="Controller\ProfileController.cpp" />
+    <ClCompile Include="Controller\TransactionController.cpp" />
+    <ClCompile Include="Controller\UserController.cpp" />
     <ClCompile Include="Model\Category.cpp" />
     <ClCompile Include="Model\DatabaseManager.cpp" />
+    <ClCompile Include="Model\FinancialAccount.cpp" />
+    <ClCompile Include="Model\Profile.cpp" />
+    <ClCompile Include="Model\Repositories\BaseRepository.cpp" />
+    <ClCompile Include="Model\Repositories\CategoryRepository.cpp" />
+    <ClCompile Include="Model\Repositories\FinancialAccountRepository.cpp" />
+    <ClCompile Include="Model\Repositories\ProfileRepository.cpp" />
+    <ClCompile Include="Model\Repositories\TransactionRepository.cpp" />
+    <ClCompile Include="Model\Repositories\UserRepository.cpp" />
     <ClCompile Include="Model\Transaction.cpp" />
-    <ClCompile Include="Model\Repositories.cpp" />
     <ClCompile Include="Model\TransactionBuilder.cpp" />
-    <ClCompile Include="Model\User&amp;Profiles.cpp" />
+    <ClCompile Include="Model\User.cpp" />
+    <ClCompile Include="View\ChartsDialogView.cpp" />
+    <ClCompile Include="View\DashboardView.cpp" />
+    <ClCompile Include="View\TransactionEditorDialogView.cpp" />
     <ClCompile Include="View\CategorySelectionView.cpp" />
+    <ClCompile Include="View\FinancialAccountSelectionView.cpp" />
     <ClCompile Include="View\LoginDialogView.cpp" />
     <ClCompile Include="View\TransactionWindowView.cpp" />
     <ClCompile Include="View\ProfileDialogView.cpp" />
     <QtRcc Include="BudgetManagementQtVS.qrc" />
-    <ClCompile Include="Controller\Controller.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="Controller\Controller.h" />
+    <QtMoc Include="View\DashboardView.h" />
+    <QtMoc Include="View\ChartsDialogView.h" />
+    <QtMoc Include="View\TransactionEditorDialogView.h" />
+    <QtMoc Include="View\FinancialAccountSelectionView.h" />
+    <QtMoc Include="Controller\FinancialAccountSelectionController.h" />
+    <QtMoc Include="Controller\ChartsController.h" />
+    <QtMoc Include="Controller\AppController.h" />
+    <QtMoc Include="Controller\DashboardController.h" />
+    <ClInclude Include="Model\FinancialAccount.h" />
+    <ClInclude Include="Model\Profile.h" />
+    <ClInclude Include="Model\Repositories\BaseRepository.h" />
+    <ClInclude Include="Model\Repositories\CategoryRepository.h" />
+    <ClInclude Include="Model\Repositories\FinancialAccountRepository.h" />
+    <ClInclude Include="Model\Repositories\ProfileRepository.h" />
+    <ClInclude Include="Model\Repositories\TransactionRepository.h" />
+    <ClInclude Include="Model\Repositories\UserRepository.h" />
+    <ClInclude Include="Model\User.h" />
+    <QtMoc Include="Controller\CategorySelectionController.h" />
+    <QtMoc Include="Controller\BaseController.h" />
+    <QtMoc Include="Controller\ProfileController.h" />
+    <QtMoc Include="Controller\TransactionController.h" />
+    <QtMoc Include="Controller\UserController.h" />
     <ClInclude Include="Model\Category.h" />
     <ClInclude Include="Model\DatabaseManager.h" />
     <ClInclude Include="Model\Transaction.h" />
     <QtMoc Include="View\TransactionWindowView.h" />
-    <ClInclude Include="Model\Repositories.h" />
     <ClInclude Include="Model\TransactionBuilder.h" />
-    <ClInclude Include="Model\User&amp;Profiles.h" />
     <QtMoc Include="View\ProfileDialogView.h" />
     <QtMoc Include="View\LoginDialogView.h" />
     <QtMoc Include="View\CategorySelectionView.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="ChartsDialogView.ui" />
+    <QtUic Include="QtWidgetsClass.ui" />
+    <QtUic Include="TransactionEditorDialogView.ui" />
     <QtUic Include="CategorySelectionView.ui" />
+    <QtUic Include="FinancialAccountSelectionView.ui" />
     <QtUic Include="LoginDialogView.ui" />
-    <QtUic Include="TransactionWindowView.ui" />
     <QtUic Include="ProfileDialogView.ui" />
+    <QtUic Include="TransactionWindowView.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
