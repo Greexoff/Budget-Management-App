@@ -70,6 +70,7 @@ void FinancialAccountController::refreshTable()
         QStringList row;
         row << QString::number(acc.getFinancialAccountId());
         row << acc.getFinancialAccountName();
+        row << acc.getFinancialAccountType();
         row << QString::number(acc.getFinancialAccountBalance(), 'f', 2) + " PLN";
         row << QString::number(acc.getFinancialAccountCurrentBalance(), 'f', 2) + " PLN";
         viewData.append(row);

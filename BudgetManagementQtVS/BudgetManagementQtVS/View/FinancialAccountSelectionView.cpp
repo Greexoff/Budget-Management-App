@@ -60,11 +60,12 @@ void FinancialAccountSelectionView::setupUI()
     accountTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     // Inicjalizacja nagłówków
-    tableModel->setColumnCount(4);
+    tableModel->setColumnCount(5);
     tableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
     tableModel->setHeaderData(1, Qt::Horizontal, tr("Account Name"));
-    tableModel->setHeaderData(2, Qt::Horizontal, tr("Inital Balance"));
-    tableModel->setHeaderData(3, Qt::Horizontal, tr("Current Balance"));
+    tableModel->setHeaderData(2, Qt::Horizontal, tr("Account Type"));
+    tableModel->setHeaderData(3, Qt::Horizontal, tr("Inital Balance"));
+    tableModel->setHeaderData(4, Qt::Horizontal, tr("Current Balance"));
 
     accountTable->setColumnHidden(0, true);
     accountTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
