@@ -1,4 +1,8 @@
-﻿#include "Controller/ProfileController.h"
+﻿/**
+ * @file ProfileController.cpp
+ * @brief Implementation of the Profile Controller.
+ */
+#include "Controller/ProfileController.h"
 #include <QApplication>
 #include <QFileDialog>
 #include <QFile>
@@ -7,6 +11,7 @@
 #include <Model/Repositories/CategoryRepository.h>
 #include <Model/Repositories/FinancialAccountRepository.h>
 
+ /** @brief Constructor. Creates view, DataController, and connections. */
 ProfileController::ProfileController(ProfilesRepository& profileRepositoryRef, QObject* parent) : BaseController(parent), profileRepository(profileRepositoryRef)
 {
     dataController = new DataController(profileRepository, this);
@@ -29,16 +34,13 @@ ProfileController::ProfileController(ProfilesRepository& profileRepositoryRef, Q
         this, &ProfileController::handleExportDataRequest);
 }
 
-//TODO: ADD FILTERING AND SORTING OF PROFILES
-
+/** @brief Runs the controller. */
 void ProfileController::run()
 {
     refreshProfilesForCurrentUser();
 }
 
-//----------------------Setting up view---------------------------------------
-
-//Method responsible for refreshing/setting up profiles in window, used every time a change in list occurs
+/** @brief Fetches profiles for current user ID and updates view. */
 void ProfileController::refreshProfilesForCurrentUser() const
 {
     if (!profileDialog)
@@ -50,10 +52,7 @@ void ProfileController::refreshProfilesForCurrentUser() const
     profileDialog->show();
 }
 
-
-//----------------Handling actions performed on profiles----------------------
-
-//Method responsible for adding profile based on entered data
+/** @brief Adds profile and refreshes list. */
 void ProfileController::handleAddProfileRequest(const QString& name) const
 {
     if (!profileDialog)
@@ -69,7 +68,7 @@ void ProfileController::handleAddProfileRequest(const QString& name) const
     refreshProfilesForCurrentUser();
 }
 
-//Method responsible for handling editing of profile
+/** @brief Updates profile name. */
 void ProfileController::handleEditProfileRequest(int profileId, const QString& newName) const
 {
     if (!profileDialog)
@@ -85,7 +84,7 @@ void ProfileController::handleEditProfileRequest(int profileId, const QString& n
     refreshProfilesForCurrentUser();
 }
 
-//Method responsible for handling deletion of profile
+/** @brief Removes profile. */
 void ProfileController::handleRemoveProfileRequest(int profileId) const
 {
     if (!profileDialog)
@@ -101,7 +100,7 @@ void ProfileController::handleRemoveProfileRequest(int profileId) const
     refreshProfilesForCurrentUser();
 }
 
-//Method responsible for handling profile selection and transition to the transaction window
+/** @brief Sets global Profile ID, closes dialog, emits success signal. */
 void ProfileController::handleProfileSelection(int profileId)
 {
     setProfileId(profileId);
@@ -112,7 +111,7 @@ void ProfileController::handleProfileSelection(int profileId)
     emit profileSelected();
 }
 
-//Method responsible for handling logging out of profile
+/** @brief Resets IDs and emits logout signal. */
 void ProfileController::handleLogoutRequest()
 {
     setUserId(-1);
@@ -124,6 +123,7 @@ void ProfileController::handleLogoutRequest()
     emit logout();
 }
 
+/** @brief Delegates export to DataController. */
 void ProfileController::handleExportDataRequest() const
 {
     if (!profileDialog || !dataController)

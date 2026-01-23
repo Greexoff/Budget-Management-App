@@ -1,5 +1,12 @@
-﻿#include <Model/Repositories/UserRepository.h>
+﻿/**
+ * @file UserRepository.cpp
+ * @brief Implementation of the User Repository.
+ */
+#include <Model/Repositories/UserRepository.h>
 
+ /**
+  * @brief Generates a salt, hashes the password with SHA-256, and stores the user.
+  */
 bool UserRepository::addUser(QString username, QString password) const
 {
     QString salt = QUuid::createUuid().toString();
@@ -20,7 +27,9 @@ bool UserRepository::addUser(QString username, QString password) const
     }
     return true;
 }
-
+/**
+ * @brief Deletes a user record.
+ */
 bool UserRepository::removeUserById(int userId) const
 {
     QSqlQuery query(database);
@@ -35,8 +44,9 @@ bool UserRepository::removeUserById(int userId) const
 
     return true;
 }
-
-
+/**
+ * @brief Retrieves the stored hash and salt, recalculates the hash for the provided password, and compares them.
+ */
 int UserRepository::getUserIdBasedOnUsername(QString username, QString password) const
 {
     QSqlQuery query(database);
@@ -58,7 +68,9 @@ int UserRepository::getUserIdBasedOnUsername(QString username, QString password)
 
     return -1;
 }
-
+/**
+ * @brief Queries if a row with the given username exists.
+ */
 bool UserRepository::checkIfUserExists(const QString& username) const
 {
     QSqlQuery query(database);

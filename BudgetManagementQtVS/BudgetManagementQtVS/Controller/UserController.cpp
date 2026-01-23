@@ -1,5 +1,11 @@
-﻿#include "Controller/UserController.h"
+﻿/**
+ * @file UserController.cpp
+ * @brief Implementation of the User Controller.
+ */
+#include "Controller/UserController.h"
 #include <QDebug>
+
+ /** @brief Constructor. Creates login dialog and connects signals. */
 UserController::UserController(UserRepository& userRepositoryRef, QObject* parent) : BaseController(parent), userRepository(userRepositoryRef)
 {
     loginDialog = new LoginDialog();
@@ -10,10 +16,7 @@ UserController::UserController(UserRepository& userRepositoryRef, QObject* paren
         this, &UserController::handleRegisterRequest);
 }
 
-
-//----------------Setting up view-------------------------------------------------
-
-
+/** @brief Shows the login dialog. */
 void UserController::run()
 {
     if (loginDialog)
@@ -22,10 +25,7 @@ void UserController::run()
     }
 }
 
-
-//----------------Handling actions performed on categories-----------------------
-
-//Method responsible for checking if data user inserted exists in database and is correct
+/** @brief Verifies credentials via repository. Sets User ID and emits success if valid. */
 void UserController::handleLoginRequest(const QString& username, const QString& password)
 {
     if (!loginDialog)
@@ -51,7 +51,7 @@ void UserController::handleLoginRequest(const QString& username, const QString& 
     emit userLoggedIn();
 }
 
-//Method responsible for register request and adding correct data to database
+/** @brief Method responsible for register request and adding correct data to database. */
 void UserController::handleRegisterRequest(const QString& username, const QString& password) const
 {
     if (username.isEmpty() || password.isEmpty()) {

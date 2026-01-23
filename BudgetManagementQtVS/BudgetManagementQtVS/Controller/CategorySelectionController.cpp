@@ -1,9 +1,13 @@
-﻿#include "Controller/CategorySelectionController.h"
+﻿/**
+ * @file CategorySelectionController.cpp
+ * @brief Implementation of the Category Controller.
+ */
+#include "Controller/CategorySelectionController.h"
 #include <QInputDialog>
 #include <QMessageBox>
 #include <algorithm>
 
-
+ /** @brief Constructor. Creates view and sets up connections. */
 CategoryController::CategoryController(CategoryRepository& categoryRepositoryRef, QObject* parent)
     : BaseController(parent),
     categoryRepository(categoryRepositoryRef)
@@ -12,20 +16,19 @@ CategoryController::CategoryController(CategoryRepository& categoryRepositoryRef
     setupCategoryView();
     refreshTable();
 }
-
+/** @brief Runs the controller. */
 void CategoryController::run()
 {
     refreshTable();
 }
-
+/** @brief Returns the view pointer. */
 QWidget* CategoryController::getView()
 {
     return categoryView;
 }
-
+/** @brief Connects view signals (Add, Edit, Delete, Search) to controller slots. */
 void CategoryController::setupCategoryView()
 {
-    // 1. ADD CATEGORY
     connect(categoryView, &CategorySelectionView::addCategoryRequest, this, [this]() {
         bool ok;
         QString name = QInputDialog::getText(categoryView, "Add Category", "Category Name:", QLineEdit::Normal, "", &ok);
@@ -34,7 +37,6 @@ void CategoryController::setupCategoryView()
         }
         });
 
-    // 2. EDIT CATEGORY
     connect(categoryView, &CategorySelectionView::editCategoryRequest, this, [this]() {
         int id = categoryView->getSelectedCategoryId();
         if (id == -1) {
@@ -49,7 +51,6 @@ void CategoryController::setupCategoryView()
         }
         });
 
-    // 3. DELETE CATEGORY
     connect(categoryView, &CategorySelectionView::deleteCategoryRequest, this, [this]() {
         int id = categoryView->getSelectedCategoryId();
         if (id == -1) {
@@ -66,19 +67,17 @@ void CategoryController::setupCategoryView()
         }
         });
 
-    // 4. SEARCH & SORT
     connect(categoryView, &CategorySelectionView::searchCategoryRequest, this, &CategoryController::handleFilteringCategoryRequest);
     connect(categoryView, &CategorySelectionView::columnSortRequest, this, &CategoryController::handleSortRequest);
 
-    // 5. REFRESH
     connect(categoryView, &CategorySelectionView::refreshRequest, this, &CategoryController::refreshTable);
 }
-
+/** @brief Wrapper for refreshTable used by external calls. */
 void CategoryController::showCategories()
 {
     refreshTable();
 }
-
+/** @brief Fetches data, applies filter/sort, and updates the view. */
 void CategoryController::refreshTable()
 {
     QVector<Category> categories = categoryRepository.getAllProfileCategories(getUserId());
@@ -105,7 +104,7 @@ void CategoryController::refreshTable()
     emit categoriesDataChanged();
 }
 
-
+/** @brief Adds a category via repository and updates UI. */
 void CategoryController::handleAddCategoryRequest(const QString& categoryName)
 {
     if (categoryRepository.addCategory(categoryName, getUserId())) {
@@ -116,7 +115,7 @@ void CategoryController::handleAddCategoryRequest(const QString& categoryName)
         categoryView->showMessage("Error", "Failed to add category.", "error");
     }
 }
-
+/** @brief Updates a category via repository and updates UI. */
 void CategoryController::handleEditCategoryRequest(int categoryId, const QString& newName)
 {
     if (categoryRepository.updateCategory(categoryId, newName)) {
@@ -127,7 +126,7 @@ void CategoryController::handleEditCategoryRequest(int categoryId, const QString
         categoryView->showMessage("Error", "Failed to update category.", "error");
     }
 }
-
+/** @brief Deletes a category and updates UI. */
 void CategoryController::handleDeleteCategoryRequest(int categoryId)
 {
     if (categoryId == selectedCategoryIdForTransaction) {
@@ -143,21 +142,19 @@ void CategoryController::handleDeleteCategoryRequest(int categoryId)
         categoryView->showMessage("Error", "Failed to delete category (might be in use).", "error");
     }
 }
-
+/** @brief Stores filter text and refreshes. */
 void CategoryController::handleFilteringCategoryRequest(const QString& searchText)
 {
     setFilteringText(searchText);
     refreshTable();
 }
-
+/** @brief Stores sort column and refreshes. */
 void CategoryController::handleSortRequest(int columnId)
 {
     setSelectedColumnId(columnId);
     refreshTable();
 }
-
-
-
+/** @brief Implementation of filtering for Categories. */
 QVector<Category> CategoryController::executeFilteringCategory(const QVector<Category> allCategories)
 {
     return executeFiltering(allCategories, [this](const Category& cat)
@@ -165,7 +162,7 @@ QVector<Category> CategoryController::executeFilteringCategory(const QVector<Cat
         return cat.getCategoryName().contains(getFilteringText(), Qt::CaseInsensitive);
         });
 }
-
+/** @brief Implementation of sorting for Categories. */
 void CategoryController::executeSortingCategory(QVector<Category>& allCategories) 
 {
     executeSorting(allCategories, [this](const Category& a, const Category& b) {

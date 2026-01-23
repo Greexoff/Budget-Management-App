@@ -1,7 +1,12 @@
-﻿#include "Controller/ChartsController.h"
+﻿/**
+ * @file ChartsController.cpp
+ * @brief Implementation of the Charts Controller.
+ */
+#include "Controller/ChartsController.h"
 #include <QDate>
 #include <map>
 
+ /** @brief Constructor. Creates view and connects date change signals. */
 ChartsController::ChartsController(TransactionRepository& transRepo, CategoryRepository& catRepo,
     QObject* parent)
     : BaseController(parent),
@@ -11,17 +16,19 @@ ChartsController::ChartsController(TransactionRepository& transRepo, CategoryRep
 {
     connect(view, &ChartsView::dateRangeChanged, this, &ChartsController::refreshData);
 }
-
+/** @brief Runs the controller logic. */
 void ChartsController::run()
 {
     refreshData();
 }
-
+/** @brief Returns the view pointer. */
 QPointer<ChartsView> ChartsController::getView() const
 {
     return view;
 }
-
+/**
+ * @brief Fetches aggregated data (Sums, Averages) from repositories and updates charts.
+ */
 void ChartsController::refreshData() {
     int profileId = getProfileId();
     QDate start = view->getStartDateEdit()->date();

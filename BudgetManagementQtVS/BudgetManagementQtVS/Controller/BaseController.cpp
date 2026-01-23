@@ -1,25 +1,30 @@
+/**
+ * @file BaseController.cpp
+ * @brief Implementation of the Base Controller.
+ */
 #include "Controller/BaseController.h"
 
-int BaseController::s_currentUserId = -1;//namespace?
-int BaseController::s_currentProfileId = -1;//namespace?
+int BaseController::s_currentUserId = -1;
+int BaseController::s_currentProfileId = -1;
 
-//Setters
+/** @brief Sets the Profile ID. */
 void BaseController::setProfileId(int profileId)
 {
 	s_currentProfileId = profileId;
 }
-
+/** @brief Sets the User ID. */
 void BaseController::setUserId(int userId)
 {
 	s_currentUserId = userId;
 }
-
-
+/** @brief Sets the current text used for filtering lists. */
 void BaseController::setFilteringText(const QString& searchText)
 {
 	filteringText = searchText;
 }
-
+/**
+ * @brief Sets the column ID for sorting. Toggles sort order if the same column is selected twice.
+ */
 void BaseController::setSelectedColumnId(int columnId)
 {
 	if (columnId == selectedColumnId)
@@ -32,7 +37,7 @@ void BaseController::setSelectedColumnId(int columnId)
 		lastSortingOrder = Qt::SortOrder::AscendingOrder;
 	}
 }
-
+/** @brief Toggles the sort order between Ascending and Descending. */
 void BaseController::setLastSortingOrder()
 {
 	if (lastSortingOrder == Qt::SortOrder::AscendingOrder)

@@ -1,7 +1,12 @@
-﻿#include "LoginDialogView.h"
+﻿/**
+ * @file LoginDialogView.cpp
+ * @brief Implementation of the Login Dialog.
+ */
+#include "LoginDialogView.h"
 #include "ui_LoginDialogView.h"
 #include <QApplication>
 
+ /** @brief Constructor. Sets up UI, passwords mode, and connections. */
 LoginDialog::LoginDialog(QWidget* parent)
     : QDialog(parent),
     ui(new Ui::LoginDialog)
@@ -16,16 +21,13 @@ LoginDialog::LoginDialog(QWidget* parent)
     setWindowTitle("Log in");
     setupConnections();
 }
-
+/** @brief Destructor cleaning up UI pointer. */
 LoginDialog::~LoginDialog()
 {
     delete ui;
 }
 
-
-//----------------Setting connection (button-method)-------------------------------------------------
-
-
+/** @brief Connects UI buttons to slots. */
 void LoginDialog::setupConnections()
 {
     connect(ui->buttonLogin, &QPushButton::clicked,this, &LoginDialog::onButtonLoginClicked);
@@ -33,29 +35,25 @@ void LoginDialog::setupConnections()
     connect(ui->buttonExit, &QPushButton::clicked, this, &LoginDialog::onButtonCancelClicked);
 }
 
-
-//----------------Pressing buttons actions-------------------------------------------------
-
-
-//Method that notices clicking on log in button
+/** @brief Emits loginRequested with entered credentials. */
 void LoginDialog::onButtonLoginClicked()
 {
     emit loginRequested(ui->editUsername->text(), ui->editPassword->text());
 }
 
-//Method that notices clicking on register button
+/** @brief Emits registerRequested with entered credentials. */
 void LoginDialog::onButtonRegisterClicked()
 {
     emit registerRequested(ui->editUsername->text(),ui->editPassword->text());
 }
 
-//Method that notices clicking on cancel button
+/** @brief Quits the application. */
 void LoginDialog::onButtonCancelClicked()
 {
     QApplication::quit();
 }
 
-//Method responsible for displaying error if inserted data is incorrect/is lacking 
+/** @brief Displays information or warnings using QMessageBox. */
 void LoginDialog::showLoginMessage(QString header, QString message, QString messageType)
 {
     if (messageType == "error")
@@ -67,7 +65,7 @@ void LoginDialog::showLoginMessage(QString header, QString message, QString mess
         QMessageBox::information(this, header, message);
     }
 }
-
+/** @brief Applies CSS styling. */
 void LoginDialog::setupStyle() {
     this->setStyleSheet(
         "QDialog { color: white; background-color: #121212; width: 600px; height: 600px;}"

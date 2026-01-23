@@ -1,5 +1,10 @@
-﻿#include "Model/Transaction.h"
+﻿/**
+ * @file Transaction.cpp
+ * @brief Implementation of the Transaction model.
+ */
+#include "Model/Transaction.h"
 
+ /** @brief Constructor initializing all fields. */
 Transaction::Transaction(int transactionId, QString transactionName, QDate transactionDate, QString transactionDescription, double transactionAmount, QString transactionType, int categoryId, int financialAccountId, int associatedProfileId)
 {
 	this->transactionId = transactionId;
@@ -12,12 +17,11 @@ Transaction::Transaction(int transactionId, QString transactionName, QDate trans
 	this->financialAccountId = financialAccountId;
 	this->associatedProfileId = associatedProfileId;
 }
-
+/** @brief Destructor. */
 Transaction::~Transaction() {}
 
 
 //Getter implementations
-
 int Transaction::getTransactionId() const
 {
 	return transactionId;
@@ -64,7 +68,6 @@ int Transaction::getAssociatedProfileId() const
 }
 
 //Setter implementations
-
 void Transaction::setTransactionId(int id)
 {
 	transactionId = id;

@@ -1,4 +1,8 @@
-﻿#include <Controller/FinancialAccountSelectionController.h>
+﻿/**
+ * @file FinancialAccountSelectionController.cpp
+ * @brief Implementation of the Financial Account Controller.
+ */
+#include <Controller/FinancialAccountSelectionController.h>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <algorithm>
@@ -9,6 +13,7 @@
 #include <QDoubleSpinBox>
 #include <QLineEdit>
 
+ /** @brief Constructor. Initializes view and connections. */
 FinancialAccountController::FinancialAccountController(FinancialAccountRepository& repoRef, QObject* parent)
     : BaseController(parent), financialAccountRepository(repoRef)
 {
@@ -19,30 +24,26 @@ FinancialAccountController::FinancialAccountController(FinancialAccountRepositor
     }
 }
 
-
+/** @brief Runs the controller. */
 void FinancialAccountController::run()
 {
     refreshTable();
 }
-
+/** @brief Returns view. */
 QWidget* FinancialAccountController::getView()
 {
     return fAccountView;
 }
 
-
+/** @brief Connects view signals to slots. */
 void FinancialAccountController::setupFinancialAccountWindow()
 {
-    // 1. Refresh
     connect(fAccountView, &FinancialAccountSelectionView::refreshRequest, this, &FinancialAccountController::refreshTable);
 
-    // 2. ADD ACCOUNT
     connect(fAccountView, &FinancialAccountSelectionView::addAccountRequest, this, &FinancialAccountController::handleFinancialAccountAddRequest);
 
-    // 3. EDIT ACCOUNT 
     connect(fAccountView, &FinancialAccountSelectionView::editAccountRequest, this, &FinancialAccountController::handleFinancialAccountEditRequest);
 
-    // 4. DELETE ACCOUNT
     connect(fAccountView, &FinancialAccountSelectionView::deleteAccountRequest, this, [this]() {
         int id = fAccountView->getSelectedAccountId();
         if (id == -1) return; 
@@ -51,11 +52,10 @@ void FinancialAccountController::setupFinancialAccountWindow()
         if (reply == QMessageBox::Yes) handleFinancialAccountDeleteRequest(id);
         });
 
-    // 5. SEARCH & SORT
     connect(fAccountView, &FinancialAccountSelectionView::searchAccountRequest, this, &FinancialAccountController::handleFinancialAccountFilteringRequest);
     connect(fAccountView, &FinancialAccountSelectionView::columnSortRequest, this, &FinancialAccountController::handleSortingRequest);
 }
-
+/** @brief Refreshes table with data from repository. */
 void FinancialAccountController::refreshTable()
 {
     QVector<FinancialAccount> accounts = financialAccountRepository.getAllProfileFinancialAccounts(getUserId()); 
@@ -77,7 +77,7 @@ void FinancialAccountController::refreshTable()
     emit financialAccountDataChanged();
 }
 
-// Logika
+// CRUD Logic implementations
 void FinancialAccountController::handleFinancialAccountAddRequest(const QString& name, const QString& type, double balance)
 {
     if (financialAccountRepository.addFinancialAccount(name, type, balance, getProfileId())) {
@@ -114,7 +114,7 @@ void FinancialAccountController::handleFinancialAccountDeleteRequest(int id)
         fAccountView->showMessage("Error", "Failed to delete.", "error");
     }
 }
-
+// Filter & Sort implementations
 void FinancialAccountController::handleFinancialAccountFilteringRequest(const QString& text)
 {
     setFilteringText(text);

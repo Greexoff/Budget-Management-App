@@ -1,6 +1,11 @@
-﻿#include "Controller/TransactionController.h"
+﻿/**
+ * @file TransactionController.cpp
+ * @brief Implementation of the Transaction Controller.
+ */
+#include "Controller/TransactionController.h"
 #include <QInputDialog> 
 
+ /** @brief Constructor. Initializes view and connects signals. */
 TransactionController::TransactionController(TransactionRepository& transactionRepositoryRef, CategoryRepository& categoryRepositoryRef, FinancialAccountRepository& financialAccountRepositoryRef, ProfilesRepository& profileRepositoryRef, QObject* parent)
 	: BaseController(parent), transactionRepository(transactionRepositoryRef),
 	  categoryRepository(categoryRepositoryRef), financialAccountRepository(financialAccountRepositoryRef),
@@ -23,17 +28,17 @@ TransactionController::TransactionController(TransactionRepository& transactionR
 	            this, &TransactionController::handleSortingRequest);
 	    }
 }
-
+/** @brief Runs the controller (refreshes data). */
 void TransactionController::run()
 {
     refreshTransactionsView();
 }
-
+/** @brief Returns view widget. */
 QWidget* TransactionController::getView()
 {
     return transactionView;
 }
-
+/** @brief Fetches transactions, applies filter/sort, updates table and budget. */
 void TransactionController::refreshTransactionsView()
 {
     if (!transactionView || getProfileId() < 0) return;
@@ -63,8 +68,7 @@ void TransactionController::refreshTransactionsView()
 
     transactionView->updateBudgetDisplay(budgetLimit, monthlySpent);
 }
-
-
+/** @brief Opens dialog to add transaction, handles creation logic. */
 void TransactionController::handleAddTransactionRequest()
 {
     if (getProfileId() < 0) {return;}
@@ -141,8 +145,7 @@ void TransactionController::handleAddTransactionRequest()
         }
     }
 }
-
-//Method responsible for handling transaction edition
+/** @brief Opens dialog to edit selected transaction. */
 void TransactionController::handleEditTransactionRequest()
 {
     int transactionId = transactionView->getSelectedTransactionId();
@@ -229,8 +232,7 @@ void TransactionController::handleEditTransactionRequest()
         }
     }
 }
-
-//Method responsible for handling deletion of transaction
+/** @brief Deletes selected transaction. */
 void TransactionController::handleDeleteTransactionRequest()
 {
     int transactionId = transactionView->getSelectedTransactionId();
@@ -246,8 +248,7 @@ void TransactionController::handleDeleteTransactionRequest()
     }
     refreshTransactionsView();
 }
-
-//Method responsible for changing amount assigned to monthly budget
+/** @brief Updates monthly budget limit. */
 void TransactionController::handleEditBudgetRequest()
 {
     bool ok;
@@ -260,15 +261,13 @@ void TransactionController::handleEditBudgetRequest()
         refreshTransactionsView();
     }
 }
-
-//Method that sets up filtering text and calls refresh view method where filtering occurs
+/** @brief Method that sets up filtering text and calls refresh view method where filtering occurs. */
 void TransactionController::handleFilteringTransactionRequest(QString searchText)
 {
     setFilteringText(searchText);
     refreshTransactionsView();
 }
-
-//An actual method for handling filtering specific transactions
+/** @brief An actual method for handling filtering specific transactions. */
 QVector<Transaction> TransactionController::executeFilteringTransaction(const QVector<Transaction> allTransactions)
 {
     return executeFiltering(allTransactions, [this](const Transaction& t) {
@@ -287,15 +286,13 @@ QVector<Transaction> TransactionController::executeFilteringTransaction(const QV
             financialAccountMatches || typeMatches || dateMatches;
         });
 }
-
-//Method that sets up selected column id on which sorting will occur and calls refresh view method where an actual sorting method is called
+/** @brief Method that sets up selected column id on which sorting will occur and calls refresh view method where an actual sorting method is called. */
 void TransactionController::handleSortingRequest(int columnId)
 {
     setSelectedColumnId(columnId);
     refreshTransactionsView();
 }
-
-//An actual method for handling sorting transactions
+/** @brief An actual method for handling sorting transactions. */
 void TransactionController::executeSortingTransaction(QVector<Transaction>& allTransactions) 
 {
     executeSorting(allTransactions, [this](const Transaction& a, const Transaction& b) {

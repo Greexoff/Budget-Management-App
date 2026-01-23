@@ -1,4 +1,8 @@
-﻿#include "View/FinancialAccountSelectionView.h"
+﻿/**
+ * @file FinancialAccountSelectionView.cpp
+ * @brief Implementation of the Financial Account Selection View.
+ */
+#include "View/FinancialAccountSelectionView.h"
 #include <QMessageBox>
 #include <QDialog>
 #include <QFormLayout>
@@ -7,20 +11,20 @@
 #include <QDoubleSpinBox>
 #include <QLineEdit>
 
+ /** @brief Constructor. Initializes UI and Style. */
 FinancialAccountSelectionView::FinancialAccountSelectionView(QWidget* parent)
     : QWidget(parent), tableModel(new QStandardItemModel(this))
 {
     setupUI();
     setupStyle();
 }
-
+/** @brief Builds the layout, table, buttons and search bar. */
 void FinancialAccountSelectionView::setupUI()
 {
     QVBoxLayout* contentLayout = new QVBoxLayout(this);
     contentLayout->setContentsMargins(30, 30, 30, 30);
     contentLayout->setSpacing(20);
 
-    // 1. Nagłówek
     QHBoxLayout* headerLayout = new QHBoxLayout();
     QLabel* viewLabel = new QLabel("Financial Accounts");
     viewLabel->setObjectName("viewLabel"); 
@@ -33,7 +37,6 @@ void FinancialAccountSelectionView::setupUI()
     headerLayout->addStretch();
     headerLayout->addWidget(searchEdit);
 
-    // 2. Akcje
     QHBoxLayout* actionLayout = new QHBoxLayout();
     btnAdd = new QPushButton("+ Add Account");
     btnAdd->setObjectName("actionButtonAdd");
@@ -49,7 +52,6 @@ void FinancialAccountSelectionView::setupUI()
     actionLayout->addWidget(btnDelete);
     actionLayout->addStretch();
 
-    // 3. Tabela
     accountTable = new QTableView();
     accountTable->setModel(tableModel);
     accountTable->setAlternatingRowColors(true);
@@ -59,7 +61,6 @@ void FinancialAccountSelectionView::setupUI()
     accountTable->verticalHeader()->setVisible(false);
     accountTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    // Inicjalizacja nagłówków
     tableModel->setColumnCount(5);
     tableModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
     tableModel->setHeaderData(1, Qt::Horizontal, tr("Account Name"));
@@ -74,16 +75,13 @@ void FinancialAccountSelectionView::setupUI()
     contentLayout->addLayout(actionLayout);
     contentLayout->addWidget(accountTable);
 
-    // Connecty
     connect(btnAdd, &QPushButton::clicked, this, &FinancialAccountSelectionView::onButtonAddClicked);
     connect(btnEdit, &QPushButton::clicked, this, &FinancialAccountSelectionView::onButtonEditClicked);
     connect(btnDelete, &QPushButton::clicked, this, &FinancialAccountSelectionView::onButtonDeleteClicked);
     connect(searchEdit, &QLineEdit::textChanged, this, &FinancialAccountSelectionView::onSearchTextChanged);
     connect(accountTable->horizontalHeader(), &QHeaderView::sectionClicked, this, &FinancialAccountSelectionView::onHeaderClicked);
 }
-
-// --- Metody ---
-
+/** @brief Rebuilds the table model with new account data. */
 void FinancialAccountSelectionView::setAccountTabHeaders(const QVector<QStringList>& rows) const
 {
     tableModel->removeRows(0, tableModel->rowCount());
@@ -94,7 +92,7 @@ void FinancialAccountSelectionView::setAccountTabHeaders(const QVector<QStringLi
         tableModel->appendRow(items);
     }
 }
-
+/** @brief Helper to get the ID from the hidden first column of the selected row. */
 int FinancialAccountSelectionView::getSelectedAccountId() const
 {
     QModelIndex index = accountTable->currentIndex();
@@ -103,16 +101,18 @@ int FinancialAccountSelectionView::getSelectedAccountId() const
     int id = tableModel->data(tableModel->index(index.row(), 0)).toInt(&ok);
     return ok ? id : -1;
 }
-
+/** @brief Display helper for QMessageBox. */
 void FinancialAccountSelectionView::showMessage(QString header, QString message, QString messageType)
 {
     if (messageType == "error") QMessageBox::warning(this, header, message);
     else QMessageBox::information(this, header, message);
 }
-
+/** @brief Returns search edit text. */
 QString FinancialAccountSelectionView::getSearchText() const { return searchEdit->text(); }
 
-// Sloty
+/**
+ * @brief Creates a local QDialog to collect new account details and emits addAccountRequest.
+ */
 void FinancialAccountSelectionView::onButtonAddClicked()
 {
 
@@ -153,7 +153,10 @@ void FinancialAccountSelectionView::onButtonAddClicked()
         }
     }
 }
-
+/**
+ * @brief Creates a local QDialog populated with current data to edit an account.
+ * Emits editAccountRequest upon acceptance.
+ */
 void FinancialAccountSelectionView::onButtonEditClicked()
 {
 
@@ -204,7 +207,7 @@ void FinancialAccountSelectionView::onButtonEditClicked()
         }
     }
 }
-
+/** @brief Sets CSS styling. */
 void FinancialAccountSelectionView::setupStyle()
 {
     this->setStyleSheet(
@@ -218,6 +221,9 @@ void FinancialAccountSelectionView::setupStyle()
         "QDialog, QMessageBox, QInputDialog { background-color: #1e1e1e; color: white; font-size: 14px; }"
         "QDialog QPushButton { background-color: #333333; color: white; border: 1px solid #444444; border-radius: 4px; padding: 6px 15px; }");
 }
+/** @brief Emits deleteAccountRequest for the selected row. */
 void FinancialAccountSelectionView::onButtonDeleteClicked() { emit deleteAccountRequest(); }
+/** @brief Emits searchAccountRequest. */
 void FinancialAccountSelectionView::onSearchTextChanged(const QString& text) { emit searchAccountRequest(text); }
+/** @brief Emits columnSortRequest. */
 void FinancialAccountSelectionView::onHeaderClicked(int index) { emit columnSortRequest(index); }

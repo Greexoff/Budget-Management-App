@@ -1,14 +1,20 @@
-﻿#include "Controller/DataController.h"
+﻿/**
+ * @file DataController.cpp
+ * @brief Implementation of the Data Controller.
+ */
+#include "Controller/DataController.h"
 #include <QFileDialog>
 #include <QFile>
 #include <QTextStream>
 
-
+ /** @brief Constructor. */
 DataController::DataController(ProfilesRepository& profileRepo, QObject* parent)
     : QObject(parent), profileRepository(profileRepo)
 {
 }
-
+/**
+ * @brief Logic to fetch all user data (Profiles, Transactions) and write to CSV.
+ */
 bool DataController::writeCsvToFile(int userId, const QString& filePath, QString& errorMessage)
 {
     QFile file(filePath);
@@ -69,7 +75,7 @@ bool DataController::writeCsvToFile(int userId, const QString& filePath, QString
     file.close();
     return true;
 }
-
+/** @brief Shows file dialog and triggers CSV write. */
 void DataController::exportData(int userId, ProfileDialog* dialog)
 {
     if (!dialog) return;
@@ -85,7 +91,7 @@ void DataController::exportData(int userId, ProfileDialog* dialog)
         dialog->showProfileMessage(tr("Export Error"), error, "error");
     }
 }
-
+/** @brief Triggers CSV write to a default autosave filename. */
 void DataController::autoSaveData(int userId)
 {
 

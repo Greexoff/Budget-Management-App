@@ -1,5 +1,10 @@
-﻿#include <View/TransactionEditorDialogView.h>
+﻿/**
+ * @file TransactionEditorDialogView.cpp
+ * @brief Implementation of the Transaction Editor Dialog.
+ */
+#include <View/TransactionEditorDialogView.h>
 
+ /** @brief Constructor. Sets up UI, defaults, and combobox connections. */
 TransactionEditorDialogView::TransactionEditorDialogView(QWidget* parent)
 	: QDialog(parent), ui(new Ui::AddTransactionDialogView) {
 
@@ -10,16 +15,12 @@ TransactionEditorDialogView::TransactionEditorDialogView(QWidget* parent)
 	connect(ui->accountCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &TransactionEditorDialogView::onFinancialAccountIndexChanged);
 	connect(ui->typeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &TransactionEditorDialogView::onTransactionTypeChanged);
 }
-
+/** @brief Destructor. */
 TransactionEditorDialogView::~TransactionEditorDialogView() {
 	delete ui;
 }
 
-
-//----------------Setting up view-------------------------------------------------
-
-
-//Method that shows available categories in combo box
+/** @brief Populates category combo. Adds special 'Add new' item. */
 void TransactionEditorDialogView::setCategories(const QVector<Category>& categories) {
 	ui->categoryCombo->blockSignals(true);
 	ui->categoryCombo->clear();
@@ -35,7 +36,7 @@ void TransactionEditorDialogView::setCategories(const QVector<Category>& categor
 	ui->categoryCombo->blockSignals(false);
 }
 
-//Method that shows available financial accounts in combo box
+/** @brief Populates account combo. Adds special 'Add new' item. */
 void TransactionEditorDialogView::setFinancialAccounts(const QVector<FinancialAccount>& financialAccounts) {
 	ui->accountCombo->blockSignals(true);
 	ui->accountCombo->clear();
@@ -52,7 +53,7 @@ void TransactionEditorDialogView::setFinancialAccounts(const QVector<FinancialAc
 	ui->accountCombo->blockSignals(false);
 }
 
-//Method that shows available transaction types in combo box
+/** @brief Populates transaction types (Income/Expense). */
 void TransactionEditorDialogView::setTransactionTypes()
 {
 	ui->typeCombo->blockSignals(true);
@@ -73,9 +74,7 @@ void TransactionEditorDialogView::setName(const QString& name) const
 }
 
 
-//-----------Setting up data of transaction while editing transaction-------------------
-
-
+// Setters implementation
 void TransactionEditorDialogView::setAmount(double amount) const
 {
 	ui->amountSpin->setValue(amount);
@@ -90,7 +89,7 @@ void TransactionEditorDialogView::setDescription(const QString& description) con
 {
 	ui->descriptionEdit->setText(description);
 }
-
+/** @brief Sets current category combo index by ItemData ID. */
 void TransactionEditorDialogView::setSelectedCategoryId(int categoryId) {
 	int index = ui->categoryCombo->findData(categoryId);
 	if (index != -1) {
@@ -98,7 +97,7 @@ void TransactionEditorDialogView::setSelectedCategoryId(int categoryId) {
 		previousCategoryIndex = index;
 	}
 }
-
+/** @brief Sets current type combo index by ItemData string. */
 void TransactionEditorDialogView::setType(const QString& typeName)
 {
 	int index = ui->typeCombo->findData(typeName);
@@ -108,7 +107,7 @@ void TransactionEditorDialogView::setType(const QString& typeName)
 		previousTypeIndex = index;
 	}
 }
-
+/** @brief Sets current account combo index by ItemData ID. */
 void TransactionEditorDialogView::setSelectedFinancialAccountId(int financialAccountId) {
 	int index = ui->accountCombo->findData(financialAccountId);
 	if (index != -1) {
@@ -117,11 +116,9 @@ void TransactionEditorDialogView::setSelectedFinancialAccountId(int financialAcc
 	}
 }
 
-
-//----------------Getting data from user input------------------------------------------
-
-
-//Method responsible for getting id of a selected category (or creating a new category)
+/** @brief Detects if 'Add new category' (ID 0) is selected.
+ * Shows input dialog and emits addCategoryRequested if valid.
+ */
 void TransactionEditorDialogView::onCategoryIndexChanged(int index) {
 
 	int id = ui->categoryCombo->itemData(index).toInt();
@@ -145,7 +142,9 @@ void TransactionEditorDialogView::onCategoryIndexChanged(int index) {
 	}
 }
 
-//Method responsible for getting id of a selected financial account (or creating a new financial account)
+/** @brief Detects if 'Add new account' (ID 0) is selected.
+ * Shows local form dialog and emits addFinancialAccountRequested if valid.
+ */
 void TransactionEditorDialogView::onFinancialAccountIndexChanged(int index)
 {
 	int id = ui->accountCombo->itemData(index).toInt();
@@ -189,30 +188,27 @@ void TransactionEditorDialogView::onFinancialAccountIndexChanged(int index)
 		previousFinancialAccountIndex = index;
 	}
 }
-
-//Method responsible for getting id of a selected transaction type
+/** @brief Method responsible for getting id of a selected transaction type. */
 void TransactionEditorDialogView::onTransactionTypeChanged(int index)
 {
 	int idx = ui->typeCombo->itemData(index).toInt();
 
 	previousTypeIndex = idx;
 }
-
-//Method responsible for refreshing combo box of categories if change occured
+/** @brief Method responsible for refreshing combo box of categories if change occured. */
 void TransactionEditorDialogView::refreshCategories(const QVector<Category>& categories, int selectedId)
 {
 	setCategories(categories);
 
 	if (selectedId > 0) setSelectedCategoryId(selectedId);
 }
-
-//Method responsible for refreshing combo box of financial accounts if change occured
+/** @brief Method responsible for refreshing combo box of financial accounts if change occured. */
 void TransactionEditorDialogView::refreshFinancialAccounts(const QVector<FinancialAccount>& accounts, int selectedId)
 {
 	setFinancialAccounts(accounts);
 	if (selectedId > 0) setSelectedFinancialAccountId(selectedId);
 }
-
+// Getters implementation
 QString TransactionEditorDialogView::getName() const 
 {
 	return ui->nameEdit->text();
@@ -245,7 +241,7 @@ QString TransactionEditorDialogView::getType() const
 int TransactionEditorDialogView::getSelectedFinancialAccountId() const {
 	return ui->accountCombo->currentData().toInt();
 }
-
+/** @brief Sets CSS styling. */
 void TransactionEditorDialogView::setupStyle()
 {
 	this->setStyleSheet(

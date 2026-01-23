@@ -1,5 +1,12 @@
+/**
+ * @file DashboardController.cpp
+ * @brief Implementation of the Dashboard Controller.
+ */
 #include "Controller/DashboardController.h"
 
+ /**
+  * @brief Constructor. Creates the DashboardView and all sub-controllers (Transaction, Category, etc.).
+  */
 DashboardController::DashboardController(ProfilesRepository& profileRepo, TransactionRepository& transactionRepo,
     CategoryRepository& categoryRepo, FinancialAccountRepository& fAccRepo, QObject* parent)
 {
@@ -15,6 +22,7 @@ DashboardController::DashboardController(ProfilesRepository& profileRepo, Transa
         setupConnections();
     }
 }
+/** @brief Destructor closing the view. */
 DashboardController::~DashboardController()
 {
     if (dashboardView)
@@ -22,7 +30,10 @@ DashboardController::~DashboardController()
         dashboardView->close();
     }
 }
-
+/**
+ * @brief Switches the central widget based on the selected page enum.
+ * Calls run() on the target sub-controller before displaying its view.
+ */
 void DashboardController::handlePageChange(DashboardView::SelectedPage page) const
 {
     switch (page) {
@@ -54,13 +65,13 @@ void DashboardController::handlePageChange(DashboardView::SelectedPage page) con
         break;
     }
 }
-
+/** @brief Connects view signals to controller slots. */
 void DashboardController::setupConnections()
 {
     connect(dashboardView, &DashboardView::pageChangeRequested,
         this, &DashboardController::handlePageChange);
 }
-
+/** @brief Shows the dashboard and defaults to Transaction page. */
 void DashboardController::run() {
     if (dashboardView) {
         dashboardView->show();

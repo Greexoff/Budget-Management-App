@@ -1,8 +1,13 @@
-﻿#include "ProfileDialogView.h"
+﻿/**
+ * @file ProfileDialogView.cpp
+ * @brief Implementation of the Profile Selection Dialog.
+ */
+#include "ProfileDialogView.h"
 #include "ui_ProfileDialogView.h"
 #include <QInputDialog>
 #include <QMessageBox>
 
+ /** @brief Constructor. Initializes UI and connections. */
 ProfileDialog::ProfileDialog(QWidget* parent)
     : QDialog(parent),
     ui(new Ui::ProfileDialog)
@@ -13,11 +18,12 @@ ProfileDialog::ProfileDialog(QWidget* parent)
     setupConnections();
 }
 
+/** @brief Destructor. */
 ProfileDialog::~ProfileDialog()
 {
     delete ui;
 }
-
+/** @brief Connects buttons to internal slots. */
 void ProfileDialog::setupConnections()
 {
     connect(ui->buttonSelect, &QPushButton::clicked, this, &ProfileDialog::onButtonSelectClicked);
@@ -28,7 +34,7 @@ void ProfileDialog::setupConnections()
     connect(ui->buttonLogout, &QPushButton::clicked, this, &ProfileDialog::onButtonLogoutClicked);
     connect(ui->buttonExport, &QPushButton::clicked, this, &ProfileDialog::onButtonExportClicked);
 }
-
+/** @brief Clears and repopulates the profile list widget. */
 void ProfileDialog::setProfiles(const QVector<Profile>& profiles)
 {
     profilesId = profiles;
@@ -37,7 +43,7 @@ void ProfileDialog::setProfiles(const QVector<Profile>& profiles)
         ui->listProfiles->addItem(p.getProfileName());
     }
 }
-
+/** @brief Emits profileSelected based on current list row. */
 void ProfileDialog::onButtonSelectClicked()
 {
     int row = ui->listProfiles->currentRow();
@@ -46,7 +52,7 @@ void ProfileDialog::onButtonSelectClicked()
 
     emit profileSelected(profilesId[row].getProfileId());
 }
-
+/** @brief Shows input dialog for name and emits addProfileRequested. */
 void ProfileDialog::onButtonAddClicked()
 {
     bool ok = false;
@@ -57,7 +63,7 @@ void ProfileDialog::onButtonAddClicked()
 
     emit addProfileRequested(name);
 }
-
+/** @brief Emits removeProfileRequested for selected row. */
 void ProfileDialog::onButtonRemoveClicked()
 {
     int row = ui->listProfiles->currentRow();
@@ -66,11 +72,12 @@ void ProfileDialog::onButtonRemoveClicked()
 
     emit removeProfileRequested(profilesId[row].getProfileId());
 }
-
+/** @brief Closes the dialog. */
 void ProfileDialog::onButtonCancelClicked()
 {
     reject();
 }
+/** @brief Displays QMessageBox. */
 void ProfileDialog::showProfileMessage(QString header, QString message, QString messageType)
 {
     if (messageType == "error")
@@ -82,7 +89,7 @@ void ProfileDialog::showProfileMessage(QString header, QString message, QString 
         QMessageBox::information(this, header, message);
     }
 }
-
+/** @brief Shows input dialog and emits editProfileRequested. */
 void ProfileDialog::onButtonEditClicked()
 {
     int row = ui->listProfiles->currentRow();
@@ -99,17 +106,17 @@ void ProfileDialog::onButtonEditClicked()
         emit editProfileRequested(id, newName);
     }
 }
-
+/** @brief Emits logoutRequested. */
 void ProfileDialog::onButtonLogoutClicked()
 {
     emit logoutRequested();
 }
-
+/** @brief Emits exportDataRequested. */
 void ProfileDialog::onButtonExportClicked()
 {
     emit exportDataRequested();
 }
-
+/** @brief Sets CSS styling. */
 void ProfileDialog::setupStyle()
 {
     this->setStyleSheet(

@@ -1,3 +1,7 @@
+/**
+ * @file UserController.h
+ * @brief Header file for the User Controller (Login/Register).
+ */
 #pragma once
 #include "Controller/BaseController.h"
 
@@ -7,6 +11,10 @@
 
 #include <QPointer>
 
+ /**
+  * @class UserController
+  * @brief Manages User Authentication (Login and Registration).
+  */
 class UserController : public BaseController
 {
     Q_OBJECT
@@ -14,6 +22,7 @@ public:
 	UserController(UserRepository& userRepositoryRef, QObject* parent = nullptr);
     void run() override;
 signals:
+    /** @brief Emitted upon successful login. */
     void userLoggedIn();
 private:
 	QPointer<LoginDialog> loginDialog;                  

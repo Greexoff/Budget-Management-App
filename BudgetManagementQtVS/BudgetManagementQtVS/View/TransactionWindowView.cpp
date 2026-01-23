@@ -1,8 +1,13 @@
-﻿#include "View/TransactionWindowView.h"
+﻿/**
+ * @file TransactionWindowView.cpp
+ * @brief Implementation of the Transaction Window View.
+ */
+#include "View/TransactionWindowView.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFrame>
 
+ /** @brief Constructor. Initializes UI, Style, and Connections. */
 TransactionWindow::TransactionWindow(QWidget* parent)
     : QWidget(parent), tableModel(new QStandardItemModel(this))
 {
@@ -10,7 +15,7 @@ TransactionWindow::TransactionWindow(QWidget* parent)
     setupStyle();
     setupConnections();
 }
-
+/** @brief Helper to create standard buttons with connections. */
 QPushButton* TransactionWindow::createButton(const QString& text, const QString& objName, void (TransactionWindow::* slot)())
 {
     QPushButton* btn = new QPushButton(text);
@@ -18,7 +23,7 @@ QPushButton* TransactionWindow::createButton(const QString& text, const QString&
     connect(btn, &QPushButton::clicked, this, slot);
     return btn;
 }
-
+/** @brief Creates the Header section (Label + Search). */
 QLayout* TransactionWindow::createHeaderSection()
 {
     QHBoxLayout* layout = new QHBoxLayout();
@@ -36,7 +41,7 @@ QLayout* TransactionWindow::createHeaderSection()
 
     return layout;
 }
-
+/** @brief Creates the Budget section (Progress Bar + Set Limit button). */
 QWidget* TransactionWindow::createBudgetSection()
 {
     QFrame* frame = new QFrame();
@@ -62,7 +67,7 @@ QWidget* TransactionWindow::createBudgetSection()
 
     return frame;
 }
-
+/** @brief Creates the Action section (Add, Edit, Delete buttons). */
 QLayout* TransactionWindow::createActionSection()
 {
     QHBoxLayout* layout = new QHBoxLayout();
@@ -78,7 +83,7 @@ QLayout* TransactionWindow::createActionSection()
 
     return layout;
 }
-
+/** @brief Assembles the main layout components. */
 void TransactionWindow::setupUI()
 {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -93,7 +98,7 @@ void TransactionWindow::setupUI()
     initializeTable();
     mainLayout->addWidget(transactionTable);
 }
-
+/** @brief Configures table model headers and view properties. */
 void TransactionWindow::initializeTable() const
 {
     transactionTable->setModel(tableModel);
@@ -108,7 +113,7 @@ void TransactionWindow::initializeTable() const
     transactionTable->verticalHeader()->setVisible(false);
     transactionTable->setAlternatingRowColors(true);
 }
-
+/** @brief Connects search edit and table headers to signals. */
 void TransactionWindow::setupConnections()
 {
     connect(searchEdit, &QLineEdit::textChanged, this, [this](const QString& text) {
@@ -119,7 +124,7 @@ void TransactionWindow::setupConnections()
         emit columnSortRequest(logicalIndex);
         });
 }
-
+/** @brief Clears and repopulates the table model with rows. */
 void TransactionWindow::setTransactionTabHeaders(const QVector<QStringList>& rows) const
 {
     tableModel->removeRows(0, tableModel->rowCount());
@@ -129,7 +134,7 @@ void TransactionWindow::setTransactionTabHeaders(const QVector<QStringList>& row
         tableModel->appendRow(items);
     }
 }
-
+/** @brief Calculates percentage and updates progress bar and label text. */
 void TransactionWindow::updateBudgetDisplay(double limit, double spent) const
 {
     double percentage = (limit > 0) ? (spent / limit) * 100.0 : 0.0;
@@ -137,22 +142,22 @@ void TransactionWindow::updateBudgetDisplay(double limit, double spent) const
     budgetLabel->setText(QString("Budget: %1 / %2 PLN (Remaining: %3 PLN)")
         .arg(spent, 0, 'f', 2).arg(limit, 0, 'f', 2).arg(limit - spent, 0, 'f', 2));
 }
-
+/** @brief Returns ID from the first column of the selected row. */
 int TransactionWindow::getSelectedTransactionId() const
 {
     QModelIndex index = transactionTable->currentIndex();
     if (!index.isValid()) return -1;
     return tableModel->data(tableModel->index(index.row(), 0)).toInt();
 }
-
+/** @brief Display helper for QMessageBox. */
 void TransactionWindow::showTransactionMessage(const QString& header, const QString& message, const QString& messageType)
 {
     if (messageType == "error") QMessageBox::warning(this, header, message);
     else QMessageBox::information(this, header, message);
 }
-
+/** @brief Clears search text. */
 void TransactionWindow::clearSearchEdit() const { searchEdit->clear(); }
-
+/** @brief Sets CSS styling. */
 void TransactionWindow::setupStyle()
 {
     this->setStyleSheet(

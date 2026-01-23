@@ -1,6 +1,12 @@
-﻿#include <Model/Repositories/TransactionRepository.h>
+﻿/**
+ * @file TransactionRepository.cpp
+ * @brief Implementation of the Transaction Repository.
+ */
+#include <Model/Repositories/TransactionRepository.h>
 
-
+ /**
+  * @brief Retrieves transactions filtered by profile_id.
+  */
 QVector<Transaction> TransactionRepository::getAllProfileTransaction(int profileId) const
 {
     QVector<Transaction> result;
@@ -37,7 +43,9 @@ QVector<Transaction> TransactionRepository::getAllProfileTransaction(int profile
 
     return result;
 }
-
+/**
+ * @brief Retrieves every transaction in the table.
+ */
 QVector<Transaction> TransactionRepository::getAll() const
 {
     QVector<Transaction> result;
@@ -68,7 +76,9 @@ QVector<Transaction> TransactionRepository::getAll() const
 
     return result;
 }
-
+/**
+ * @brief Inserts a new transaction record.
+ */
 bool TransactionRepository::addTransaction(const Transaction& transaction) const
 {
     QSqlQuery query(database);
@@ -92,7 +102,9 @@ bool TransactionRepository::addTransaction(const Transaction& transaction) const
     }
     return true;
 }
-
+/**
+ * @brief Deletes a transaction by ID.
+ */
 bool TransactionRepository::removeTransactionById(int id) const
 {
     QSqlQuery query(database);
@@ -107,7 +119,9 @@ bool TransactionRepository::removeTransactionById(int id) const
 
     return true;
 }
-
+/**
+ * @brief Updates all fields of a transaction based on their ID.
+ */
 bool TransactionRepository::updateTransaction(const Transaction& transaction) const
 {
     QSqlQuery query(database);
@@ -139,7 +153,9 @@ bool TransactionRepository::updateTransaction(const Transaction& transaction) co
     }
     return true;
 }
-
+/**
+ * @brief Queries for a single transaction. Returns a default invalid object if not found.
+ */
 Transaction TransactionRepository::getTransactionById(int id) const
 {
     QSqlQuery query(database);
@@ -161,7 +177,9 @@ Transaction TransactionRepository::getTransactionById(int id) const
     }
     return Transaction(-1, "", QDate(), "", 0, "Expense", 1, -1, 1);
 }
-
+/**
+ * @brief Aggregates expenses for a specific month using SQLite date functions.
+ */
 double TransactionRepository::getMonthlyExpenses(int profileId, int month, int year) const
 {
     QSqlQuery query(database);
@@ -182,7 +200,9 @@ double TransactionRepository::getMonthlyExpenses(int profileId, int month, int y
     }
     return 0.0;
 }
-
+/**
+ * @brief Calculates sum of Income or Expense within a date range.
+ */
 double TransactionRepository::getSumByTypeAndDate(int profileId, const QString& type, const QDate& start, const QDate& end) const
 {
     QSqlQuery query(database);
@@ -205,7 +225,9 @@ double TransactionRepository::getSumByTypeAndDate(int profileId, const QString& 
 
     return 0.0;
 }
-
+/**
+ * @brief Calculates total expense divided by the number of distinct months with activity.
+ */
 double TransactionRepository::getAllTimeMonthlyAverageExpense(int profileId) const
 {
 
@@ -232,7 +254,9 @@ double TransactionRepository::getAllTimeMonthlyAverageExpense(int profileId) con
 
     return totalExpense / monthCount;
 }
-
+/**
+ * @brief Groups expenses by category ID for use in charts.
+ */
 QMap<int, double> TransactionRepository::getExpensesByCategory(int profileId, const QDate& start, const QDate& end) const
 {
     QMap<int, double> results;

@@ -1,22 +1,28 @@
-﻿#include "View/CategorySelectionView.h"
+﻿/**
+ * @file CategorySelectionView.cpp
+ * @brief Implementation of the Category Selection View.
+ */
+#include "View/CategorySelectionView.h"
 #include <QMessageBox>
 
-
-
+ /**
+  * @brief Constructor. Initializes the model, style, and UI.
+  */
 CategorySelectionView::CategorySelectionView(QWidget* parent)
     : QWidget(parent), tableModel(new QStandardItemModel(this))
 {
     setupStyle();
     setupUI();
 }
-
+/**
+ * @brief Sets up the layout, buttons, table view, and signal connections.
+ */
 void CategorySelectionView::setupUI()
 {
     QVBoxLayout* contentLayout = new QVBoxLayout(this);
     contentLayout->setContentsMargins(30, 30, 30, 30);
     contentLayout->setSpacing(20);
 
-    // 1. Nagłówek i Szukanie
     QHBoxLayout* headerLayout = new QHBoxLayout();
     QLabel* viewLabel = new QLabel("Categories Management");
     viewLabel->setObjectName("viewLabel"); 
@@ -29,7 +35,6 @@ void CategorySelectionView::setupUI()
     headerLayout->addStretch();
     headerLayout->addWidget(searchEdit);
 
-    // 2. Przyciski Akcji
     QHBoxLayout* actionLayout = new QHBoxLayout();
 
     btnAdd = new QPushButton("+ Add Category");
@@ -46,7 +51,6 @@ void CategorySelectionView::setupUI()
     actionLayout->addWidget(btnDelete);
     actionLayout->addStretch();
 
-    // 3. Tabela
     categoryTable = new QTableView();
     categoryTable->setModel(tableModel);
     categoryTable->setAlternatingRowColors(true);
@@ -75,7 +79,9 @@ void CategorySelectionView::setupUI()
     connect(categoryTable->horizontalHeader(), &QHeaderView::sectionClicked, this, &CategorySelectionView::onHeaderClicked);
 }
 
-
+/**
+ * @brief Clears the current table model and repopulates it with new data.
+ */
 void CategorySelectionView::setCategoryTabHeaders(const QVector<QStringList>& rows) const
 {
     tableModel->removeRows(0, tableModel->rowCount());
@@ -87,7 +93,9 @@ void CategorySelectionView::setCategoryTabHeaders(const QVector<QStringList>& ro
         tableModel->appendRow(items);
     }
 }
-
+/**
+ * @brief Resolves the model index to the hidden ID column to get the Category ID.
+ */
 int CategorySelectionView::getSelectedCategoryId() const
 {
     QModelIndex index = categoryTable->currentIndex();
@@ -96,7 +104,9 @@ int CategorySelectionView::getSelectedCategoryId() const
     int id = tableModel->data(tableModel->index(index.row(), 0)).toInt(&ok);
     return ok ? id : -1;
 }
-
+/**
+ * @brief Shows a QMessageBox with the specified parameters.
+ */
 void CategorySelectionView::showMessage(QString header, QString message, QString messageType)
 {
     if (messageType == "error")
@@ -104,11 +114,16 @@ void CategorySelectionView::showMessage(QString header, QString message, QString
     else
         QMessageBox::information(this, header, message);
 }
-
+/**
+ * @brief Returns the text currently inside the search line edit.
+ */
 QString CategorySelectionView::getSearchText() const
 {
     return searchEdit->text();
 }
+/**
+ * @brief Sets the CSS stylesheet for the view.
+ */
 void CategorySelectionView::setupStyle()
 {
     this->setStyleSheet(
@@ -123,8 +138,13 @@ void CategorySelectionView::setupStyle()
         "QDialog QPushButton { background-color: #333333; color: white; border: 1px solid #444444; border-radius: 4px; padding: 6px 15px; }");
 }
 
+/** @brief Emits addCategoryRequest. */
 void CategorySelectionView::onButtonAddClicked() { emit addCategoryRequest(); }
+/** @brief Emits editCategoryRequest. */
 void CategorySelectionView::onButtonEditClicked() { emit editCategoryRequest(); }
+/** @brief Emits deleteCategoryRequest. */
 void CategorySelectionView::onButtonDeleteClicked() { emit deleteCategoryRequest(); }
+/** @brief Emits searchCategoryRequest with the new text. */
 void CategorySelectionView::onSearchTextChanged(const QString& text) { emit searchCategoryRequest(text); }
+/** @brief Emits columnSortRequest with the column index. */
 void CategorySelectionView::onHeaderClicked(int index) { emit columnSortRequest(index); }

@@ -1,11 +1,22 @@
-﻿#include "DatabaseManager.h"
+﻿/**
+ * @file DatabaseManager.cpp
+ * @brief Implementation of the Database Manager.
+ */
+#include "DatabaseManager.h"
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QDebug>
 #include <QCryptographicHash>
 #include <QUuid>
 
-
+ /**
+  * @brief Constructor.
+  * - Opens the SQLite database connection.
+  * - Enables foreign keys.
+  * - Creates necessary tables (users, profiles, categories, financialAccount, transactions) if they don't exist.
+  * - Inserts default 'None' records.
+  * - Creates a default admin user for development purposes.
+  */
 DatabaseManager::DatabaseManager() {
     datebaseInstance = QSqlDatabase::addDatabase("QSQLITE");
     datebaseInstance.setDatabaseName("BudgetDatabase.db");
@@ -19,31 +30,28 @@ DatabaseManager::DatabaseManager() {
 
     QSqlQuery tableCreationQuery;
 
-    // Enable foreign key support for referential integrity
     tableCreationQuery.exec("PRAGMA foreign_keys = ON;");
 
-    // Create users table for authentication
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS users"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "username TEXT UNIQUE NOT NULL CHECK (username != ''),"
         "password_hash TEXT NOT NULL CHECK (password_hash != ''), "
         "salt TEXT NOT NULL CHECK (salt != ''))");
 
-    // Create profiles table with user association
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS profiles"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "profile_name TEXT NOT NULL CHECK (profile_name != ''), "
         "user_id INTEGER NOT NULL, "
         "budget_limit REAL DEFAULT 0, " 
         "FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)");
-    // Create categories table with profile scoping
+
    tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS category"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "category_name TEXT NOT NULL CHECK (category_name != ''), "
         "profile_id INTEGER, "
         "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
         ")");
-   // Create financialAccounts table with profile scoping
+
    tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS financialAccount"
        "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
        "financialAccount_name TEXT NOT NULL CHECK (financialAccount_name != ''), "
@@ -52,12 +60,12 @@ DatabaseManager::DatabaseManager() {
        "profile_id INTEGER, "
        "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
        ")");
-    // Insert default category into database
+
    tableCreationQuery.exec("INSERT OR IGNORE INTO category (id, category_name, profile_id) VALUES (1, 'None', NULL)");
-   // Insert default financial account into database
+
    tableCreationQuery.exec("INSERT OR IGNORE INTO financialAccount (id, financialAccount_name, financialAccount_type, profile_id) VALUES (1, 'None', 'Default', NULL)");
 
-    // Create transactions table with relationships to profiles, categories and financial account
+
     tableCreationQuery.exec("CREATE TABLE IF NOT EXISTS transactions"
         "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "name TEXT NOT NULL CHECK (name != ''), "
@@ -73,7 +81,6 @@ DatabaseManager::DatabaseManager() {
         "FOREIGN KEY (financialAccount_id) REFERENCES financialAccount(id) ON DELETE SET DEFAULT"
         ")");
 
-    // DEVELOPMENT: Create demo admin user for testing
     QSqlQuery adminQuery(datebaseInstance);
     adminQuery.prepare("SELECT COUNT(*) FROM users WHERE username = 'admin'");
 
@@ -107,12 +114,12 @@ DatabaseManager::DatabaseManager() {
         }
     }
 }
-
+/** @brief Returns the static singleton instance. */
 DatabaseManager& DatabaseManager::instance() {
     static DatabaseManager instance;
     return instance;
 }
-
+/** @brief Returns the internal QSqlDatabase instance. */
 QSqlDatabase& DatabaseManager::database() {
     return datebaseInstance;
 }

@@ -1,12 +1,19 @@
+/**
+ * @file CategoryRepository.cpp
+ * @brief Implementation of the Category Repository.
+ */
 #include <Model/Repositories/CategoryRepository.h>
 
+ /**
+  * @brief Fetches all categories for a profile, including the default category (ID 1).
+  */
 QVector<Category> CategoryRepository::getAllProfileCategories(int profileId) const
 {
     QVector<Category> categoriesForProfile;
 
     QSqlQuery query(database);
 
-    query.prepare("SELECT id, category_name, profile_id FROM category WHERE profile_id = :profile_id OR id = 1");//'OR id = 1' to fetch 'None' category that does not have profile_id assinged to them
+    query.prepare("SELECT id, category_name, profile_id FROM category WHERE profile_id = :profile_id OR id = 1");
     query.bindValue(":profile_id", profileId);
 
     if (!query.exec())
@@ -27,7 +34,9 @@ QVector<Category> CategoryRepository::getAllProfileCategories(int profileId) con
 
     return categoriesForProfile;
 }
-
+/**
+ * @brief Inserts a new category record into the category table.
+ */
 bool CategoryRepository::addCategory(const QString& categoryName, int profileId) const
 {
     QSqlQuery query(database);
@@ -44,10 +53,13 @@ bool CategoryRepository::addCategory(const QString& categoryName, int profileId)
 
     return true;
 }
-
+/**
+ * @brief Deletes a category. Reassigns associated transactions to the default category (ID 1) before deletion.
+ * Uses a transaction to ensure data integrity.
+ */
 bool CategoryRepository::removeCategoryById(int categoryId) const
 {
-    if (categoryId == 1)//Can adjust magic numbers in some type of namespace
+    if (categoryId == 1)
     {
         return false;
     }
@@ -83,7 +95,9 @@ bool CategoryRepository::removeCategoryById(int categoryId) const
 
     return true;
 }
-
+/**
+ * @brief Queries the category table for the name corresponding to the given ID.
+ */
 QString CategoryRepository::getCategoryNameById(int categoryId) const
 {
     QSqlQuery query(database);
@@ -105,7 +119,9 @@ QString CategoryRepository::getCategoryNameById(int categoryId) const
 
     return categoryName;
 }
-
+/**
+ * @brief Updates the category_name field for the specified ID. Prevents updating the default category.
+ */
 bool CategoryRepository::updateCategory(int categoryId, const QString& newName) const
 {
     if (categoryId == 1) return false;

@@ -1,5 +1,12 @@
+/**
+ * @file ProfileRepository.cpp
+ * @brief Implementation of the Profile Repository.
+ */
 #include <Model/Repositories/ProfileRepository.h>
 
+ /**
+  * @brief Queries the profiles table for all records matching the user ID.
+  */
 QVector<Profile> ProfilesRepository::getProfilesByUserId(int userId) const
 {
     QVector<Profile> foundProfiles;
@@ -26,7 +33,9 @@ QVector<Profile> ProfilesRepository::getProfilesByUserId(int userId) const
 
     return foundProfiles;
 }
-
+/**
+ * @brief Inserts a new profile record into the database.
+ */
 bool ProfilesRepository::addProfile(int userId, QString profileName) const
 {
     QSqlQuery query(database);
@@ -42,7 +51,9 @@ bool ProfilesRepository::addProfile(int userId, QString profileName) const
 
     return true;
 }
-
+/**
+ * @brief Deletes a profile record from the database.
+ */
 bool ProfilesRepository::removeProfileById(int profileId) const
 {
     QSqlQuery query(database);
@@ -56,7 +67,9 @@ bool ProfilesRepository::removeProfileById(int profileId) const
     }
     return true;
 }
-
+/**
+ * @brief Updates the profile_name field for the specified ID.
+ */
 bool ProfilesRepository::updateProfile(int profileId, const QString& newName) const
 {
     QSqlQuery query(database);
@@ -70,7 +83,9 @@ bool ProfilesRepository::updateProfile(int profileId, const QString& newName) co
     }
     return true;
 }
-
+/**
+ * @brief Selects the budget_limit value for the profile.
+ */
 double ProfilesRepository::getBudgetLimit(int profileId) const
 {
     QSqlQuery query(database);
@@ -81,7 +96,9 @@ double ProfilesRepository::getBudgetLimit(int profileId) const
     }
     return 0.0;
 }
-
+/**
+ * @brief Updates the 'budget_limit' column in the 'profiles' table.
+ */
 bool ProfilesRepository::setBudgetLimit(int profileId, double limit) const
 {
     QSqlQuery query(database);

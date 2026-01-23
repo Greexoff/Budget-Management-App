@@ -1,5 +1,12 @@
-﻿#include <Model/Repositories/FinancialAccountRepository.h>
+﻿/**
+ * @file FinancialAccountRepository.cpp
+ * @brief Implementation of the Financial Account Repository.
+ */
+#include <Model/Repositories/FinancialAccountRepository.h>
 
+ /**
+  * @brief Fetches accounts and dynamically calculates current balance based on transactions.
+  */
 QVector<FinancialAccount> FinancialAccountRepository::getAllProfileFinancialAccounts(int profileId) const {
 	
 	QVector<FinancialAccount> financialAccountsForProfile;
@@ -30,7 +37,9 @@ QVector<FinancialAccount> FinancialAccountRepository::getAllProfileFinancialAcco
 
 	return financialAccountsForProfile;
 }
-
+/**
+ * @brief Inserts a new record into the financialAccount table.
+ */
 bool FinancialAccountRepository::addFinancialAccount(const QString& financialAccountName, const QString& financialAccountType, double financialAccountBalance, int profileId) const
 {
 
@@ -50,7 +59,9 @@ bool FinancialAccountRepository::addFinancialAccount(const QString& financialAcc
 
 	return true;
 }
-
+/**
+ * @brief Deletes an account. Reassigns transactions to a default account (ID 1) to preserve history.
+ */
 bool FinancialAccountRepository::removeFinancialAccount(int financialAccountId) const
 {
 	
@@ -90,7 +101,9 @@ bool FinancialAccountRepository::removeFinancialAccount(int financialAccountId) 
 
 	return true;
 }
-
+/**
+ * @brief Updates account fields in the database. Prevents modification of the default account.
+ */
 bool FinancialAccountRepository::updateFinancialAccount(int financialAccountId, const QString& newName, const QString& newType, double newBalance) const
 {
 	if (financialAccountId == 1) return false;
@@ -108,7 +121,9 @@ bool FinancialAccountRepository::updateFinancialAccount(int financialAccountId, 
 	}
 	return true;
 }
-
+/**
+ * @brief Selects the financialAccount_name for the given ID.
+ */
 QString FinancialAccountRepository::getFinancialAccountNameById(int financialAccountId) const {
 
 	QSqlQuery query(database);

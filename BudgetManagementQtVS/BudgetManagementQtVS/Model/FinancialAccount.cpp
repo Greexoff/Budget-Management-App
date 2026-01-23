@@ -1,11 +1,17 @@
-﻿#include "Model/FinancialAccount.h"
+﻿/**
+ * @file FinancialAccount.cpp
+ * @brief Implementation of the Financial Account model.
+ */
+#include "Model/FinancialAccount.h"
 
+ /** @brief Constructor initializing member variables. */
 FinancialAccount::FinancialAccount(int financialAccountId, QString& financialAccountName, QString& financialAccountType, double financialAccountBalance, int profileId, double currentBalance)
 	: financialAccountId(financialAccountId), financialAccountName(financialAccountName), financialAccountType(financialAccountType), financialAccountBalance(financialAccountBalance), profileId(profileId), currentBalance(currentBalance)
 { }
-
+/** @brief Destructor. */
 FinancialAccount::~FinancialAccount() {}
 
+// Getters
 int FinancialAccount::getFinancialAccountId() const 
 {
 	return financialAccountId;
@@ -35,7 +41,7 @@ int FinancialAccount::getIdOfProfileConnectedToFinancialAccount() const
 {
 	return profileId;
 }
-
+// Setters
 void FinancialAccount::setFinancialAccountId(int id) 
 {
 	financialAccountId = id; 

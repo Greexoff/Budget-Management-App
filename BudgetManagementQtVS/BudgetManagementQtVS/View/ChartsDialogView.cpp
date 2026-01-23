@@ -1,5 +1,12 @@
-﻿#include "View/ChartsDialogView.h"
+﻿/**
+ * @file ChartsDialogView.cpp
+ * @brief Implementation of the Charts View.
+ */
+#include "View/ChartsDialogView.h"
 
+ /**
+  * @brief Constructor. Sets up UI, style, and date change connections.
+  */
 ChartsView::ChartsView(QWidget* parent) : QWidget(parent)
 {
     setupUI();
@@ -9,12 +16,13 @@ ChartsView::ChartsView(QWidget* parent) : QWidget(parent)
     connect(endDateEdit, &QDateEdit::dateChanged, this, &ChartsView::dateRangeChanged);
 
 }
-
+/**
+ * @brief Initializes layout, date filters, statistic tiles, and chart views.
+ */
 void ChartsView::setupUI() {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(10);
 
-    // 1. Filtry Daty
     QHBoxLayout* filterLayout = new QHBoxLayout();
     startDateEdit = new QDateEdit(QDate::currentDate().addMonths(-1), this);
     startDateEdit->setCalendarPopup(true);
@@ -32,7 +40,6 @@ void ChartsView::setupUI() {
     filterLayout->addStretch();
     mainLayout->addLayout(filterLayout);
 
-    // 2. Kafelki 
     QHBoxLayout* tilesLayout = new QHBoxLayout();
     auto createTile = [&](QString title, QString color, QLabel** lbl) {
         QFrame* f = new QFrame; f->setObjectName("statTile");
@@ -47,7 +54,6 @@ void ChartsView::setupUI() {
     createTile("Avg Expense (All Time)", "#f1c40f", &averageValLabel);
     mainLayout->addLayout(tilesLayout);
 
-    // 3. Wykresy 
     QHBoxLayout* chartsLayout = new QHBoxLayout();
 
 
@@ -71,7 +77,9 @@ void ChartsView::setupUI() {
     
     mainLayout->addLayout(chartsLayout, 1);
 }
-
+/**
+ * @brief Recreates the Pie Series based on provided data and assigns it to the chart.
+ */
 void ChartsView::updatePieChart(const QMap<QString, double>& data) {
     QPieSeries *series = new QPieSeries();
     
@@ -94,7 +102,9 @@ void ChartsView::updatePieChart(const QMap<QString, double>& data) {
     chart->removeAllSeries();
     chart->addSeries(series);
 }
-
+/**
+ * @brief Recreates the Bar Series for Income and Expenses and attaches axes.
+ */
 void ChartsView::updateBarChart(double totalIncome, double totalExpense) {
     QBarSet *setIncome = new QBarSet("Income");
     QBarSet *setExpense = new QBarSet("Expenses");
@@ -131,8 +141,9 @@ void ChartsView::updateBarChart(double totalIncome, double totalExpense) {
     chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
 }
-
-
+/**
+ * @brief Defines the visual style (CSS) for charts and labels.
+ */
 void ChartsView::setupStyle() {
     this->setStyleSheet(R"(
         QWidget {
@@ -233,6 +244,7 @@ void ChartsView::setupStyle() {
         }
     )");
 }
+// Simple Setters
 void ChartsView::setIncomeValue(double v) { incomeValLabel->setText(QString::number(v, 'f', 2)); }
 void ChartsView::setExpenseValue(double v) { expenseValLabel->setText(QString::number(v, 'f', 2)); }
 void ChartsView::setAverageValue(double v) { averageValLabel->setText(QString::number(v, 'f', 2)); }

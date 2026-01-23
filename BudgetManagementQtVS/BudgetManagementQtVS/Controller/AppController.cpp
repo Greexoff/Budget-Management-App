@@ -1,16 +1,21 @@
-﻿#include "Controller/AppController.h"
+﻿/**
+ * @file AppController.cpp
+ * @brief Implementation of the main Application Controller.
+ */
+#include "Controller/AppController.h"
 
+ /** @brief Constructor. Initializes the DataController and connects quit signals. */
 AppController::AppController(QObject* parent) : QObject(parent) 
 {
     dataController = new DataController(profileRepo, this);
     connect(qApp, &QCoreApplication::aboutToQuit, this, &AppController::onAppAboutToQuit);
 }
-
+/** @brief Destructor. Deletes the active sub-controller. */
 AppController::~AppController()
 {
 	delete currentController;
 }
-
+/** @brief Initializes the Login flow using UserController. */
 void AppController::start()
 {
 	delete currentController;
@@ -23,7 +28,7 @@ void AppController::start()
 
     currentController->run();
 }
-
+/** @brief Transitions to the Profile Selection flow using ProfileController. */
 void AppController::showProfileSelection()
 {
 	delete currentController;
@@ -37,13 +42,14 @@ void AppController::showProfileSelection()
 
     currentController->run();
 }
-
+/** @brief Resets user session IDs and restarts the app flow. */
 void AppController::handleLogout()
 {
     BaseController::setUserId(-1);
     BaseController::setProfileId(-1);
     start();
 }
+/** @brief Resets only the profile ID and returns to profile selection. */
 void AppController::handleSwitchingProfile()
 {
     BaseController::setProfileId(-1);
@@ -51,6 +57,7 @@ void AppController::handleSwitchingProfile()
 
     showProfileSelection();
 }
+/** @brief Transitions to the main Dashboard flow using DashboardController. */
 void AppController::showDashboard()
 {
 	delete currentController;
@@ -62,7 +69,7 @@ void AppController::showDashboard()
 
     currentController->run();
 }
-
+/** @brief Triggered on app exit. Auto-saves data if a user is logged in. */
 void AppController::onAppAboutToQuit()
 {
     int currentUserId = BaseController::getUserId();
