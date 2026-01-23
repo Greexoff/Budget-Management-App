@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <QObject>
 #include <QPointer>
@@ -7,6 +7,7 @@
 #include "Controller/UserController.h"
 #include "Controller/ProfileController.h"
 #include "Controller/DashboardController.h"
+#include "Controller/DataController.h"
 #include "Model/Repositories/UserRepository.h"
 #include "Model/Repositories/ProfileRepository.h"
 
@@ -28,6 +29,8 @@ private slots:
     void handleLogout();
 
     void handleSwitchingProfile();
+
+    void onAppAboutToQuit();
 private:
     UserRepository userRepo;
     ProfilesRepository profileRepo;
@@ -36,4 +39,5 @@ private:
     FinancialAccountRepository fAccRepo;
 
     QPointer<BaseController> currentController;
+    DataController* dataController;
 };

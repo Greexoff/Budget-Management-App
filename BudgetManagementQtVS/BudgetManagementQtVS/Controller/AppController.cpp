@@ -1,6 +1,10 @@
-#include "Controller/AppController.h"
+﻿#include "Controller/AppController.h"
 
-AppController::AppController(QObject* parent) : QObject(parent) {}
+AppController::AppController(QObject* parent) : QObject(parent) 
+{
+    dataController = new DataController(profileRepo, this);
+    connect(qApp, &QCoreApplication::aboutToQuit, this, &AppController::onAppAboutToQuit);
+}
 
 AppController::~AppController()
 {
@@ -57,4 +61,15 @@ void AppController::showDashboard()
     connect(dashCtrl, &DashboardController::logoutRequested, this, &AppController::handleSwitchingProfile);
 
     currentController->run();
+}
+
+void AppController::onAppAboutToQuit()
+{
+    int currentUserId = BaseController::getUserId();
+
+    if (currentUserId != -1) {
+        if (dataController) {
+            dataController->autoSaveData(currentUserId);
+        }
+    }
 }

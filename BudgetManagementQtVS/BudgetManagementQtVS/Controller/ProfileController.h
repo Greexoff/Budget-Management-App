@@ -1,7 +1,8 @@
-#pragma once
+﻿#pragma once
 #include "Controller/BaseController.h"
 
 #include "Model/Repositories/ProfileRepository.h"
+#include "Controller/DataController.h"
 
 #include "View/ProfileDialogView.h"
 
@@ -22,6 +23,8 @@ private:
     QPointer<ProfileDialog> profileDialog;
 
     ProfilesRepository& profileRepository;
+
+    DataController* dataController;
 
     void handleProfileSelection(int profileId);
 

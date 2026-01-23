@@ -9,6 +9,7 @@
 
 ProfileController::ProfileController(ProfilesRepository& profileRepositoryRef, QObject* parent) : BaseController(parent), profileRepository(profileRepositoryRef)
 {
+    dataController = new DataController(profileRepository, this);
     profileDialog = new ProfileDialog();
     if (profileDialog)
     {
@@ -125,78 +126,10 @@ void ProfileController::handleLogoutRequest()
 
 void ProfileController::handleExportDataRequest() const
 {
-    if (!profileDialog)
+    if (!profileDialog || !dataController)
     {
         return;
     }
-    QString fileName = QFileDialog::getSaveFileName(
-        profileDialog,
-        tr("Export Data"),
-        "",
-        tr("CSV Files (*.csv);;All Files (*)"));
 
-    if (fileName.isEmpty())
-        return;
-
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        profileDialog->showProfileMessage(tr("Export Error"), tr("Could not open file for writing"), "error");
-        return;
-    }
-
-    QTextStream out(&file);
-
-    out << "Profile,Transaction ID,Name,Date,Description,Amount,Type,Category,Account,Account Type\n";
-
-    TransactionRepository transRepo;
-    CategoryRepository catRepo;
-    FinancialAccountRepository accountRepo;
-
-    int userId = getUserId();
-    QVector<Profile> profiles = profileRepository.getProfilesByUserId(userId);
-
-    auto escape = [](QString s) {
-        if (s.contains(',') || s.contains('"') || s.contains('\n')) {
-            s.replace("\"", "\"\"");
-            return "\"" + s + "\"";
-        }
-        return s;
-    };
-
-    for (const auto& profile : profiles) {
-        int profileId = profile.getProfileId();
-        QString profileName = profile.getProfileName();
-
-        QVector<Transaction> transactions = transRepo.getAllProfileTransaction(profileId);
-        QVector<FinancialAccount> accounts = accountRepo.getAllProfileFinancialAccounts(profileId);
-
-        for (const auto& trans : transactions) {
-            QString categoryName = catRepo.getCategoryNameById(trans.getCategoryId());
-            
-            QString accountName = "Unknown";
-            QString accountType = "Unknown";
-            
-            for(const auto& acc : accounts) {
-                if(acc.getFinancialAccountId() == trans.getFinancialAccountId()) {
-                    accountName = acc.getFinancialAccountName();
-                    accountType = acc.getFinancialAccountType();
-                    break;
-                }
-            }
-
-            out << escape(profileName) << ","
-                << trans.getTransactionId() << ","
-                << escape(trans.getTransactionName()) << ","
-                << trans.getTransactionDate().toString("yyyy-MM-dd") << ","
-                << escape(trans.getTransactionDescription()) << ","
-                << trans.getTransactionAmount() << ","
-                << escape(trans.getTransactionType()) << ","
-                << escape(categoryName) << ","
-                << escape(accountName) << ","
-                << escape(accountType) << "\n";
-        }
-    }
-
-    file.close();
-    profileDialog->showProfileMessage(tr("Export Success"), tr("Data exported successfully to ") + fileName, "info");
+    dataController->exportData(getUserId(), profileDialog);
 }

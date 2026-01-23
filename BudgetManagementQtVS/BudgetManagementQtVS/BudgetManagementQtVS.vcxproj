@@ -97,6 +97,7 @@
     <ClCompile Include="Controller\CategorySelectionController.cpp" />
     <ClCompile Include="Controller\ChartsController.cpp" />
     <ClCompile Include="Controller\DashboardController.cpp" />
+    <ClCompile Include="Controller\DataController.cpp" />
     <ClCompile Include="Controller\FinancialAccountSelectionController.cpp" />
     <ClCompile Include="Controller\ProfileController.cpp" />
     <ClCompile Include="Controller\TransactionController.cpp" />
@@ -134,6 +135,7 @@
     <QtMoc Include="Controller\ChartsController.h" />
     <QtMoc Include="Controller\AppController.h" />
     <QtMoc Include="Controller\DashboardController.h" />
+    <QtMoc Include="Controller\DataController.h" />
     <ClInclude Include="Model\FinancialAccount.h" />
     <ClInclude Include="Model\Profile.h" />
     <ClInclude Include="Model\Repositories\BaseRepository.h" />
