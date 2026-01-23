@@ -48,4 +48,5 @@ private:
     QPushButton* btnDelete;
 
     void setupUI();
+    void setupStyle();
 };

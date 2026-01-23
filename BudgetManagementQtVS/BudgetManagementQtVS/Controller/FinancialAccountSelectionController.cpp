@@ -71,6 +71,7 @@ void FinancialAccountController::refreshTable()
         row << QString::number(acc.getFinancialAccountId());
         row << acc.getFinancialAccountName();
         row << QString::number(acc.getFinancialAccountBalance(), 'f', 2) + " PLN";
+        row << QString::number(acc.getFinancialAccountCurrentBalance(), 'f', 2) + " PLN";
         viewData.append(row);
     }
     fAccountView->setAccountTabHeaders(viewData);
@@ -143,6 +144,9 @@ void FinancialAccountController::executeSortingFinancialAccount(QVector<Financia
         bool asc = (getLastSortingOrder() == Qt::AscendingOrder);
         if (getSelectedColumnId() == 2) {
             return asc ? a.getFinancialAccountBalance() < b.getFinancialAccountBalance() : a.getFinancialAccountBalance() > b.getFinancialAccountBalance();
+        }
+        else if (getSelectedColumnId() == 3) {
+            return asc ? a.getFinancialAccountCurrentBalance() < b.getFinancialAccountCurrentBalance() : a.getFinancialAccountCurrentBalance() > b.getFinancialAccountCurrentBalance();
         }
         return asc ? a.getFinancialAccountName() < b.getFinancialAccountName() : a.getFinancialAccountName() > b.getFinancialAccountName();
         });

@@ -6,7 +6,7 @@ QVector<FinancialAccount> FinancialAccountRepository::getAllProfileFinancialAcco
 
 	QSqlQuery query(database);
 
-	query.prepare("SELECT id, financialAccount_name, financialAccount_type, financialAccount_balance, profile_id FROM financialAccount WHERE profile_id = :profile_id OR id = 1");
+	query.prepare("SELECT fa.id, fa.financialAccount_name, fa.financialAccount_type, fa.financialAccount_balance, fa.profile_id, (fa.financialAccount_balance + COALESCE((SELECT SUM(CASE WHEN t.type = 'Income' THEN t.amount WHEN t.type = 'Expense' THEN - t.amount ELSE 0 END ) FROM transactions t WHERE t.financialAccount_id = fa.id), 0)) as current_balance FROM financialAccount fa WHERE fa.profile_id = :profile_id OR fa.id = 1");
 	query.bindValue(":profile_id", profileId);
 
 	if (!query.exec())
@@ -21,8 +21,9 @@ QVector<FinancialAccount> FinancialAccountRepository::getAllProfileFinancialAcco
 		QString financialAccountType = query.value(2).toString();
 		double financialAccountBalance = query.value(3).toDouble();
 		int financialAccountProfileId = query.value(4).toInt();
+		double financialAccountCurrentBalance = query.value(5).toDouble();
 
-		FinancialAccount financialAccount(id, financialAccountName, financialAccountType, financialAccountBalance, financialAccountProfileId);
+		FinancialAccount financialAccount(id, financialAccountName, financialAccountType, financialAccountBalance, financialAccountProfileId, financialAccountCurrentBalance);
 		financialAccountsForProfile.append(financialAccount);
 
 	}

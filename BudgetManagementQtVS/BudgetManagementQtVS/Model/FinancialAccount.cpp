@@ -1,7 +1,7 @@
 ﻿#include "Model/FinancialAccount.h"
 
-FinancialAccount::FinancialAccount(int financialAccountId, QString& financialAccountName, QString& financialAccountType, double financialAccountBalance, int profileId)
-	: financialAccountId(financialAccountId), financialAccountName(financialAccountName), financialAccountType(financialAccountType), financialAccountBalance(financialAccountBalance), profileId(profileId)
+FinancialAccount::FinancialAccount(int financialAccountId, QString& financialAccountName, QString& financialAccountType, double financialAccountBalance, int profileId, double currentBalance)
+	: financialAccountId(financialAccountId), financialAccountName(financialAccountName), financialAccountType(financialAccountType), financialAccountBalance(financialAccountBalance), profileId(profileId), currentBalance(currentBalance)
 { }
 
 FinancialAccount::~FinancialAccount() {}
@@ -24,6 +24,11 @@ QString FinancialAccount::getFinancialAccountType() const
 double FinancialAccount::getFinancialAccountBalance() const 
 {
 	return financialAccountBalance;
+}
+
+double FinancialAccount::getFinancialAccountCurrentBalance() const
+{
+	return currentBalance;
 }
 
 int FinancialAccount::getIdOfProfileConnectedToFinancialAccount() const 
@@ -49,4 +54,8 @@ void FinancialAccount::setFinancialAccountType(const QString& type)
 void FinancialAccount::setFinancialAccountBalance(double balance) 
 {
 	financialAccountBalance = balance;
+}
+
+void FinancialAccount::setFinancialAccountCurrentBalance(double balance) {
+	currentBalance = balance;
 }

@@ -8,10 +8,11 @@ private:
 	QString financialAccountName;
 	QString financialAccountType;
 	double financialAccountBalance;
+	double currentBalance;
 	int profileId;
 
 public:
-	FinancialAccount(int financialAccountId, QString& financialAccountName, QString& financialAccountType, double financialAccountBalance, int profileId);
+	FinancialAccount(int financialAccountId, QString& financialAccountName, QString& financialAccountType, double financialAccountBalance, int profileId, double currentBalance = 0.0);
 
 	~FinancialAccount();
 
@@ -23,6 +24,8 @@ public:
 
 	double getFinancialAccountBalance() const;
 
+	double getFinancialAccountCurrentBalance() const;
+
 	int getIdOfProfileConnectedToFinancialAccount() const;
 
 	void setFinancialAccountId(int id);
@@ -32,6 +35,8 @@ public:
 	void setFinancialAccountType(const QString& type);
 
 	void setFinancialAccountBalance(double balance);
+
+	void setFinancialAccountCurrentBalance(double balance) ;
 
 	
 };
