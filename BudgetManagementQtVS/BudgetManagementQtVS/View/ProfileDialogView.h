@@ -42,5 +42,6 @@ private:
     Ui::ProfileDialog* ui;          
     QVector<Profile> profilesId;    
 
-    void setupConnections();    
+    void setupConnections();
+    void setupStyle();
 };

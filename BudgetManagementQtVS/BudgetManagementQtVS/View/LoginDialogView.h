@@ -31,4 +31,5 @@ private:
     Ui::LoginDialog* ui;     
 
     void setupConnections();
+    void setupStyle();
 };
