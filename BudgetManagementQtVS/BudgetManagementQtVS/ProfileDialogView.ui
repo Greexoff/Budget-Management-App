@@ -6,113 +6,114 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>592</width>
-    <height>297</height>
+    <width>1200</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Select Profile</string>
   </property>
-  <widget class="QListWidget" name="listProfiles">
+  <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>20</y>
-     <width>581</width>
-     <height>201</height>
+     <y>0</y>
+     <width>1201</width>
+     <height>801</height>
     </rect>
    </property>
-  </widget>
-  <widget class="QPushButton" name="buttonSelect">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>240</y>
-     <width>80</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Select</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonAdd">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>240</y>
-     <width>80</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Add</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonRemove">
-   <property name="geometry">
-    <rect>
-     <x>200</x>
-     <y>240</y>
-     <width>80</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Remove</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonCancel">
-   <property name="geometry">
-    <rect>
-     <x>500</x>
-     <y>240</y>
-     <width>80</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Exit</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonEdit">
-   <property name="geometry">
-    <rect>
-     <x>300</x>
-     <y>240</y>
-     <width>80</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Edit</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonExport">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>270</y>
-     <width>581</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Export Data to CSV</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="logoutButton">
-   <property name="geometry">
-    <rect>
-     <x>400</x>
-     <y>240</y>
-     <width>80</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Logout</string>
-   </property>
+   <layout class="QVBoxLayout" name="MainLayout">
+    <property name="leftMargin">
+     <number>300</number>
+    </property>
+    <property name="topMargin">
+     <number>50</number>
+    </property>
+    <property name="rightMargin">
+     <number>300</number>
+    </property>
+    <property name="bottomMargin">
+     <number>50</number>
+    </property>
+    <item>
+     <widget class="QListWidget" name="listProfiles"/>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="topMargin">
+       <number>10</number>
+      </property>
+      <property name="bottomMargin">
+       <number>10</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="buttonSelect">
+        <property name="text">
+         <string>Select</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonAdd">
+        <property name="text">
+         <string>Add</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonEdit">
+        <property name="text">
+         <string>Edit</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonRemove">
+        <property name="text">
+         <string>Remove</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="leftMargin">
+       <number>200</number>
+      </property>
+      <property name="topMargin">
+       <number>40</number>
+      </property>
+      <property name="rightMargin">
+       <number>200</number>
+      </property>
+      <property name="bottomMargin">
+       <number>20</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="buttonExport">
+        <property name="text">
+         <string>Export Data to CSV</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonLogout">
+        <property name="text">
+         <string>Logout</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonExit">
+        <property name="text">
+         <string>Exit</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

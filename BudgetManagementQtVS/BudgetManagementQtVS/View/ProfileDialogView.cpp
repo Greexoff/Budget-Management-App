@@ -7,6 +7,7 @@ ProfileDialog::ProfileDialog(QWidget* parent)
     : QDialog(parent),
     ui(new Ui::ProfileDialog)
 {
+    setupStyle();
     ui->setupUi(this);
     setWindowTitle("Select profile");
     setupConnections();
@@ -22,9 +23,9 @@ void ProfileDialog::setupConnections()
     connect(ui->buttonSelect, &QPushButton::clicked, this, &ProfileDialog::onButtonSelectClicked);
     connect(ui->buttonAdd, &QPushButton::clicked, this, &ProfileDialog::onButtonAddClicked);
     connect(ui->buttonRemove, &QPushButton::clicked, this, &ProfileDialog::onButtonRemoveClicked);
-    connect(ui->buttonCancel, &QPushButton::clicked, this, &ProfileDialog::onButtonCancelClicked);
+    connect(ui->buttonExit, &QPushButton::clicked, this, &ProfileDialog::onButtonCancelClicked);
     connect(ui->buttonEdit, &QPushButton::clicked, this, &ProfileDialog::onButtonEditClicked);
-    connect(ui->logoutButton, &QPushButton::clicked, this, &ProfileDialog::onButtonLogoutClicked);
+    connect(ui->buttonLogout, &QPushButton::clicked, this, &ProfileDialog::onButtonLogoutClicked);
     connect(ui->buttonExport, &QPushButton::clicked, this, &ProfileDialog::onButtonExportClicked);
 }
 
@@ -107,4 +108,20 @@ void ProfileDialog::onButtonLogoutClicked()
 void ProfileDialog::onButtonExportClicked()
 {
     emit exportDataRequested();
+}
+
+void ProfileDialog::setupStyle()
+{
+    this->setStyleSheet(
+        "QDialog { color: white; background-color: #121212; width: 600px; height: 600px;}"
+		"QVBoxLayout#MainLayout { background-color: #121212; padding: 15px; }"
+		"QPushButton { background-color: #4CAF50; color: white; border-radius: 5px; padding: 10px; font-weight: bold; }"
+		"QPushButton#buttonRemove { background-color: #c0392b; }"
+        "QPushButton#buttonEdit { background-color: #2980b9; }"
+        "QPushButton#buttonLogout { background-color: #2980b9; }"
+        "QPushButton#buttonExport { background-color: #2980b9; }"
+        "QPushButton#buttonExit { background-color: #c0392b; }" 
+        "QListWidget { background-color: #2d2d2d; font-weight: bold; padding: 10px; border: 1px solid #444444; }"
+		"QListWidget::item { height: 20px; color: white; font-weight: bold; padding: 10px; }"
+    );
 }
