@@ -56,8 +56,6 @@ void FinancialAccountController::setupFinancialAccountWindow()
     connect(fAccountView, &FinancialAccountSelectionView::columnSortRequest, this, &FinancialAccountController::handleSortingRequest);
 }
 
-void FinancialAccountController::showAccounts() { refreshTable(); }
-
 void FinancialAccountController::refreshTable()
 {
     QVector<FinancialAccount> accounts = financialAccountRepository.getAllProfileFinancialAccounts(getUserId()); 
@@ -131,24 +129,27 @@ void FinancialAccountController::handleSortingRequest(int columnId)
 
 QVector<FinancialAccount> FinancialAccountController::executeFilteringFinancialAccount(const QVector<FinancialAccount> allAccounts)
 {
-    QVector<FinancialAccount> filtered;
-    for (const auto& acc : allAccounts) {
-        if (acc.getFinancialAccountName().contains(getFilteringText(), Qt::CaseInsensitive))
-            filtered.append(acc);
-    }
-    return filtered;
+    return executeFiltering(allAccounts, [this](const FinancialAccount& acc) {
+        QString filter = getFilteringText();
+        return acc.getFinancialAccountName().contains(filter, Qt::CaseInsensitive) ||
+            acc.getFinancialAccountType().contains(filter, Qt::CaseInsensitive);
+        });
 }
 
-void FinancialAccountController::executeSortingFinancialAccount(QVector<FinancialAccount>& allAccounts) const
+void FinancialAccountController::executeSortingFinancialAccount(QVector<FinancialAccount>& allAccounts) 
 {
-    std::sort(allAccounts.begin(), allAccounts.end(), [this](const FinancialAccount& a, const FinancialAccount& b) {
-        bool asc = (getLastSortingOrder() == Qt::AscendingOrder);
-        if (getSelectedColumnId() == 2) {
-            return asc ? a.getFinancialAccountBalance() < b.getFinancialAccountBalance() : a.getFinancialAccountBalance() > b.getFinancialAccountBalance();
+    executeSorting(allAccounts, [this](const FinancialAccount& a, const FinancialAccount& b) {
+        switch (getSelectedColumnId()) {
+        case 1:
+            return a.getFinancialAccountName().toLower() < b.getFinancialAccountName().toLower();
+        case 2:
+            return a.getFinancialAccountType().toLower() < b.getFinancialAccountType().toLower();
+        case 3:
+            return a.getFinancialAccountBalance() < b.getFinancialAccountBalance();
+        case 4:
+            return a.getFinancialAccountCurrentBalance() < b.getFinancialAccountCurrentBalance();
+        default:
+            return a.getFinancialAccountId() < b.getFinancialAccountId();
         }
-        else if (getSelectedColumnId() == 3) {
-            return asc ? a.getFinancialAccountCurrentBalance() < b.getFinancialAccountCurrentBalance() : a.getFinancialAccountCurrentBalance() > b.getFinancialAccountCurrentBalance();
-        }
-        return asc ? a.getFinancialAccountName() < b.getFinancialAccountName() : a.getFinancialAccountName() > b.getFinancialAccountName();
         });
 }

@@ -22,8 +22,6 @@ public:
     void run();
     QWidget* getView();
 
-    void showAccounts();
-
 signals:
     void financialAccountDataChanged();
 
@@ -44,5 +42,6 @@ private:
 
     void refreshTable();
     QVector<FinancialAccount> executeFilteringFinancialAccount(const QVector<FinancialAccount> allAccounts);
+    void executeSortingFinancialAccount(QVector<FinancialAccount>& allAccounts);
     void executeSortingFinancialAccount(QVector<FinancialAccount>& allAccounts) const;
 };

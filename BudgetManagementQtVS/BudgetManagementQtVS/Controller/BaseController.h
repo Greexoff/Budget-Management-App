@@ -1,12 +1,8 @@
 #pragma once
 #include <QObject>
 #include <QVector>
-#include <QStringList>
 #include <QString>
-#include <QVariant>
-#include <QDate>
-#include <Model/Repositories/CategoryRepository.h>
-#include <Model/Repositories/FinancialAccountRepository.h>
+
 
 class BaseController : public QObject
 {
@@ -31,85 +27,34 @@ protected:
 	Qt::SortOrder getLastSortingOrder() const;
 	void setLastSortingOrder();
 
-	template<typename T, typename matchFound>
-	QVector<T> executeFiltering(const QVector<T>& allItems, matchFound match)
-	{
-		if (filteringText.isEmpty())
-		{
-			return allItems;
-		}
-		QVector<T> filteredItems;
+    template<typename T, typename P>
+    QVector<T> executeFiltering(const QVector<T>& allItems, P match) {
+        if (getFilteringText().isEmpty()) {
+            return allItems;
+        }
 
-		for (const auto& item : allItems)
-		{
-			if (match(item))
-			{
-				filteredItems.append(item);
-			}
-		}
-		return filteredItems;
-	}
+        QVector<T> filteredItems;
+        std::copy_if(allItems.begin(), allItems.end(), std::back_inserter(filteredItems), match);
+        return filteredItems;
+    }
 
-	template<typename T>
-	QVector<T> executeSorting(QVector<T>& itemsToSort, int columnId, Qt::SortOrder order)
-	{
-		auto compareValues = [order](const auto& valA, const auto& valB) -> bool
-			{
-				if (order == Qt::AscendingOrder)
-				{
-					return valA < valB;
-				}
-				else
-				{
-					return valA > valB;
-				}
-			};
-		if constexpr (std::is_same_v<T, Category>)
-		{
-			auto comparator = [columnId, compareValues](T& itemA, T& itemB) -> bool
-				{
-					switch (columnId)
-					{
-					case 0://Name
-						return compareValues(itemA.getCategoryName().trimmed().toLower(), itemB.getCategoryName().trimmed().toLower());
-						break;
-					default:
-						return compareValues(itemA.getCategoryId(), itemB.getCategoryId());
-						break;
-					}
-				};
-			std::sort(itemsToSort.begin(), itemsToSort.end(), comparator);
-		}
-		if constexpr (std::is_same_v<T, FinancialAccount>)
-		{
-			auto comparator = [columnId, compareValues](T& itemA, T& itemB) -> bool
-				{
-					switch (columnId)
-					{
-					case 0://Name
-						return compareValues(itemA.getFinancialAccountName().trimmed().toLower(), itemB.getFinancialAccountName().trimmed().toLower());
-						break;
-					case 1://Type
-						return compareValues(itemA.getFinancialAccountType().trimmed().toLower(), itemB.getFinancialAccountType().trimmed().toLower());
-						break;
-					case 2://Balance
-						return compareValues(itemA.getFinancialAccountBalance(), itemB.getFinancialAccountBalance());
-						break;
-					default:
-						return compareValues(itemA.getFinancialAccountId(), itemB.getFinancialAccountId());
-						break;
-					}
-				};
-			std::sort(itemsToSort.begin(), itemsToSort.end(), comparator);
-		}
-		return itemsToSort;
-	}
+    template<typename T, typename C>
+    void executeSorting(QVector<T>& itemsToSort, C comp) {
+        Qt::SortOrder order = getLastSortingOrder();
+
+        std::sort(itemsToSort.begin(), itemsToSort.end(), [comp, order](const T& a, const T& b) {
+            if (order == Qt::AscendingOrder) {
+                return comp(a, b);
+            }
+                return comp(b, a);
+            });
+    }
 
 private:
 	static int s_currentProfileId;
 	static int s_currentUserId;
 	static bool s_mainWindowInitialized;
-	QString filteringText = "";//Replace with namespace
-	int selectedColumnId = -1;//Replace with namespace
-	Qt::SortOrder lastSortingOrder = Qt::SortOrder::AscendingOrder;//Replace with namespace
+	QString filteringText = "";
+	int selectedColumnId = -1;
+	Qt::SortOrder lastSortingOrder = Qt::SortOrder::AscendingOrder;
 };

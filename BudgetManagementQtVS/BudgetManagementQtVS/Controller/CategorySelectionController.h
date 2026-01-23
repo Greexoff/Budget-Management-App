@@ -51,5 +51,6 @@ private:
 
     void refreshTable();
     QVector<Category> executeFilteringCategory(const QVector<Category> allCategories);
+    void executeSortingCategory(QVector<Category>& allCategories);
     void executeSortingCategory(QVector<Category>& allCategories) const;
 };

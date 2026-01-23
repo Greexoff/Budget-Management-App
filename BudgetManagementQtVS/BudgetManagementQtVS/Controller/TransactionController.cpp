@@ -271,21 +271,21 @@ void TransactionController::handleFilteringTransactionRequest(QString searchText
 //An actual method for handling filtering specific transactions
 QVector<Transaction> TransactionController::executeFilteringTransaction(const QVector<Transaction> allTransactions)
 {
-    auto matchFound = [&](const Transaction& trans) -> bool
-        {
-            QString filter = getFilteringText();
-            bool nameMatches = trans.getTransactionName().contains(filter, Qt::CaseInsensitive);
-            bool descriptionMatches = trans.getTransactionDescription().contains(filter, Qt::CaseInsensitive);
-            bool categoryMatches = categoryRepository.getCategoryNameById(trans.getCategoryId()).contains(filter, Qt::CaseInsensitive);
-            bool financialAccountMatches = financialAccountRepository.getFinancialAccountNameById(trans.getFinancialAccountId()).contains(filter, Qt::CaseInsensitive);
-            bool typeMatches = trans.getTransactionType().contains(filter, Qt::CaseInsensitive);
-            if (nameMatches || descriptionMatches || categoryMatches || financialAccountMatches || typeMatches)
-            {
-                return true;
-            }
-            return false;
-        };
-    return executeFiltering(allTransactions, matchFound);
+    return executeFiltering(allTransactions, [this](const Transaction& t) {
+        QString filter = getFilteringText();
+
+        bool nameMatches = t.getTransactionName().contains(filter, Qt::CaseInsensitive);
+        bool descriptionMatches = t.getTransactionDescription().contains(filter, Qt::CaseInsensitive);
+        bool typeMatches = t.getTransactionType().contains(filter, Qt::CaseInsensitive);
+
+        bool categoryMatches = categoryRepository.getCategoryNameById(t.getCategoryId()).contains(filter, Qt::CaseInsensitive);
+        bool financialAccountMatches = financialAccountRepository.getFinancialAccountNameById(t.getFinancialAccountId()).contains(filter, Qt::CaseInsensitive);
+
+        bool dateMatches = t.getTransactionDate().toString("yyyy-MM-dd").contains(filter);
+
+        return nameMatches || descriptionMatches || categoryMatches ||
+            financialAccountMatches || typeMatches || dateMatches;
+        });
 }
 
 //Method that sets up selected column id on which sorting will occur and calls refresh view method where an actual sorting method is called
@@ -296,48 +296,24 @@ void TransactionController::handleSortingRequest(int columnId)
 }
 
 //An actual method for handling sorting transactions
-void TransactionController::executeSortingTransaction(QVector<Transaction>& allTransactions) const
+void TransactionController::executeSortingTransaction(QVector<Transaction>& allTransactions) 
 {
-    auto compareValues = [&](const auto& valA, const auto& valB) -> bool
-        {
-            if (getLastSortingOrder() == Qt::AscendingOrder)
-            {
-                return valA < valB;
-            }
-            else
-            {
-                return valA > valB;
-            }
-        };
-    auto comparator = [&](const Transaction& itemA, const Transaction& itemB) -> bool
-        {
-            switch (getSelectedColumnId())
-            {
-            case 1://Name
-                return compareValues(itemA.getTransactionName().trimmed().toLower(), itemB.getTransactionName().trimmed().toLower());
-                break;
-            case 2://Date
-                return compareValues(itemA.getTransactionDate(), itemB.getTransactionDate());
-                break;
-            case 3://Description
-                return compareValues(itemA.getTransactionDescription().trimmed().toLower(), itemB.getTransactionDescription().trimmed().toLower());
-                break;
-            case 4://Amount
-                return compareValues(itemA.getTransactionAmount(), itemB.getTransactionAmount());
-                break;
-            case 5://Type
-                return compareValues(itemA.getTransactionType(), itemB.getTransactionType());
-                break;
-            case 6://Category
-                return compareValues(categoryRepository.getCategoryNameById(itemA.getCategoryId()).trimmed().toLower(), categoryRepository.getCategoryNameById(itemB.getCategoryId()).trimmed().toLower());
-                break;
-            case 7://fAccount
-                return compareValues(financialAccountRepository.getFinancialAccountNameById(itemA.getFinancialAccountId()).trimmed().toLower(), financialAccountRepository.getFinancialAccountNameById(itemB.getFinancialAccountId()).trimmed().toLower());
-                break;
-            default:
-                return compareValues(itemA.getTransactionId(), itemB.getTransactionId());
-                break;
-            }
-        };
-    std::sort(allTransactions.begin(), allTransactions.end(), comparator);
+    executeSorting(allTransactions, [this](const Transaction& a, const Transaction& b) {
+        switch (getSelectedColumnId()) {
+        case 1:
+            return a.getTransactionName().toLower() < b.getTransactionName().toLower();
+        case 2:
+            return a.getTransactionDate() < b.getTransactionDate();
+        case 4: 
+            return a.getTransactionAmount() < b.getTransactionAmount();
+        case 6: 
+            return categoryRepository.getCategoryNameById(a.getCategoryId()).toLower() <
+                categoryRepository.getCategoryNameById(b.getCategoryId()).toLower();
+        case 7: 
+            return financialAccountRepository.getFinancialAccountNameById(a.getFinancialAccountId()).toLower() <
+                financialAccountRepository.getFinancialAccountNameById(b.getFinancialAccountId()).toLower();
+        default: 
+            return a.getTransactionId() < b.getTransactionId();
+        }
+        });
 }

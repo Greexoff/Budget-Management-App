@@ -160,23 +160,17 @@ void CategoryController::handleSortRequest(int columnId)
 
 QVector<Category> CategoryController::executeFilteringCategory(const QVector<Category> allCategories)
 {
-    QVector<Category> filtered;
-    for (const auto& cat : allCategories) {
-        if (cat.getCategoryName().contains(getFilteringText(), Qt::CaseInsensitive)) {
-            filtered.append(cat);
-        }
-    }
-    return filtered;
+    return executeFiltering(allCategories, [this](const Category& cat)
+        {
+        return cat.getCategoryName().contains(getFilteringText(), Qt::CaseInsensitive);
+        });
 }
 
-void CategoryController::executeSortingCategory(QVector<Category>& allCategories) const
+void CategoryController::executeSortingCategory(QVector<Category>& allCategories) 
 {
-    std::sort(allCategories.begin(), allCategories.end(), [this](const Category& a, const Category& b) {
-        if (getLastSortingOrder() == Qt::AscendingOrder) {
-            return a.getCategoryName() < b.getCategoryName();
+    executeSorting(allCategories, [this](const Category& a, const Category& b) {
+    	if (getSelectedColumnId() == 1) { 
+            return a.getCategoryName().toLower() < b.getCategoryName().toLower();
         }
-        else {
-            return a.getCategoryName() > b.getCategoryName();
-        }
-        });
+        return a.getCategoryId() < b.getCategoryId();});
 }

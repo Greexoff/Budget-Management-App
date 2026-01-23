@@ -39,6 +39,7 @@ private:
     void handleEditTransactionRequest();
 
     void handleSortingRequest(int columnId);
+    void executeSortingTransaction(QVector<Transaction>& allTransactions);
 
     void executeSortingTransaction(QVector<Transaction>& allTransactions) const;
 

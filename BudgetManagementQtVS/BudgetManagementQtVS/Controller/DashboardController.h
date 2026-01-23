@@ -15,7 +15,6 @@ class DashboardController : public BaseController {
 public:
     explicit DashboardController(ProfilesRepository& profileRepo, TransactionRepository& transactionRepo, CategoryRepository& categoryRepo, FinancialAccountRepository& fAccRepo, QObject* parent = nullptr);
     void run() override;
-    DashboardController(QObject* parent);
     ~DashboardController() override;
 signals:
     void logoutRequested();

@@ -208,18 +208,15 @@ void FinancialAccountSelectionView::onButtonEditClicked()
 void FinancialAccountSelectionView::setupStyle()
 {
     this->setStyleSheet(
-        "QWidget { color: white; background-color: transparent; }"
         "QLabel#viewLabel { font-size: 24px; font-weight: bold; color: white; }"
-        "QLineEdit { padding: 8px; border: 1px solid #444444; border-radius: 5px; background-color: #2d2d2d; color: white; }"
-        "QFrame#budgetFrame { background-color: #1e1e1e; border-radius: 10px; border: 1px solid #333333; padding: 10px; }"
-        "QProgressBar { border: none; background-color: #2d2d2d; border-radius: 7px; text-align: center; }"
-        "QProgressBar::chunk { background-color: #2ecc71; border-radius: 7px; }"
+        "QLineEdit{ padding: 8px; border: 1px solid #444444; border-radius: 5px; background-color: #2d2d2d; color: white; selection-background-color: #3498db; }"
         "QPushButton#actionButtonAdd { background-color: #27ae60; color: white; border-radius: 5px; padding: 8px 15px; font-weight: bold; }"
         "QPushButton#actionButtonDelete { background-color: #c0392b; color: white; border-radius: 5px; padding: 8px 15px; }"
         "QPushButton#actionButton { background-color: #2980b9; color: white; border-radius: 5px; padding: 8px 15px; }"
-        "QTableView { border: 1px solid #333333; background-color: #1e1e1e; color: white; selection-background-color: #3498db; }"
-        "QHeaderView::section { background-color: #2d2d2d; padding: 8px; border: 1px solid #333333; font-weight: bold; }"
-    );
+        "QTableView { border: 1px solid #333333; background-color: #1e1e1e; color: white; gridline-color: #333333; selection-background-color: #3498db; selection-color: white; }"
+        "QHeaderView::section { background-color: #2d2d2d; padding: 8px; border: 1px solid #333333; font-weight: bold; color: white; }"
+        "QDialog, QMessageBox, QInputDialog { background-color: #1e1e1e; color: white; font-size: 14px; }"
+        "QDialog QPushButton { background-color: #333333; color: white; border: 1px solid #444444; border-radius: 4px; padding: 6px 15px; }");
 }
 void FinancialAccountSelectionView::onButtonDeleteClicked() { emit deleteAccountRequest(); }
 void FinancialAccountSelectionView::onSearchTextChanged(const QString& text) { emit searchAccountRequest(text); }
