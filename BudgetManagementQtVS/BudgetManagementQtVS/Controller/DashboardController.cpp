@@ -64,5 +64,7 @@ void DashboardController::setupConnections()
 void DashboardController::run() {
     if (dashboardView) {
         dashboardView->show();
+        dashboardView->navigateToPage(DashboardView::TransactionPage);
     }
+
 }

@@ -52,4 +52,6 @@ private:
 	int previousCategoryIndex = -1;
 	int previousFinancialAccountIndex = -1;
 	int previousTypeIndex = -1;
+
+	void setupStyle();
 };

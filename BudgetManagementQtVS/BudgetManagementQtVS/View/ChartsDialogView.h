@@ -24,6 +24,7 @@ public:
 
     void updatePieChart(const QMap<QString, double>& data) const;
     void updateBarChart(double totalIncome, double totalExpense) const;
+    void setupStyle();
 
 private:
     QChartView* chartViewPie;

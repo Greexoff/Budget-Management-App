@@ -15,6 +15,7 @@ class CategorySelectionView : public QWidget
     Q_OBJECT
 
 public:
+    void setupStyle();
     explicit CategorySelectionView(QWidget* parent = nullptr);
     ~CategorySelectionView() = default;
 

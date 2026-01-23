@@ -4,9 +4,8 @@ TransactionEditorDialogView::TransactionEditorDialogView(QWidget* parent)
 	: QDialog(parent), ui(new Ui::AddTransactionDialogView) {
 
 	ui->setupUi(this);
-
 	ui->dateEdit->setDate(QDate::currentDate());
-
+	this->setupStyle();
 	connect(ui->categoryCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &TransactionEditorDialogView::onCategoryIndexChanged);
 	connect(ui->accountCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &TransactionEditorDialogView::onFinancialAccountIndexChanged);
 	connect(ui->typeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &TransactionEditorDialogView::onTransactionTypeChanged);
@@ -245,4 +244,14 @@ QString TransactionEditorDialogView::getType() const
 
 int TransactionEditorDialogView::getSelectedFinancialAccountId() const {
 	return ui->accountCombo->currentData().toInt();
+}
+
+void TransactionEditorDialogView::setupStyle()
+{
+	this->setStyleSheet(
+		"QMainWindow { background-color: #121212; color: white; }"
+		"QLineEdit, QDateEdit, QSpinBox, QDoubleSpinBox, QComboBox { padding: 8px; border: 1px solid #444444; border-radius: 5px; background-color: #2d2d2d; color: white; selection-background-color: #3498db; }"
+		"QDialog, QMessageBox, QInputDialog { background-color: #1e1e1e; color: white; font-size: 14px; }"
+		"QDialog QPushButton { background-color: #333333; color: white; border: 1px solid #444444; border-radius: 4px; padding: 6px 15px; }"
+	);
 }

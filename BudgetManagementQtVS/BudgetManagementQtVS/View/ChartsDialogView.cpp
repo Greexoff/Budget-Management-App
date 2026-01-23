@@ -117,3 +117,4 @@ void ChartsView::updateBarChart(double totalIncome, double totalExpense) const
     chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
 }
+
