@@ -6,71 +6,54 @@ ChartsController::ChartsController(TransactionRepository& transRepo, CategoryRep
     QObject* parent)
     : BaseController(parent),
 	transactionRepository(transRepo),
-    categoryRepository(catRepo)
+    categoryRepository(catRepo),
+    view(new ChartsView())
 {
-    chartsView = new ChartsView();
+    connect(view, &ChartsView::dateRangeChanged, this, &ChartsController::refreshData);
 }
 
 void ChartsController::run()
 {
-    updateCharts();
+    refreshData();
 }
 
-QWidget* ChartsController::getView()
+QPointer<ChartsView> ChartsController::getView() const
 {
-    return chartsView;
+    return view;
 }
 
-void ChartsController::updateCharts()
-{
-    setUpPieChart();
-    setUptBarChart();
-}
+void ChartsController::refreshData() {
+    int profileId = getProfileId();
+    QDate start = view->getStartDateEdit()->date();
+    QDate end = view->getEndDateEdit()->date();
 
-QVector<int> ChartsController::getCurrentMonthAndYear()
-{
-    QDate d = QDate::currentDate();
-    return QVector<int>{ d.month(), d.year() };
-}
+    double income = transactionRepository.getSumByTypeAndDate(profileId, "Income", start, end);
+    double expense = transactionRepository.getSumByTypeAndDate(profileId, "Expense", start, end);
+    double avg = transactionRepository.getAllTimeMonthlyAverageExpense(profileId);
 
-void ChartsController::setUpPieChart() const
-{
+    view->setIncomeValue(income);
+    view->setExpenseValue(expense);
+    view->setAverageValue(avg);
 
-    QVector<Transaction> transactions = transactionRepository.getAllProfileTransaction(getProfileId());
-    QMap<QString, double> chartData;
 
-    for (const auto& t : transactions) {
-        if (t.getTransactionType() == "Expense") {
-            QString catName = categoryRepository.getCategoryNameById(t.getCategoryId());
-            chartData[catName] += t.getTransactionAmount();
-        }
+    view->updateBarChart(income, expense);
+
+
+
+    QMap<int, double> rawCatData = transactionRepository.getExpensesByCategory(profileId, start, end);
+
+
+    QMap<QString, double> pieChartData;
+    for (auto it = rawCatData.begin(); it != rawCatData.end(); ++it) {
+        int catId = it.key();
+        double amount = it.value();
+
+        QString catName = categoryRepository.getCategoryNameById(catId);
+        if (catName.isEmpty()) catName = "Unknown";
+
+        pieChartData.insert(catName, amount);
     }
-    chartsView->updatePieChart(chartData);
+
+    view->updatePieChart(pieChartData);
 }
 
-void ChartsController::setUptBarChart()
-{
-    QVector<int> dateInfo = getCurrentMonthAndYear();
-    std::map<int, double> incomeSums, expenseSums;
-    getSumsforBarChartByDate(incomeSums, expenseSums, dateInfo[0], dateInfo[1]);
-
-    double totalIncome = 0.0;
-    double totalExpense = 0.0;
-
-    for (auto const& [d, val] : incomeSums) totalIncome += val;
-    for (auto const& [d, val] : expenseSums) totalExpense += val;
-
-    chartsView->updateBarChart(totalIncome, totalExpense);
-}
-
-void ChartsController::getSumsforBarChartByDate(std::map<int, double>& incomeSums, std::map<int, double>& expenseSums, int m, int y) const
-{
-    QVector<Transaction> transactions = transactionRepository.getAllProfileTransaction(getProfileId());
-    for (const auto& t : transactions) {
-        if (t.getTransactionDate().month() == m && t.getTransactionDate().year() == y) {
-            int d = t.getTransactionDate().day();
-            if (t.getTransactionType() == "Income") incomeSums[d] += t.getTransactionAmount();
-            else if (t.getTransactionType() == "Expense") expenseSums[d] += t.getTransactionAmount();
-        }
-    }
-}

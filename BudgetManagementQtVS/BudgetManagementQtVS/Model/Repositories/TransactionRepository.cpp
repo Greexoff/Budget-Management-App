@@ -182,3 +182,78 @@ double TransactionRepository::getMonthlyExpenses(int profileId, int month, int y
     }
     return 0.0;
 }
+
+double TransactionRepository::getSumByTypeAndDate(int profileId, const QString& type, const QDate& start, const QDate& end) const
+{
+    QSqlQuery query(database);
+
+
+    query.prepare(
+        "SELECT SUM(amount) FROM transactions "
+        "WHERE profile_id = :pid AND UPPER(type) = UPPER(:type) "
+        "AND date >= :start AND date <= :end"
+    );
+    query.bindValue(":pid", profileId);
+    query.bindValue(":type", type);
+    query.bindValue(":start", start.toString("yyyy-MM-dd"));
+    query.bindValue(":end", end.toString("yyyy-MM-dd"));
+
+    if (query.exec() && query.next()) {
+
+        return query.value(0).toDouble();
+    }
+
+    return 0.0;
+}
+
+double TransactionRepository::getAllTimeMonthlyAverageExpense(int profileId) const
+{
+
+    QSqlQuery sumQuery(database);
+    sumQuery.prepare("SELECT SUM(amount) FROM transactions WHERE profile_id = :pid AND type = 'Expense'");
+    sumQuery.bindValue(":pid", profileId);
+
+    double totalExpense = 0.0;
+    if (sumQuery.exec() && sumQuery.next()) {
+        totalExpense = sumQuery.value(0).toDouble();
+    }
+
+ 
+    QSqlQuery countQuery(database);
+ 
+    countQuery.prepare("SELECT COUNT(DISTINCT strftime('%Y-%m', date)) FROM transactions WHERE profile_id = :pid AND type = 'Expense'");
+    countQuery.bindValue(":pid", profileId); 
+
+    int monthCount = 1;
+    if (countQuery.exec() && countQuery.next()) {
+        monthCount = countQuery.value(0).toInt();
+    }
+    if (monthCount == 0) monthCount = 1;
+
+    return totalExpense / monthCount;
+}
+
+QMap<int, double> TransactionRepository::getExpensesByCategory(int profileId, const QDate& start, const QDate& end) const
+{
+    QMap<int, double> results;
+    QSqlQuery query(database);
+
+    query.prepare("SELECT category_id, SUM(amount) FROM transactions "
+        "WHERE profile_id = :pid AND type = 'Expense' "
+        "AND date >= :start AND date <= :end "
+        "GROUP BY category_id");
+
+    query.bindValue(":pid", profileId);
+    query.bindValue(":start", start.toString("yyyy-MM-dd"));
+    query.bindValue(":end", end.toString("yyyy-MM-dd"));
+
+    if (query.exec()) {
+        while (query.next()) {
+            results.insert(query.value(0).toInt(), query.value(1).toDouble());
+        }
+    }
+    else {
+        qDebug() << "Error getting expenses by category:" << query.lastError().text();
+    }
+    return results;
+}

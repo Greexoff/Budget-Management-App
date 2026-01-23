@@ -11,6 +11,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QDateEdit>
 
 
 
@@ -20,15 +21,30 @@ class ChartsView : public QWidget
 
 public:
     explicit ChartsView(QWidget* parent = nullptr);
-    ~ChartsView() = default;
 
-    void updatePieChart(const QMap<QString, double>& data) const;
-    void updateBarChart(double totalIncome, double totalExpense) const;
-    void setupStyle();
+    QDateEdit* getStartDateEdit() const { return startDateEdit; }
+    QDateEdit* getEndDateEdit() const { return endDateEdit; }
+
+    void setIncomeValue(double value);
+    void setExpenseValue(double value);
+    void setAverageValue(double value);
+
+    void updatePieChart(const QMap<QString, double>& data); 
+    void updateBarChart(double totalIncome, double totalExpense); 
+
+signals:
+    void dateRangeChanged();
 
 private:
-    QChartView* chartViewPie;
-    QChartView* chartViewBar;
-
     void setupUI();
+    void setupStyle();
+
+    QChartView* pieChartView;
+    QChartView* barChartView;
+
+    QLabel* incomeValLabel;
+    QLabel* expenseValLabel;
+    QLabel* averageValLabel;
+    QDateEdit* startDateEdit;
+    QDateEdit* endDateEdit;
 };

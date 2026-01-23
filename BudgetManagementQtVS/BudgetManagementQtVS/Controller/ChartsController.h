@@ -15,19 +15,16 @@ class ChartsController : public BaseController
 
 public:
     ChartsController(TransactionRepository& transRepo, CategoryRepository& catRepo, QObject* parent = nullptr);
-    void run();
-    QWidget* getView();
+    void run() override;
+
+    QPointer<ChartsView> getView() const;
 
 public slots:
-    void updateCharts();
+    void refreshData();
 
 private:
-    QPointer<ChartsView> chartsView;
+    QPointer<ChartsView> view;
     TransactionRepository& transactionRepository;
     CategoryRepository& categoryRepository;
 
-    void setUpPieChart() const;
-    void setUptBarChart();
-    QVector<int> getCurrentMonthAndYear();
-    void getSumsforBarChartByDate(std::map<int, double>& incomeSums, std::map<int, double>& expenseSums, const int currentMonth, const int currentYear) const;
 };
