@@ -42,7 +42,6 @@ private:
     QMap<SelectedPage, QPushButton*> sectionsTabs;
     QPushButton* logoutButton;
     QStackedWidget* stackedWidget;
-
     void addTabsWidgetsToSidebar(QVBoxLayout*& sidebarLayout);
     void setDashboardUi();
     void setupConnections();
