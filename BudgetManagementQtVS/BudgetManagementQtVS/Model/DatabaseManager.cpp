@@ -81,38 +81,7 @@ DatabaseManager::DatabaseManager() {
         "FOREIGN KEY (financialAccount_id) REFERENCES financialAccount(id) ON DELETE SET DEFAULT"
         ")");
 
-    QSqlQuery adminQuery(datebaseInstance);
-    adminQuery.prepare("SELECT COUNT(*) FROM users WHERE username = 'admin'");
-
-    if (adminQuery.exec() && adminQuery.next()) {
-        if (adminQuery.value(0).toInt() == 0) {
-
-            QString password = "admin"; 
-
-            QString salt = QUuid::createUuid().toString();
-
-            QByteArray dataToHash = (password + salt).toUtf8();
-            QString hashedPassword = QString(QCryptographicHash::hash(dataToHash, QCryptographicHash::Sha256).toHex());
-
-            QSqlQuery insertAdmin(datebaseInstance);
-            insertAdmin.prepare(
-                "INSERT INTO users (username, password_hash, salt) "
-                "VALUES ('admin', :hash, :salt)"
-            );
-            insertAdmin.bindValue(":hash", hashedPassword);
-            insertAdmin.bindValue(":salt", salt);
-
-            if (insertAdmin.exec()) {
-                qDebug() << "Demo admin user has been added (Pass: admin).";
-            }
-            else {
-                qDebug() << "Error adding admin user:" << insertAdmin.lastError();
-            }
-        }
-        else {
-            qDebug() << "Admin already exists - skipping.";
-        }
-    }
+    
 }
 /** @brief Returns the static singleton instance. */
 DatabaseManager& DatabaseManager::instance() {
