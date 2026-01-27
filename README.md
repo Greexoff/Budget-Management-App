@@ -39,8 +39,8 @@ The application is built with a strict separation of concerns using the **MVC pa
 ### Documentation
 
 Full technical documentation is available in Polish and provides an in-depth look at the project's engineering process. Documentation includes:
-* **Initial Project Specification** Requirements and scope.
-* **UML Diagrams** Class diagrams, Sequence diagrams and Use Case diagrams.
-* **Testing approach** Overview of the approach used to ensure application stability.
+* **Initial Project Specification:** Requirements and scope.
+* **UML Diagrams:** Class diagrams, Sequence diagrams and Use Case diagrams.
+* **Testing approach:** Overview of the approach used to ensure application stability.
 
 [Full documentation (PDF)](Documentation/BMA_docs.pdf)
