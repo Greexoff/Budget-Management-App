@@ -43,4 +43,4 @@ Full technical documentation is available in Polish and provides an in-depth loo
 * **UML Diagrams** Class diagrams, Sequence diagrams and Use Case diagrams.
 * **Testing approach** Overview of the approach used to ensure application stability.
 
-[Full documentation (PDF)](Documentation/BMA_documentation.pdf)
+[Full documentation (PDF)](Documentation/BMA_docs.pdf)
