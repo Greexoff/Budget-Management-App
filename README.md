@@ -5,7 +5,7 @@ This project is a offline desktop application developed for comprehensive home b
 
 ---
 
-### 🚀 Key Features
+### Key Features
 * **Transaction Logging:** Detailed transaction entry including name, date, amount, category, financial account and custom description.
 * **Custom Categories:** Ability to define and manage custom categories.
 * **Account Management:** Support for multiple account types.
