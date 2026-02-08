@@ -37,11 +37,11 @@ The application is built with a strict separation of concerns using the **MVC pa
 ---
 
 ### Visuals
-* Authentication: ![](Documentation/Images/Log-in.jpg)
-* Transactions: ![](Documentation/Images/Transactions.jpg)
-* Category Management: ![](Documentation/Images/Categories.jpg)
-* Accounts Overview: ![](Documentation/Images/Financial_Accounts.jpg)
-* Statistics & Reports: ![](Documentation/Images/Financial_Reports.jpg)
+* Authentication: ![](Documentation/Images/Log-in.png)
+* Transactions: ![](Documentation/Images/Transactions.png)
+* Category Management: ![](Documentation/Images/Categories.png)
+* Accounts Overview: ![](Documentation/Images/Financial_Accounts.png)
+* Statistics & Reports: ![](Documentation/Images/Financial_Reports.png)
 
 ---
 
